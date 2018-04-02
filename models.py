@@ -1,6 +1,32 @@
 from app import db
 from hashingtools import make_password_hashing
 
+#Table to help handling many-to-many-relationships between hobbies and hobbyists. Two columns, one for hobbyist id and other for hobbie id.
+#hobbieshobbyists will be a table called "hobbieshobbyists" with two columns, one for the hobbies' ids and called "hobby_id" and the other
+# called "hobbyist_id" for the hobbyists' ids.
+hobbieshobbyists = db.Table('hobbieshobbyists',
+    db.Column('hobby_id', db.Integer, db.ForeignKey('hobby.id')),
+    db.Column('hobbyist_id', db.Integer, db.ForeignKey('hobbyist.id'))
+)  
+
+#Table to help handling many-to-many-relationships between places and hobbyists. Two columns, one for hobbyist id and other for place id.
+placeshobbyists = db.Table('placeshobbyists',
+    db.Column('place_id', db.Integer, db.ForeignKey('place.id')),
+    db.Column('hobbyist_id', db.Integer, db.ForeignKey('hobbyist.id'))
+)
+
+#Table to help handling many-to-many-relationships between hobbyists and encounters. Two columns, one for hobbyist id and other for encounter id.
+encountershobbyists = db.Table('encountershobbyists', 
+    db.Column('encounter_id', db.Integer, db.ForeignKey('encounter.id')),
+    db.Column('hobbyist_id', db.Integer, db.ForeignKey('hobbyist.id'))
+)
+
+#Table to help handling many-to-many-relationships between hobbies and places. Two columns, one for place id and other for hobbie id.
+hobbiesplaces = db.Table('hobbiesplaces',
+    db.Column('hobby_id', db.Integer, db.ForeignKey('hobby.id')),
+    db.Column('place_id', db.Integer, db.ForeignKey("place.id"))
+)
+
 # Classes Hobbyist, Hobby, Place, Encounter, Blog
 
 #A blog will belong to just one user (one-to-many-relationship)
@@ -80,30 +106,5 @@ class Encounter(db.Model):
         self.place = holding_place
         self.encounter = hobby_taking_place
 
-#Table to help handling many-to-many-relationships between hobbies and hobbyists. Two columns, one for hobbyist id and other for hobbie id.
-#hobbieshobbyists will be a table called "hobbieshobbyists" with two columns, one for the hobbies' ids and called "hobby_id" and the other
-# called "hobbyist_id" for the hobbyists' ids.
-hobbieshobbyists = db.Table('hobbieshobbyists',
-    db.Column('hobby_id', db.Integer, db.ForeignKey('hobby.id')),
-    db.Column('hobbyist_id', db.Integer, db.ForeignKey('hobbyist.id'))
-)  
-
-#Table to help handling many-to-many-relationships between places and hobbyists. Two columns, one for hobbyist id and other for place id.
-placeshobbyists = db.Table('placeshobbyists',
-    db.Column('place_id', db.Integer, db.ForeignKey('place.id')),
-    db.Column('hobbyist_id', db.Integer, db.ForeignKey('hobbyist.id'))
-)
-
-#Table to help handling many-to-many-relationships between hobbyists and encounters. Two columns, one for hobbyist id and other for encounter id.
-encountershobbyists = db.Table('encountershobbyists', 
-    db.Column('encounter_id', db.Integer, db.ForeignKey('encounter.id')),
-    db.Column('hobbyist_id', db.Integer, db.ForeignKey('hobbyist.id'))
-)
-
-#Table to help handling many-to-many-relationships between hobbies and places. Two columns, one for place id and other for hobbie id.
-hobbiesplaces = db.Table('hobbiesplaces',
-    db.Column('hobby_id', db.Integer, db.ForeignKey('hobby.id')),
-    db.Column('place_id', db.Integer, db.ForeignKey("place.id"))
-)
 
 
