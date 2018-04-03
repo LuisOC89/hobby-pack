@@ -28,7 +28,6 @@ hobbiesplaces = db.Table('hobbiesplaces',
 )
 
 # Classes Hobbyist, Hobby, Place, Encounter, Blog
-
 #A blog will belong to just one user (one-to-many-relationship)
 class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -105,6 +104,3 @@ class Encounter(db.Model):
         self.time = time
         self.place = holding_place
         self.encounter = hobby_taking_place
-
-
-
