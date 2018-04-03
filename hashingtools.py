@@ -7,7 +7,7 @@ def making_salt():
 
 def make_password_hashing(password, salt=None):
     if not salt:
-        salt = make_salt()
+        salt = making_salt()
     hash = hashlib.sha256(str.encode(password + salt)).hexdigest()
     return '{0},{1}'.format(hash, salt)
 

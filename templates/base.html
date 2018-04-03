@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+    <head>
+        <title>{{title}}</title>
+        <style>            
+            .titlemain{
+                text-align: center;
+                color: blueviolet;
+                font-size: 30px;
+                font-weight: bold;
+            }
+            .error10{
+                color: red;
+                font-style: italic;
+            }
+           
+        </style>
+    </head>
+<body>
+    <div style='float: right'>
+        {% if 'hobbyist' in session %}
+            {{ session['hobbyist'] }} |
+            <a href="/">Home</a> | <a href="/people">Hobbyists</a> | <a href="/hobbies">Hobbies</a> | <a href="/places">Places</a> | <a href="/events">Encounters</a> | <a href="/logout"> logout</a> 
+        {% else %}
+            <a href="/">Home</a> | <a href="/signup">Sign up</a> | <a href="/login">Login</a> 
+        {% endif %}
+    </div>
+            <a href="/blog">Blog</a>
+            &nbsp&nbsp
+            <a href="/newpost">Add new post</a>
+            &nbsp&nbsp
+            <a href="/newhobby">Add hobby</a>
+            &nbsp&nbsp
+            <a href="/newhobby">Add place</a>
+            &nbsp&nbsp
+            <a href="/newhobby">Create encounter</a>
+            
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <ul class=flashes>
+            {% for category,message in messages %}
+            <li class = "{{category}}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>
