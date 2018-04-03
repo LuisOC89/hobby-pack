@@ -80,7 +80,7 @@ class Place(db.Model):
     city = db.Column(db.String(120))
     state = db.Column(db.String(120))
     zipcode = db.Column(db.String(120))
-    encounters = db.relationship("Encounter", backref="encounter")
+    encounters = db.relationship("Encounter", backref="event")
 
     def __init__(self, name, staddress, city, state, zipcode):
         self.name = name

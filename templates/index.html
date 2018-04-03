@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="titlemain" style="text-align:left">Blog Users!</h1>
+    {% if hobbyists|length == 0 %}
+    <p>No hobbyists yet</p>
+    {% else %}
+            {% for hobbyist in hobbyists | reverse %}
+            <li class="list2">
+            <a href="/blog?hobbyist={{hobbyist.hobbyistname}}" class="poster">{{hobbyist.hobbyistname}}</a> 
+            {% endfor %}
+            </li>
+    {% endif %}
+    
+{% endblock %}
