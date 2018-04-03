@@ -83,6 +83,7 @@ def signup():
                     else:
                         welcome_message = 'Logged in. Welcome, ' + str(hobbyist.nickname)                  
                     #flash('Logged in. Welcome, ' + str(hobbyist.nickname), 'allgood')
+                    #Redirect and url_for are get requests. adding_post is the function controller in main. 
                     return redirect(url_for("adding_post", welcomessage=welcome_message))
                 else:
                     error_empty = '''The email address "''' + str(email) + '''" already exists. Are you sure you are not signed up already?'''                
@@ -97,11 +98,10 @@ def signup():
 def adding_post():
 
     if request.method == "GET":
+        # Because the url_for points to the function "adding_post"(controller), not the template "newpost.html" (view), we have to extract the value of the argument "welcomessage" first as a get request.
+        # When welcomemessage is empty, it passes the value "None". 
         welcomessage=request.args.get('welcomessage')
-        if (welcomessage == ""):
-            return render_template('newpost.html')
-        else:
-            return render_template('newpost.html', welcomemessage=welcomessage)
+        return render_template('newpost.html', welcomemessage=welcomessage)
 
 @app.route('/logout')
 def saliendo():
