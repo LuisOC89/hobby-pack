@@ -27,7 +27,7 @@
             {{ session['hobbyist'] }} |
             <a href="/">Home</a> | <a href="/people">Hobbyists</a> | <a href="/hobbies">Hobbies</a> | <a href="/places">Places</a> | <a href="/events">Encounters</a> | <a href="/logout"> logout</a> 
         {% else %}
-            <a href="/">Home</a> | <a href="/signup">Sign up</a> | <a href="/login">Login</a> 
+            <a href="/">Home</a> | <a href="/newhobbyist">Sign up</a> | <a href="/login">Login</a> 
         {% endif %}
     </div>
             <a href="/blog">Blog</a>
@@ -36,9 +36,9 @@
             &nbsp&nbsp
             <a href="/newhobby">Add hobby</a>
             &nbsp&nbsp
-            <a href="/newhobby">Add place</a>
+            <a href="/newplace">Add place</a>
             &nbsp&nbsp
-            <a href="/newhobby">Create encounter</a>
+            <a href="/newevent">Create encounter</a>
             
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}

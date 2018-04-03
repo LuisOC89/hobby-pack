@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>New Hobbyist in the zone?</h2>
+<form action="/newhobbyist" method="post">
+  <span class="error10">{{errorempty}}</span>
+  <p><label>Nickname <input type="text" name="hobbyistnamesignup" value="{{nickname}}"/></label></p>
+  <span class="error10">{{errorname}}</span>
+  <p><label>Password <input type="password" name="passwordsignup"/></label></p>
+  <p><label>Verify Password <input type="password" name="verifysignup"/></label></p>
+  <span class="error10">{{errorpassword}}</span>
+  <p><label>Email Address <input type="text" name="emailaddresssignup" value="{{email}}"/></label></p>
+  <span class="error10">{{erroremail}}</span>
+  <p><label>City where you practice your hobbies <input type="text" name="citysignup" value="{{city}}"/></label></p>
+  <span class="error10">{{errorcity}}</span>
+  <p><label>Zip Code where you practice your hobbies <input type="text" name="zipsignup" value="{{zipcode}}"/></label></p>
+  <span class="error10">{{errorzip}}</span>
+  <p><input type="submit" value="Sign up"/></p>
+</form>
+
+{% endblock %}
