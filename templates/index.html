@@ -8,8 +8,8 @@
             {% for hobbyist in hobbyists | reverse %}
             <li class="list2">
             <a href="/blog?hobbyist={{hobbyist.hobbyistname}}" class="poster">{{hobbyist.nickname}}</a> 
-            {% endfor %}
             </li>
+            {% endfor %} 
     {% endif %}
     
 {% endblock %}

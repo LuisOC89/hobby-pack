@@ -1,4 +1,4 @@
-from flask import request, redirect, render_template, session, flash
+from flask import request, redirect, render_template, session, flash, url_for
 from app import db, app
 from models import Hobbyist, Hobby, Place, Encounter, Blog
 from hashingtools import checking_password_hash
@@ -77,8 +77,13 @@ def signup():
                     db.session.add(hobbyist)
                     db.session.commit()
                     session['hobbyist'] = hobbyist.nickname
-                    flash('Logged in. Welcome, ' + str(hobbyist.nickname), 'allgood')
-                    return redirect("/newpost")
+                    if 'visits' in session:
+                        session.pop('visits', '')
+                        welcome_message = ''
+                    else:
+                        welcome_message = 'Logged in. Welcome, ' + str(hobbyist.nickname)                  
+                    #flash('Logged in. Welcome, ' + str(hobbyist.nickname), 'allgood')
+                    return redirect(url_for("adding_post", welcomessage=welcome_message))
                 else:
                     error_empty = '''The email address "''' + str(email) + '''" already exists. Are you sure you are not signed up already?'''                
                     return render_template('newhobbyist.html', nickname=hobbyistname, email=email, city=city, zipcode=zipcode, errorempty=error_empty)
@@ -92,7 +97,11 @@ def signup():
 def adding_post():
 
     if request.method == "GET":
-        return render_template('newpost.html')
+        welcomessage=request.args.get('welcomessage')
+        if (welcomessage == ""):
+            return render_template('newpost.html')
+        else:
+            return render_template('newpost.html', welcomemessage=welcomessage)
 
 @app.route('/logout')
 def saliendo():

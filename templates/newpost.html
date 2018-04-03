@@ -2,6 +2,12 @@
 
 {% block content %}
     <h1 class="titlemain">Add a Blog Entry</h1>
+    {% if welcomemessage != None %}
+        <span class="allgood">{{welcomemessage}}</span>
+    {% else %}
+
+    {% endif %}
+    
     <form method='post' action="/newpost">
         <label>
             Title for your new blog:
