@@ -77,11 +77,15 @@ def signup():
                     db.session.add(hobbyist)
                     db.session.commit()
                     session['hobbyist'] = hobbyist.nickname
+                    #cookie to say hi or dont to new user
                     if 'visits' in session:
-                        session.pop('visits', '')
-                        welcome_message = ''
+                        session['visits'] = session.get('visits') + 1
                     else:
-                        welcome_message = 'Logged in. Welcome, ' + str(hobbyist.nickname)                  
+                        session['visits'] = 1  
+                    if (session['visits'] == 1):
+                        welcome_message = 'Logged in. Welcome, ' + str(hobbyist.nickname)    
+                    else:
+                        welcome_message = ''
                     #flash('Logged in. Welcome, ' + str(hobbyist.nickname), 'allgood')
                     #Redirect and url_for are get requests. adding_post is the function controller in main. 
                     return redirect(url_for("adding_post", welcomessage=welcome_message))
