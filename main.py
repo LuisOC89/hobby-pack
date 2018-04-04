@@ -117,14 +117,6 @@ def login():
         flash('This username does not exist. :/', "error10")
         return redirect("/login")
 
-@app.route('/newpost', methods=['POST', 'GET'])
-def adding_post():
-    if request.method == "GET":
-        # Because the url_for points to the function "adding_post"(controller), not the template "newpost.html" (view), we have to extract the value of the argument "welcomessage" first as a get request.
-        # When welcomemessage is empty, it passes the value "None". 
-        welcomessage=request.args.get('welcomessage')
-        return render_template('newpost.html', welcomemessage=welcomessage)
-
 @app.route('/blog', methods=['POST', 'GET'])
 def listing_blogs():
     #conditional assuming the access is through a get request from homeblogposts clicking {{post.title}}
@@ -132,8 +124,8 @@ def listing_blogs():
     #conditional assuming the access is through a get request from homeblogposts clicking {{post.title}}
     conditional_get_request_hobbyist = str(request.args.get("hobbyist"))
     #My error here (AttributeError: 'NoneType' object has no attribute 'id') is that I was looking for this value in html in homeblogposts.html instead of index.html
-    print(conditional_get_request_id)
-    print(conditional_get_request_hobbyist)
+    #print(conditional_get_request_id)
+    #print(conditional_get_request_hobbyist)
     #if both are none, it means that this is a get request without passing an attribute from the view to the controller
     if ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist =="None")):
         #This one shows all the posts of everyone in the blog 
@@ -154,18 +146,51 @@ def listing_blogs():
     #if conditional_get_request_hobbyist is not "None", then we are bringing the attribute "hobbyist" from the view to the controller
     elif ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist != "None")):
         hobbyist_name = conditional_get_request_hobbyist
-        print(hobbyist_name)
+        #print(hobbyist_name)
         current_hobbyist = Hobbyist.query.filter_by(nickname=hobbyist_name).first()
-        print(current_hobbyist)
+        #print(current_hobbyist)
         #This one shows all the blogs of just this particular hobbyist
         current_hobbyist_id = current_hobbyist.id
         posts_python = Blog.query.filter_by(hobbyist_id=current_hobbyist_id).all()
         return render_template('homeblogposts.html',title="Hobbie Pack!",postshtml=posts_python)
 
+@app.route('/newpost', methods=['POST', 'GET'])
+def adding_post():
+    if request.method == "GET":
+        # Because the url_for points to the function "adding_post"(controller), not the template "newpost.html" (view), we have to extract the value of the argument "welcomessage" first as a get request.
+        # When welcomemessage is empty, it passes the value "None". 
+        welcomessage=request.args.get('welcomessage')
+        return render_template('newpost.html', welcomemessage=welcomessage)
+
+    if request.method == 'POST':
+        post_title = request.form['posttitle']
+        post_body = request.form['postbody']
+        #Validation to make sure that the new post has a title and a body. Client-side validation
+        if ((post_title =="") and (post_body!="")):
+            error = "notitle"     
+            return render_template('newposts.html',title="Hobbies Pack!", newtitle=post_title, newbody=post_body, errorhtml = error)       
+        elif ((post_title !="") and (post_body=="")):
+            error = "nobody"    
+            return render_template('newposts.html',title="Hobbies Pack!", newtitle=post_title, newbody=post_body, errorhtml = error)        
+        elif ((post_title =="") and (post_body=="")):
+            error = "bothempty"
+            return render_template('newposts.html',title="Hobbies Pack!", newtitle=post_title, newbody=post_body, errorhtml = error)
+        else:
+            new_post = Blog(post_title, post_body, Hobbyist.query.filter_by(nickname=session['hobbyist']).first())
+            db.session.add(new_post)
+            db.session.commit()
+            #print(new_post.id)
+            return redirect('''/blog?id='''+str(new_post.id))
+
 @app.route('/logout')
 def saliendo():
     del session['hobbyist']
     return redirect('/')
+
+@app.route('/people', methods=['POST','GET'])
+def showing_all_people():
+    hobbyists = Hobbyist.query.all()
+    return render_template('people/hobbyists.html',title="Hobby Pack", hobbyists=hobbyists)
 
 endpoints_without_login = ['login', 'signup', 'index', 'listing_blogs']
 

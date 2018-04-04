@@ -12,21 +12,21 @@
         <label>
             Title for your new blog:
             <br>
-            <input type="text" name='post1' value="{{emptytitle}}"/><br>
-            {% if err == "notitle" %}
+            <input type="text" name='posttitle' value="{{newtitle}}"/><br>
+            {% if errorhtml == "notitle" %}
             <span class="error10">Please fill in the title</span>
-            {% elif err == "bothempty" %}
+            {% elif errorhtml == "bothempty" %}
             <span class="error10">Please fill in the title</span>
             {% else %}
             {% endif %}    
         </label>
         <br><br>
         <label>Your new blog:<br>
-            <textarea name="body5">{{emptybody}}</textarea>
+            <textarea name="postbody">{{newbody}}</textarea>
         </label><br>
-        {% if err == "nobody" %}
+        {% if errorhtml == "nobody" %}
         <span class="error10">Please fill in the body</span>
-        {% elif err == "bothempty" %}
+        {% elif errorhtml == "bothempty" %}
         <span class="error10">Please fill in the body</span>
         {% else %}
         {% endif %}
