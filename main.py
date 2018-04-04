@@ -11,8 +11,6 @@ def index():
     hobbyists = Hobbyist.query.all()
     return render_template('index.html',title="Hobby Pack", hobbyists=hobbyists)
 
-endpoints_without_login = ['login', 'signup', 'index', 'listing_blogs']
-
 @app.route("/newhobbyist", methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -98,9 +96,29 @@ def signup():
     else:
         return render_template('newhobbyist.html')
 
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    elif request.method == 'POST':
+        hobbyist_python = request.form['hobbyist_html']
+        password_python = request.form['password_html']
+        hobbyists = Hobbyist.query.filter_by(nickname=hobbyist_python)
+        if hobbyists.count() == 1:
+            hobbyist = hobbyists.first()
+            if checking_password_hash(password_python, hobbyist.password) == True:
+                session['hobbyist'] = hobbyist_python
+                flash('Welcome back, ' + str(hobbyist_python) + '.', 'allgood')
+                return redirect("/newpost")
+            elif checking_password_hash(password_python, hobbyist.password) == False:
+                flash("Sorry " + str(hobbyist_python) + ", that was not your password. :( ", "error10")
+                #return redirect("/login")
+                return render_template('login.html', hobbyistname=hobbyist_python)
+        flash('This username does not exist. :/', "error10")
+        return redirect("/login")
+
 @app.route('/newpost', methods=['POST', 'GET'])
 def adding_post():
-
     if request.method == "GET":
         # Because the url_for points to the function "adding_post"(controller), not the template "newpost.html" (view), we have to extract the value of the argument "welcomessage" first as a get request.
         # When welcomemessage is empty, it passes the value "None". 
@@ -111,6 +129,8 @@ def adding_post():
 def saliendo():
     del session['hobbyist']
     return redirect('/')
+
+endpoints_without_login = ['login', 'signup', 'index', 'listing_blogs']
 
 @app.before_request
 def require_login():
