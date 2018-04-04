@@ -125,6 +125,43 @@ def adding_post():
         welcomessage=request.args.get('welcomessage')
         return render_template('newpost.html', welcomemessage=welcomessage)
 
+@app.route('/blog', methods=['POST', 'GET'])
+def listing_blogs():
+    #conditional assuming the access is through a get request from homeblogposts clicking {{post.title}}
+    conditional_get_request_id = str(request.args.get("id"))
+    #conditional assuming the access is through a get request from homeblogposts clicking {{post.title}}
+    conditional_get_request_hobbyist = str(request.args.get("hobbyist"))
+    #My error here (AttributeError: 'NoneType' object has no attribute 'id') is that I was looking for this value in html in homeblogposts.html instead of index.html
+    print(conditional_get_request_id)
+    print(conditional_get_request_hobbyist)
+    #if both are none, it means that this is a get request without passing an attribute from the view to the controller
+    if ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist =="None")):
+        #This one shows all the posts of everyone in the blog 
+        posts_python = Blog.query.all()  
+        return render_template('homeblogposts.html',title="Hobbie Pack!", postshtml=posts_python)
+    #if conditional_get_request_id is not "None", then we are bringing the attribute "id" from the view to the controller
+    elif ((conditional_get_request_id != "None") and (conditional_get_request_hobbyist=="None")): 
+        database_id = int(conditional_get_request_id)
+        #print(database_id)
+        current_post = Blog.query.get(database_id)
+        title_python = current_post.title
+        #print(title_python)
+        body_python = current_post.body
+        #print(body_python)
+        hobbyist_owner_python = current_post.blog.nickname
+        #print(hobbyist_owner_python)
+        return render_template('eachblog.html', titlehtml = title_python, bodyhtml=body_python, ownerhtml = hobbyist_owner_python) 
+    #if conditional_get_request_hobbyist is not "None", then we are bringing the attribute "hobbyist" from the view to the controller
+    elif ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist != "None")):
+        hobbyist_name = conditional_get_request_hobbyist
+        print(hobbyist_name)
+        current_hobbyist = Hobbyist.query.filter_by(nickname=hobbyist_name).first()
+        print(current_hobbyist)
+        #This one shows all the blogs of just this particular hobbyist
+        current_hobbyist_id = current_hobbyist.id
+        posts_python = Blog.query.filter_by(hobbyist_id=current_hobbyist_id).all()
+        return render_template('homeblogposts.html',title="Hobbie Pack!",postshtml=posts_python)
+
 @app.route('/logout')
 def saliendo():
     del session['hobbyist']

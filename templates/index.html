@@ -7,7 +7,7 @@
     {% else %}
             {% for hobbyist in hobbyists | reverse %}
             <li class="list2">
-            <a href="/blog?hobbyist={{hobbyist.hobbyistname}}" class="poster">{{hobbyist.nickname}}</a> 
+            <a href="/blog?hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}}</a> 
             </li>
             {% endfor %} 
     {% endif %}
