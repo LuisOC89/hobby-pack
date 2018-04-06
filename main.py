@@ -9,7 +9,11 @@ app.secret_key = 'super-secret-close-your-eyes'
 @app.route('/', methods=['POST','GET'])
 def index():
     hobbyists = Hobbyist.query.all()
-    return render_template('index.html',title="Hobby Pack", hobbyists=hobbyists)
+    hobbies = Hobby.query.all()
+    places = Place.query.all()
+    encounters = Encounter.query.all()
+    posts = Blog.query.all()
+    return render_template('index.html',title="Hobby Pack", hobbyists=hobbyists, hobbies=hobbies, places=places, encounters=encounters, postshtml=posts)
 
 @app.route("/newhobbyist", methods=['GET', 'POST'])
 def signup():
@@ -176,7 +180,7 @@ def adding_post():
             error = "bothempty"
             return render_template('newposts.html',title="Hobbies Pack!", newtitle=post_title, newbody=post_body, errorhtml = error)
         else:
-            new_post = Blog(post_title, post_body, Hobbyist.query.filter_by(nickname=session['hobbyist']).first())
+            new_post = Blog(post_title, post_body, logged_in_hobbyist())
             db.session.add(new_post)
             db.session.commit()
             #print(new_post.id)
@@ -190,7 +194,7 @@ def saliendo():
 @app.route('/people', methods=['POST','GET'])
 def showing_all_people():
     hobbyists = Hobbyist.query.all()
-    return render_template('people/hobbyists.html',title="Hobby Pack", hobbyists=hobbyists)
+    return render_template('hobbyists.html',title="Hobby Pack", hobbyists=hobbyists)
 
 endpoints_without_login = ['login', 'signup', 'index', 'listing_blogs']
 
@@ -198,6 +202,78 @@ endpoints_without_login = ['login', 'signup', 'index', 'listing_blogs']
 def require_login():
     if not ('hobbyist' in session or request.endpoint in endpoints_without_login):
         return redirect("/login")
+
+@app.route('/hobbies', methods=['POST', 'GET'])
+def listing_hobbies():  
+    if request.method == "GET":  
+        conditional = str(request.args.get("condition"))
+        conditional_get_request_id = str(request.args.get("id"))    
+        conditional_get_request_hobby = str(request.args.get("hobby"))    
+        if ((conditional_get_request_id == "None") and (conditional_get_request_hobby =="None") and conditional=="None"):        
+            hobbies_python = Hobby.query.all()  
+            hobbyists_python = Hobbyist.query.all()
+            places_python = Place.query.all()
+            return render_template('hobbies.html', title="Hobbie Pack!", hobbieshtml=hobbies_python, hobbyistshtml=hobbyists_python, placeshtml=places_python)
+        elif ((conditional_get_request_id != "None") and (conditional_get_request_hobby == "None")): 
+            database_id = int(conditional_get_request_id)
+            current_hobby = Hobby.query.get(database_id)
+            hobby_python = current_hobby.name        
+            return render_template('eachhobby.html', hobbyhtml = hobby_python) 
+        """elif ((conditional_get_request_id == "None") and (conditional_get_request_hobby != "None")):
+            hobby_name = conditional_get_request_hobby        
+            current_hobby = Hobby.query.filter_by(nickname=hobby_name).first()
+            current_hobby_id = current_hobby.id
+            posts_python = Hobby.query.filter_by(hobby_id=current_hobby_id).all()
+            return render_template('hobbies.html', title="Hobbie Pack!", postshtml=posts_python)"""
+        if (conditional == "user_title"):        
+            hobbies_python = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                           
+            return render_template('eachhobbyist.html', title="Hobbie Pack!", hobbieshtml=hobbies_python)
+
+
+@app.route('/newhobbie', methods=['POST', 'GET'])
+def adding_hobbie():
+    if request.method == "GET":
+        return render_template('newhobby.html')
+
+    if request.method == 'POST':
+        conditional = str(request.form['conditional'])
+        if (conditional == "to_add_new_hobby_to_current_user"):
+            hobby_name = request.form['hobbyname']        
+            #Validation to make sure that the new hobbie has a name. Client-side validation
+            if (hobby_name =="") :
+                error = "no_name"     
+                return render_template('newhobby.html',title="Hobbies Pack!", newhobbyname=hobby_name, errorhtml = error)
+            else:
+                new_hobbie = Hobby(hobby_name)
+                db.session.add(new_hobbie)
+                db.session.commit()           
+                new_hobbie.hobbyists.append(logged_in_hobbyist()) 
+                db.session.commit()    
+                return redirect('''/hobbies?id='''+str(new_hobbie.id))
+        elif (conditional == "to_add_existing_hobby_to_current_user"):
+            hobby_name = request.form['hobbyname']     
+            #current_hobby = Hobby.query
+            print (hobby_name)
+            #Validation to make sure that the new hobbie has a name. Client-side validation
+            if (hobby_name =="") :
+                error = "no_name"     
+                return render_template('newhobby.html',title="Hobbies Pack!", newhobbyname=hobby_name, errorhtml = error)
+            else:
+                #new_hobbie = Hobby(hobby_name)  
+                existing_hobbie = Hobby.query.filter_by(name=hobby_name).first()                        
+                existing_hobbie.hobbyists.append(logged_in_hobbyist()) 
+                db.session.commit()    
+                return redirect('''/hobbies?id='''+str(existing_hobbie.id))
+
+def logged_in_hobbyist():
+    current_hobbyist = Hobbyist.query.filter_by(nickname=session['hobbyist']).first()
+    return current_hobbyist
+
+def qty_per_hobby():
+    hobby_times = {}
+
+    current_hobby = Hobbyist.query.filter_by(nickname=session['hobbyist']).first()
+
 
 if __name__ == '__main__':
     app.run()

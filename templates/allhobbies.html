@@ -1,0 +1,19 @@
+{% extends "zbase.html" %}
+
+{% block content %}
+<h1 class="titlemain">Hobbie Pack!</h1>
+    {% if hobbieshtml|length == 0 %}
+    <p>No hobbies yet</p>
+    {% else %}
+        {% for hobby in hobbieshtml | reverse %}
+        
+        <a href="/hobbies?id={{hobby.id}}" class="titlepost">{{hobby.name}} </a> ({{hobby.hobbyists.nickname}}) hobbyists) (# places )  . 
+        <form action="/newhobbie" method="post" id="hobby_form">            
+            <input type="hidden" name="hobbyname" value="{{hobby.name}}"/>
+            <input type="hidden" name="conditional" value="to_add_existing_hobby_to_current_user"/>
+            <input type="submit" value="ADD"/>
+        </form> to my hobbies.    
+        <hr />
+        {% endfor %}
+    {% endif %}    
+{% endblock %}

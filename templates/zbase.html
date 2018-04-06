@@ -37,12 +37,19 @@
             .list2{
                 text-align: left;
             }
+            #hobby_form{display:inline;
+                vertical-align:top;
+                text-align:center;
+            }
+            #hobby_form input[type="submit"]{
+                margin: 0;
+            }
         </style>
     </head>
 <body>
     <div style='float: right'>
         {% if 'hobbyist' in session %}
-            {{ session['hobbyist'] }} |
+            <a href="/hobbies?condition=user_title">{{ session['hobbyist'] }}</a>|
             <a href="/">Home</a> | <a href="/people">Hobbyists</a> | <a href="/hobbies">Hobbies</a> | <a href="/places">Places</a> | <a href="/events">Encounters</a> | <a href="/logout"> logout</a> 
         {% else %}
             <a href="/">Home</a> | <a href="/newhobbyist">Sign up</a> | <a href="/login">Login</a> 
@@ -52,7 +59,7 @@
             &nbsp&nbsp
             <a href="/newpost">Add new post</a>
             &nbsp&nbsp
-            <a href="/newhobby">Add hobby</a>
+            <a href="/newhobbie">Add hobby</a>
             &nbsp&nbsp
             <a href="/newplace">Add place</a>
             &nbsp&nbsp

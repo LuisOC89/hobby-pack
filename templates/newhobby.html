@@ -1,0 +1,20 @@
+{% extends "zbase.html" %}
+
+{% block content %}
+    <h1 class="titlemain">Add a New Hobby</h1>
+        
+    <form method='post' action="/newhobbie">
+        <label>
+            Name for your new hobby:
+            <br>
+            <input type="text" name='hobbyname' value="{{newhobbyname}}"/><br>
+            {% if errorhtml == "no_name" %}
+            <span class="error10">Please fill in the name</span><br>
+            {% else %}
+            {% endif %}    
+        </label>
+        <input type="hidden" name="conditional" value="to_add_new_hobby_to_current_user"/>
+        <input type="submit" value='Add Entry' />
+    </form>
+
+{% endblock %}

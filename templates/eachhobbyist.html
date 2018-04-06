@@ -1,0 +1,14 @@
+{% extends "zbase.html" %}
+
+{% block content %}
+<h1 class="titlemain">Hobbie Pack!</h1>
+    {% if hobbieshtml|length == 0 %}
+    <p>No hobbies yet</p>
+    {% else %}
+        {% for hobbie in hobbieshtml | reverse %}
+        <a href="/hobbies?id={{hobbie.id}}" class="titlepost">{{hobbie.name}}</a> <span id="specialb">by</span> <a href="/blog?hobbyist={{hobbie.hobbyists.nickname}}"><span class="poster">{{ session['hobbyist'] }}</span></a>
+        <hr />
+        {% endfor %}
+    {% endif %}
+    
+{% endblock %}
