@@ -23,9 +23,10 @@ def signup():
         verify_password = request.form['verifysignup']
         email = request.form['emailaddresssignup']
         city = request.form['citysignup']
+        state = request.form['statesignup']
         zipcode = request.form['zipsignup']
         #Validation for all fields not to be empty
-        if ((password =="") or (verify_password=="") or (hobbyistname=="") or (email=="") or (city=="") or (zipcode=="")):
+        if ((password =="") or (verify_password=="") or (hobbyistname=="") or (email=="") or (city=="") or (zipcode=="") or (state=="")):
             error_empty = "One or more fields are invalid. Please do not leave any field empty." 
         else:
             error_empty = ""
@@ -103,7 +104,7 @@ def signup():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html')
+        return render_template('zlogin.html')
     elif request.method == 'POST':
         hobbyist_python = request.form['hobbyist_html']
         password_python = request.form['password_html']

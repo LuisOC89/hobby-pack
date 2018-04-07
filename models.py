@@ -31,22 +31,38 @@ hobbiesplaces = db.Table('hobbiesplaces',
 #A blog will belong to just one user (one-to-many-relationship)
 class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(120))
+    title = db.Column(db.String(30))
     body = db.Column(db.String(120))
     hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
+    blog_answers = db.relationship("Bloganswer", backref="bloganswer")
 
     def __init__(self, title, body, hobbyist_owner):
         self.title = title
         self.body = body
         self.blog = hobbyist_owner
 
+#A blog can have answers (one-to-many-relationship) from other users 
+class Bloganswer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(30))
+    body = db.Column(db.String(120))
+    hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
+    blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'))
+
+    def __init__(self, title, body, blog_related, user_owner):
+        self.title = title
+        self.body = body
+        self.bloganswer = blog_related
+        self.blogsanswer = user_owner
+
 #A hobbyist can have blogs (one-to-many-relationship), hobbies, places, encounters (many-to-many-relationship) 
 class Hobbyist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nickname = db.Column(db.String(120), unique=True)
-    email = db.Column(db.String(60), unique=True)
+    nickname = db.Column(db.String(20), unique=True)
+    email = db.Column(db.String(40), unique=True)
     city = db.Column(db.String(60))
-    zipcode = db.Column(db.String(10))
+    state = db.Column(db.String(20))
+    zipcode = db.Column(db.String(5))
     password = db.Column(db.String(120))
     blogs = db.relationship("Blog", backref="blog")
     # "hobbies" will be an attribute in this class to relate class-table "Hobbyist" to class-table "Hobby" using helper table "hobbieshobbyists" and creating the attribute 
@@ -54,11 +70,13 @@ class Hobbyist(db.Model):
     hobbies = db.relationship('Hobby', secondary=hobbieshobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
     places = db.relationship('Place', secondary=placeshobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
     encounters = db.relationship('Encounter', secondary=encountershobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
+    blogsanswers = db.relationship("Bloganswer", backref="blogsanswer")
 
-    def __init__(self, nickname, email, city, zipcode, password_to_be_hashed):
+    def __init__(self, nickname, email, city, state, zipcode, password_to_be_hashed):
         self.nickname = nickname
         self.email = email
         self.city = city
+        self.state = state
         self.zipcode = zipcode
         self.password = make_password_hashing(password_to_be_hashed)
 
