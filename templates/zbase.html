@@ -50,7 +50,7 @@
 <body>
     <div style='float: right'>
         {% if 'hobbyist' in session %}
-            <a href="/hobbies?condition=user_title">{{ session['hobbyist'] }}</a>|
+            <a href="/hobbies?condition=user_title">{{ session['hobbyist'] }}</a> |
             <a href="/">Home</a> | <a href="/people">Hobbyists</a> | <a href="/hobbies">Hobbies</a> | <a href="/places">Places</a> | <a href="/events">Encounters</a> | <a href="/logout"> logout</a> 
         {% else %}
             <a href="/">Home</a> | <a href="/newhobbyist">Sign up</a> | <a href="/login">Login</a> 

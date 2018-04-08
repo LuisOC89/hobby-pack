@@ -7,11 +7,13 @@
     {% else %}
         {% for publicplace in placeshtml | reverse %}        
         <a href="/places?id={{publicplace.id}}" class="titlepost">{{publicplace.name}} </a> ({{publicplace.hobbyists.nickname}}) hobbyists) (# hobbies )  . 
+        {% if publicplace not in myplaces %}
         <form action="/newplace" method="post" class="alignedform">            
             <input type="hidden" name="placename" value="{{publicplace.name}}"/>
             <input type="hidden" name="conditional" value="to_add_existing_hobby_to_current_place"/>
             <input type="submit" value="ADD" class="alignedformbutton"/>
-        </form> to my places.    
+        </form> to my places.            
+        {% endif %}
         <hr />
         {% endfor %}
     {% endif %}    

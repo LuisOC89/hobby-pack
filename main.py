@@ -283,7 +283,10 @@ def listing_public_places():
             #---------------------------my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()
             #---------------------------my_places = Place.query.filter(Place.)
 
-            return render_template('allplaces.html', title="Hobbie Pack!", placeshtml=places_python)
+            my_places = Place.query.filter(Place.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()
+            
+
+            return render_template('allplaces.html', title="Hobbie Pack!", placeshtml=places_python, myplaces=my_places)
         '''elif ((conditional_get_request_id != "None") and (conditional_get_request_hobby == "None")): 
             database_id = int(conditional_get_request_id)
             current_hobby = Hobby.query.get(database_id)
@@ -318,7 +321,7 @@ def adding_place():
                   
         place = Place.query.filter_by(name=placehtml).first()
         
-        #To add place to user
+        #To add place to user                          
         new_place.hobbyists.append(logged_in_hobbyist()) 
         db.session.commit() 
 
