@@ -76,7 +76,7 @@ def signup():
                 #Check if there is an user with the same email address
                 emails = Hobbyist.query.filter_by(email=email)
                 if emails.count() == 0:
-                    hobbyist = Hobbyist(hobbyistname, email, city, zipcode, password)
+                    hobbyist = Hobbyist(hobbyistname, email, city, state, zipcode, password)
                     db.session.add(hobbyist)
                     db.session.commit()
                     session['hobbyist'] = hobbyist.nickname
@@ -270,10 +270,77 @@ def logged_in_hobbyist():
     current_hobbyist = Hobbyist.query.filter_by(nickname=session['hobbyist']).first()
     return current_hobbyist
 
+@app.route('/places', methods=['POST', 'GET'])
+def listing_public_places():  
+    if request.method == "GET":  
+        conditional = str(request.args.get("condition"))
+        conditional_get_request_id = str(request.args.get("id"))    
+        conditional_get_request_hobby = str(request.args.get("hobby"))    
+        if ((conditional_get_request_id == "None") and (conditional_get_request_hobby =="None") and conditional=="None"):        
+            places_python = Place.query.all()       
+
+            #---------------------------my_places_already = (Session.query(Place, Hobby, Hobbyist).filter(P))   
+            #---------------------------my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()
+            #---------------------------my_places = Place.query.filter(Place.)
+
+            return render_template('allplaces.html', title="Hobbie Pack!", placeshtml=places_python)
+        '''elif ((conditional_get_request_id != "None") and (conditional_get_request_hobby == "None")): 
+            database_id = int(conditional_get_request_id)
+            current_hobby = Hobby.query.get(database_id)
+            hobby_python = current_hobby.name        
+            return render_template('eachhobby.html', hobbyhtml = hobby_python) '''
+        """elif ((conditional_get_request_id == "None") and (conditional_get_request_hobby != "None")):
+            hobby_name = conditional_get_request_hobby        
+            current_hobby = Hobby.query.filter_by(nickname=hobby_name).first()
+            current_hobby_id = current_hobby.id
+            posts_python = Hobby.query.filter_by(hobby_id=current_hobby_id).all()
+            return render_template('hobbies.html', title="Hobbie Pack!", postshtml=posts_python)"""
+        '''if (conditional == "user_title"):        
+            hobbies_python = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                           
+            return render_template('eachhobbyist.html', title="Hobbie Pack!", hobbieshtml=hobbies_python)'''
+
+@app.route('/newplace', methods=['POST', 'GET'])
+def adding_place():
+    if request.method == "GET":
+        hobbies_python = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()
+        return render_template('newplace.html', hobbieshtml=hobbies_python)  
+    if request.method == "POST":
+        hobbies_practiced = request.form.getlist('hobbieschecked')
+        placehtml = str(request.form['placename'])        
+        streethtml = str(request.form['streetaddress'])
+        cityhtml = str(request.form['city'])
+        statehtml = str(request.form['states'])
+        zipcodehtml = str(request.form['zips'])
+        
+        new_place = Place(placehtml, streethtml, cityhtml, statehtml, zipcodehtml)
+        db.session.add(new_place)
+        db.session.commit()           
+                  
+        place = Place.query.filter_by(name=placehtml).first()
+        
+        #To add place to user
+        new_place.hobbyists.append(logged_in_hobbyist()) 
+        db.session.commit() 
+
+        #To add place to hobbies
+        #print(type(request.form.getlist('hobbieschecked')))
+        #print(type(hobbies_practiced))
+        #print(hobbies_practiced)
+        #for hobby in hobbies_practiced:
+            #print(hobby)
+        for hobby in hobbies_practiced:               
+            existing_hobbie = Hobby.query.filter_by(name=hobby).first()                        
+            existing_hobbie.places.append(place) 
+            db.session.commit()    
+            
+        return render_template('zindex.html')
+
+
+'''
 def qty_per_hobby():
     hobby_times = {}
 
-    current_hobby = Hobbyist.query.filter_by(nickname=session['hobbyist']).first()
+    current_hobby = Hobbyist.query.filter_by(nickname=session['hobbyist']).first()'''
 
 
 if __name__ == '__main__':

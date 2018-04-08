@@ -8,10 +8,10 @@
         {% for hobby in hobbieshtml | reverse %}
         
         <a href="/hobbies?id={{hobby.id}}" class="titlepost">{{hobby.name}} </a> ({{hobby.hobbyists.nickname}}) hobbyists) (# places )  . 
-        <form action="/newhobbie" method="post" id="hobby_form">            
+        <form action="/newhobbie" method="post" class="alignedform">            
             <input type="hidden" name="hobbyname" value="{{hobby.name}}"/>
             <input type="hidden" name="conditional" value="to_add_existing_hobby_to_current_user"/>
-            <input type="submit" value="ADD"/>
+            <input type="submit" value="ADD" class="alignedformbutton"/>
         </form> to my hobbies.    
         <hr />
         {% endfor %}
