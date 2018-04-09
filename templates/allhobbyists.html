@@ -5,7 +5,7 @@
     {% if hobbyists|length == 0 %}
     <p>No hobbyists yet</p>
     {% else %}
-            {% for hobbyist in hobbyists | reverse %}
+            {% for hobbyist in hobbyists %}
             <li class="list2">
             <a href="/blog?hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}}</a> 
             </li>

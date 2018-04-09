@@ -144,11 +144,23 @@ def listing_public_places():
             #Place.query.filter(Place.hobbyists.nickname!=logged_in_hobbyist().nickname).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
 
             return render_template('allplaces.html', title="Hobbie Pack!", placeshtml=places_python, myplaces=my_places, notmyplaces=not_my_places)
-        '''elif ((conditional_get_request_id != "None") and (conditional_get_request_hobby == "None")): 
+        elif ((conditional_get_request_id != "None") and (conditional_get_request_hobby == "None")): 
             database_id = int(conditional_get_request_id)
-            current_hobby = Hobby.query.get(database_id)
-            hobby_python = current_hobby.name        
-            return render_template('eachhobby.html', hobbyhtml = hobby_python) '''
+            current_place = Place.query.get(database_id)
+            place_python = current_place.name       
+
+            #my_hobbies_in_this_place1 = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).filter(Hobby.places.any(name=placehtml)).filter(Hobby.places.any(streetaddress=streethtml)).filter(Hobby.places.any(city=cityhtml)).filter(Hobby.places.any(state=statehtml)).filter(Hobby.places.any(zipcode=zipcodehtml)).all() 
+
+            hobbies_in_this_place = Hobby.query.filter(Hobby.places.any(id=database_id)).all() 
+            amount_hobbies_in_this_place = Hobby.query.filter(Hobby.places.any(id=database_id)).count() 
+            hobbyists_in_this_place = Hobbyist.query.filter(Hobbyist.places.any(id=database_id)).all()
+            amount_hobbyists_in_this_place = Hobbyist.query.filter(Hobbyist.places.any(id=database_id)).count()
+            #hobbyists_in_this_place
+            
+
+
+
+            return render_template('eachplace.html', placehtml = place_python, hobbies=hobbies_in_this_place, no_hobbies=amount_hobbies_in_this_place, hobbyists=hobbyists_in_this_place, no_hobbyists=amount_hobbyists_in_this_place)
         """elif ((conditional_get_request_id == "None") and (conditional_get_request_hobby != "None")):
             hobby_name = conditional_get_request_hobby        
             current_hobby = Hobby.query.filter_by(nickname=hobby_name).first()
