@@ -17,6 +17,9 @@
             <span class="error10">Please fill in the title</span>
             {% elif errorhtml == "bothempty" %}
             <span class="error10">Please fill in the title</span>
+            {% elif errorhtml == "titleexists" %}
+            <span class="error10">There is another post with the same title. Please change the name of the title. </span><br>
+            <span class="error10">If you want to repply to an original post you will have to do it <a href="/blog">here</a>.</span>
             {% else %}
             {% endif %}    
         </label>

@@ -34,7 +34,7 @@ class Blog(db.Model):
     title = db.Column(db.String(30))
     body = db.Column(db.String(120))
     date = db.Column(db.String(10))
-    time = db.Column(db.String(5))     
+    time = db.Column(db.String(5))       
     hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
     encounter_id = db.Column(db.Integer, db.ForeignKey('encounter.id'))
     blog_answers = db.relationship("Bloganswer", backref="bloganswer")

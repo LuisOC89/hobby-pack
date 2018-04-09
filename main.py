@@ -1,4 +1,5 @@
 from flask import request, redirect, render_template, session, flash, url_for
+from sqlalchemy import desc
 from app import db, app
 from models import Hobbyist, Hobby, Place, Encounter, Blog
 from hashingtools import checking_password_hash
@@ -6,6 +7,17 @@ from utils import filling, now1
 import cgi
 
 app.secret_key = 'super-secret-close-your-eyes'
+
+def logged_in_hobbyist():
+    current_hobbyist = Hobbyist.query.filter_by(nickname=session['hobbyist']).first()
+    return current_hobbyist
+
+endpoints_without_login = ['login', 'signup', 'index', 'listing_blogs']
+
+@app.before_request
+def require_login():
+    if not ('hobbyist' in session or request.endpoint in endpoints_without_login):
+        return redirect("/login")
 
 @app.route('/', methods=['POST','GET'])
 def index():
@@ -16,6 +28,132 @@ def index():
         encounters = Encounter.query.all()
         posts = Blog.query.all()
         return render_template('zindex.html',title="Hobby Pack - Sharing our hobbies", hobbyists=hobbyists, hobbies=hobbies, places=places, encounters=encounters, postshtml=posts)
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('zlogin.html', title="Logging in")
+    elif request.method == 'POST':
+        hobbyist_python = request.form['hobbyist_html']
+        password_python = request.form['password_html']
+        hobbyists = Hobbyist.query.filter_by(nickname=hobbyist_python)
+        if hobbyists.count() == 1:
+            hobbyist = hobbyists.first()
+            if checking_password_hash(password_python, hobbyist.password) == True:
+                session['hobbyist'] = hobbyist_python
+                flash('Welcome back, ' + str(hobbyist_python) + '.', 'allgood')
+                return redirect("/newpost")
+            elif checking_password_hash(password_python, hobbyist.password) == False:
+                flash("Sorry " + str(hobbyist_python) + ", that was not your password. :( ", "error10")
+                #return redirect("/login")
+                return render_template('zlogin.html', hobbyistname=hobbyist_python)
+        flash('This username does not exist. :/', "error10")
+        return redirect("/login", title="Login in")
+
+@app.route('/logout')
+def saliendo():
+    del session['hobbyist']
+    return redirect('/')
+
+@app.route('/blog', methods=['POST', 'GET'])
+def listing_blogs():
+    #conditional assuming the access is through a get request from homeblogposts clicking {{post.title}}
+    conditional_get_request_id = str(request.args.get("id"))
+    #conditional assuming the access is through a get request from homeblogposts clicking {{post.title}}
+    conditional_get_request_hobbyist = str(request.args.get("hobbyist"))
+    #My error here (AttributeError: 'NoneType' object has no attribute 'id') is that I was looking for this value in html in homeblogposts.html instead of index.html
+    #print(conditional_get_request_id)
+    #print(conditional_get_request_hobbyist)
+    #if both are none, it means that this is a get request without passing an attribute from the view to the controller
+    if ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist =="None")):
+        #This one shows all the posts of everyone in the blog 
+        posts_python = Blog.query.order_by(desc(Blog.date)).order_by(desc(Blog.time)).all()  
+        return render_template('allhomeblogposts.html', title="Blogging Hobbies", postshtml=posts_python)
+    #if conditional_get_request_id is not "None", then we are bringing the attribute "id" from the view to the controller
+    elif ((conditional_get_request_id != "None") and (conditional_get_request_hobbyist=="None")): 
+        database_id = int(conditional_get_request_id)
+        #print(database_id)
+        current_post = Blog.query.get(database_id)
+        title_python = current_post.title
+        #print(title_python)
+        body_python = current_post.body
+        #print(body_python)
+        hobbyist_owner_python = current_post.blog.nickname
+        #print(hobbyist_owner_python)
+        return render_template('eachblog.html', title="Reading my blog", titlehtml = title_python, bodyhtml=body_python, ownerhtml = hobbyist_owner_python) 
+    #if conditional_get_request_hobbyist is not "None", then we are bringing the attribute "hobbyist" from the view to the controller
+    elif ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist != "None")):
+        hobbyist_name = conditional_get_request_hobbyist
+        #print(hobbyist_name)
+        current_hobbyist = Hobbyist.query.filter_by(nickname=hobbyist_name).first()
+        #print(current_hobbyist)
+        #This one shows all the blogs of just this particular hobbyist
+        current_hobbyist_id = current_hobbyist.id
+        posts_python = Blog.query.filter_by(hobbyist_id=current_hobbyist_id).all()
+        return render_template('allhomeblogposts.html', title="Just blogging",postshtml=posts_python)
+
+@app.route('/hobbies', methods=['POST', 'GET'])
+def listing_hobbies():  
+    if request.method == "GET":  
+        conditional = str(request.args.get("condition"))
+        conditional_get_request_id = str(request.args.get("id"))    
+        conditional_get_request_hobby = str(request.args.get("hobby"))    
+        if ((conditional_get_request_id == "None") and (conditional_get_request_hobby =="None") and conditional=="None"):        
+            hobbies_python = Hobby.query.all()  
+            hobbyists_python = Hobbyist.query.all()
+            places_python = Place.query.all()
+            return render_template('allhobbies.html', title="Hobbies", hobbieshtml=hobbies_python, hobbyistshtml=hobbyists_python, placeshtml=places_python)
+        elif ((conditional_get_request_id != "None") and (conditional_get_request_hobby == "None")): 
+            database_id = int(conditional_get_request_id)
+            current_hobby = Hobby.query.get(database_id)
+            hobby_python = current_hobby.name        
+            return render_template('eachhobby.html', title="About this hobby", hobbyhtml = hobby_python) 
+        """elif ((conditional_get_request_id == "None") and (conditional_get_request_hobby != "None")):
+            hobby_name = conditional_get_request_hobby        
+            current_hobby = Hobby.query.filter_by(nickname=hobby_name).first()
+            current_hobby_id = current_hobby.id
+            posts_python = Hobby.query.filter_by(hobby_id=current_hobby_id).all()
+            return render_template('hobbies.html', title="Hobbie Pack!", postshtml=posts_python)"""
+        if (conditional == "user_title"):        
+            hobbies_python = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                           
+            return render_template('eachhobbyist.html', title="About this hobbyist", hobbieshtml=hobbies_python)
+
+@app.route('/people', methods=['POST','GET'])
+def showing_all_people():
+    hobbyists = Hobbyist.query.all()
+    return render_template('allhobbyists.html',title="Hobbyists", hobbyists=hobbyists)
+
+@app.route('/places', methods=['POST', 'GET'])
+def listing_public_places():  
+    if request.method == "GET":  
+        conditional = str(request.args.get("condition"))
+        conditional_get_request_id = str(request.args.get("id"))    
+        conditional_get_request_hobby = str(request.args.get("hobby"))    
+        if ((conditional_get_request_id == "None") and (conditional_get_request_hobby =="None") and conditional=="None"):        
+            places_python = Place.query.all()       
+
+            #---------------------------my_places_already = (Session.query(Place, Hobby, Hobbyist).filter(P))   
+            #---------------------------my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()
+            #---------------------------my_places = Place.query.filter(Place.)
+
+            my_places = Place.query.filter(Place.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()
+            
+
+            return render_template('allplaces.html', title="Hobbie Pack!", placeshtml=places_python, myplaces=my_places)
+        '''elif ((conditional_get_request_id != "None") and (conditional_get_request_hobby == "None")): 
+            database_id = int(conditional_get_request_id)
+            current_hobby = Hobby.query.get(database_id)
+            hobby_python = current_hobby.name        
+            return render_template('eachhobby.html', hobbyhtml = hobby_python) '''
+        """elif ((conditional_get_request_id == "None") and (conditional_get_request_hobby != "None")):
+            hobby_name = conditional_get_request_hobby        
+            current_hobby = Hobby.query.filter_by(nickname=hobby_name).first()
+            current_hobby_id = current_hobby.id
+            posts_python = Hobby.query.filter_by(hobby_id=current_hobby_id).all()
+            return render_template('hobbies.html', title="Hobbie Pack!", postshtml=posts_python)"""
+        '''if (conditional == "user_title"):        
+            hobbies_python = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                           
+            return render_template('eachhobbyist.html', title="Hobbie Pack!", hobbieshtml=hobbies_python)'''
 
 @app.route("/newhobbyist", methods=['GET', 'POST'])
 def signup():
@@ -103,64 +241,6 @@ def signup():
     else:
         return render_template('newhobbyist.html', title="Signing up")
 
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    if request.method == 'GET':
-        return render_template('zlogin.html', title="Logging in")
-    elif request.method == 'POST':
-        hobbyist_python = request.form['hobbyist_html']
-        password_python = request.form['password_html']
-        hobbyists = Hobbyist.query.filter_by(nickname=hobbyist_python)
-        if hobbyists.count() == 1:
-            hobbyist = hobbyists.first()
-            if checking_password_hash(password_python, hobbyist.password) == True:
-                session['hobbyist'] = hobbyist_python
-                flash('Welcome back, ' + str(hobbyist_python) + '.', 'allgood')
-                return redirect("/newpost")
-            elif checking_password_hash(password_python, hobbyist.password) == False:
-                flash("Sorry " + str(hobbyist_python) + ", that was not your password. :( ", "error10")
-                #return redirect("/login")
-                return render_template('zlogin.html', hobbyistname=hobbyist_python)
-        flash('This username does not exist. :/', "error10")
-        return redirect("/login", title="Login in")
-
-@app.route('/blog', methods=['POST', 'GET'])
-def listing_blogs():
-    #conditional assuming the access is through a get request from homeblogposts clicking {{post.title}}
-    conditional_get_request_id = str(request.args.get("id"))
-    #conditional assuming the access is through a get request from homeblogposts clicking {{post.title}}
-    conditional_get_request_hobbyist = str(request.args.get("hobbyist"))
-    #My error here (AttributeError: 'NoneType' object has no attribute 'id') is that I was looking for this value in html in homeblogposts.html instead of index.html
-    #print(conditional_get_request_id)
-    #print(conditional_get_request_hobbyist)
-    #if both are none, it means that this is a get request without passing an attribute from the view to the controller
-    if ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist =="None")):
-        #This one shows all the posts of everyone in the blog 
-        posts_python = Blog.query.all()  
-        return render_template('allhomeblogposts.html', title="Blogging Hobbies", postshtml=posts_python)
-    #if conditional_get_request_id is not "None", then we are bringing the attribute "id" from the view to the controller
-    elif ((conditional_get_request_id != "None") and (conditional_get_request_hobbyist=="None")): 
-        database_id = int(conditional_get_request_id)
-        #print(database_id)
-        current_post = Blog.query.get(database_id)
-        title_python = current_post.title
-        #print(title_python)
-        body_python = current_post.body
-        #print(body_python)
-        hobbyist_owner_python = current_post.blog.nickname
-        #print(hobbyist_owner_python)
-        return render_template('eachblog.html', title="Reading my blog", titlehtml = title_python, bodyhtml=body_python, ownerhtml = hobbyist_owner_python) 
-    #if conditional_get_request_hobbyist is not "None", then we are bringing the attribute "hobbyist" from the view to the controller
-    elif ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist != "None")):
-        hobbyist_name = conditional_get_request_hobbyist
-        #print(hobbyist_name)
-        current_hobbyist = Hobbyist.query.filter_by(nickname=hobbyist_name).first()
-        #print(current_hobbyist)
-        #This one shows all the blogs of just this particular hobbyist
-        current_hobbyist_id = current_hobbyist.id
-        posts_python = Blog.query.filter_by(hobbyist_id=current_hobbyist_id).all()
-        return render_template('allhomeblogposts.html', title="Just blogging",postshtml=posts_python)
-
 @app.route('/newpost', methods=['POST', 'GET'])
 def adding_post():
     if request.method == "GET":
@@ -172,15 +252,24 @@ def adding_post():
     if request.method == 'POST':
         post_title = request.form['posttitle']
         post_body = request.form['postbody']
-        #Validation to make sure that the new post has a title and a body. Client-side validation
+        post_already_exists = Blog.query.filter_by(title=post_title).count()              
+
+        #Validation to make sure that the new post has title. 
         if ((post_title =="") and (post_body!="")):
-            error = "notitle"     
-            return render_template('newpost.html', title="Posting my ideas", newtitle=post_title, newbody=post_body, errorhtml = error)       
+            error = "notitle"                       
+        #Validation to make sure that the new post has body. 
         elif ((post_title !="") and (post_body=="")):
-            error = "nobody"    
-            return render_template('newpost.html',title="Posting my ideas", newtitle=post_title, newbody=post_body, errorhtml = error)        
+            error = "nobody"                   
+        #Validation to make sure that the new post has both title and body. 
         elif ((post_title =="") and (post_body=="")):
             error = "bothempty"
+        #Validation to make sure there are no other posts with the same title
+        elif (post_already_exists == 1):
+            error = "titleexists"
+        else:
+            error = ""
+
+        if (error!=""):    
             return render_template('newpost.html',title="Posting an idea", newtitle=post_title, newbody=post_body, errorhtml = error)
         else:
             new_post = Blog(post_title, post_body, filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year), filling(now1().hour)+":"+filling(now1().minute), logged_in_hobbyist())
@@ -188,49 +277,6 @@ def adding_post():
             db.session.commit()
             #print(new_post.id)
             return redirect('''/blog?id='''+str(new_post.id))
-
-@app.route('/logout')
-def saliendo():
-    del session['hobbyist']
-    return redirect('/')
-
-@app.route('/people', methods=['POST','GET'])
-def showing_all_people():
-    hobbyists = Hobbyist.query.all()
-    return render_template('allhobbyists.html',title="Hobbyists", hobbyists=hobbyists)
-
-endpoints_without_login = ['login', 'signup', 'index', 'listing_blogs']
-
-@app.before_request
-def require_login():
-    if not ('hobbyist' in session or request.endpoint in endpoints_without_login):
-        return redirect("/login")
-
-@app.route('/hobbies', methods=['POST', 'GET'])
-def listing_hobbies():  
-    if request.method == "GET":  
-        conditional = str(request.args.get("condition"))
-        conditional_get_request_id = str(request.args.get("id"))    
-        conditional_get_request_hobby = str(request.args.get("hobby"))    
-        if ((conditional_get_request_id == "None") and (conditional_get_request_hobby =="None") and conditional=="None"):        
-            hobbies_python = Hobby.query.all()  
-            hobbyists_python = Hobbyist.query.all()
-            places_python = Place.query.all()
-            return render_template('allhobbies.html', title="Hobbies", hobbieshtml=hobbies_python, hobbyistshtml=hobbyists_python, placeshtml=places_python)
-        elif ((conditional_get_request_id != "None") and (conditional_get_request_hobby == "None")): 
-            database_id = int(conditional_get_request_id)
-            current_hobby = Hobby.query.get(database_id)
-            hobby_python = current_hobby.name        
-            return render_template('eachhobby.html', title="About this hobby", hobbyhtml = hobby_python) 
-        """elif ((conditional_get_request_id == "None") and (conditional_get_request_hobby != "None")):
-            hobby_name = conditional_get_request_hobby        
-            current_hobby = Hobby.query.filter_by(nickname=hobby_name).first()
-            current_hobby_id = current_hobby.id
-            posts_python = Hobby.query.filter_by(hobby_id=current_hobby_id).all()
-            return render_template('hobbies.html', title="Hobbie Pack!", postshtml=posts_python)"""
-        if (conditional == "user_title"):        
-            hobbies_python = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                           
-            return render_template('eachhobbyist.html', title="About this hobbyist", hobbieshtml=hobbies_python)
 
 @app.route('/newhobbie', methods=['POST', 'GET'])
 def adding_hobbie():
@@ -282,42 +328,6 @@ def adding_hobbie():
                 existing_hobbie.hobbyists.append(logged_in_hobbyist()) 
                 db.session.commit()    
                 return redirect('''/hobbies?id='''+str(existing_hobbie.id))
-
-def logged_in_hobbyist():
-    current_hobbyist = Hobbyist.query.filter_by(nickname=session['hobbyist']).first()
-    return current_hobbyist
-
-@app.route('/places', methods=['POST', 'GET'])
-def listing_public_places():  
-    if request.method == "GET":  
-        conditional = str(request.args.get("condition"))
-        conditional_get_request_id = str(request.args.get("id"))    
-        conditional_get_request_hobby = str(request.args.get("hobby"))    
-        if ((conditional_get_request_id == "None") and (conditional_get_request_hobby =="None") and conditional=="None"):        
-            places_python = Place.query.all()       
-
-            #---------------------------my_places_already = (Session.query(Place, Hobby, Hobbyist).filter(P))   
-            #---------------------------my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()
-            #---------------------------my_places = Place.query.filter(Place.)
-
-            my_places = Place.query.filter(Place.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()
-            
-
-            return render_template('allplaces.html', title="Hobbie Pack!", placeshtml=places_python, myplaces=my_places)
-        '''elif ((conditional_get_request_id != "None") and (conditional_get_request_hobby == "None")): 
-            database_id = int(conditional_get_request_id)
-            current_hobby = Hobby.query.get(database_id)
-            hobby_python = current_hobby.name        
-            return render_template('eachhobby.html', hobbyhtml = hobby_python) '''
-        """elif ((conditional_get_request_id == "None") and (conditional_get_request_hobby != "None")):
-            hobby_name = conditional_get_request_hobby        
-            current_hobby = Hobby.query.filter_by(nickname=hobby_name).first()
-            current_hobby_id = current_hobby.id
-            posts_python = Hobby.query.filter_by(hobby_id=current_hobby_id).all()
-            return render_template('hobbies.html', title="Hobbie Pack!", postshtml=posts_python)"""
-        '''if (conditional == "user_title"):        
-            hobbies_python = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                           
-            return render_template('eachhobbyist.html', title="Hobbie Pack!", hobbieshtml=hobbies_python)'''
 
 @app.route('/newplace', methods=['POST', 'GET'])
 def adding_place():
