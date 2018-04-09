@@ -7,12 +7,17 @@
         <label>
             Name for your new hobby:
             <br>
-            <input type="text" name='hobbyname' value="{{newhobbyname}}"/><br>
+            <input type="text" name='hobbyname' value="{{newhobbyname}}"/>
             {% if errorhtml == "no_name" %}
-            <span class="error10">Please fill in the name</span><br>
+            <span class="error10">Please fill in the name</span>
+            {% elif errorhtml == "hobby_already_exists" %}
+            <span class="error10">This hobby is already in the database. Go to <a href="/hobbies">"Hobbies"</a> to add this hobby to your list.</span>
+            {% elif errorhtml == "hobby_already_exists_mine" %}
+            <span class="error10">You already have this hobby in your list :/ . </span>
             {% else %}
+
             {% endif %}    
-        </label>
+        </label><br>
         <input type="hidden" name="conditional" value="to_add_new_hobby_to_current_user"/>
         <input type="submit" value='Add Entry' />
     </form>

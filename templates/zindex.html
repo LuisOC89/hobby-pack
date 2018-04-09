@@ -1,37 +1,99 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain" style="text-align:left">Registered Hobbyists!</h1>
+{% if 'hobbyist' in session %}
+    <h1 class="titlemain" style="text-align:left">Registered Hobbyists!</h1>
     {% if hobbyists|length == 0 %}
     <p>No hobbyists yet</p>
     {% else %}
-            {% for hobbyist in hobbyists | reverse %}
+            {% for hobbyist in hobbyists %}
             <li class="list2">
-            <a href="/blog?hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}}</a> 
+            <a href="/blog?hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}}</a> <span>{{hobbyist.city}} {{hobbyist.state}} {{hobbyist.zipcode}}</span> 
             </li>
             {% endfor %} 
     {% endif %}
 
-<h1 class="titlemain" style="text-align:left">Hobbies practiced by our users!</h1>
+    <h1 class="titlemain" style="text-align:left">Hobbies practiced by our users!</h1>
     {% if hobbies|length == 0 %}
     <p>No hobbies yet</p>
     {% else %}
-            {% for hobby in hobbies | reverse %}
+            {% for hobby in hobbies %}
             <li class="list2">
             <a href="/hobbies?id={{hobby.id}}" class="poster">{{hobby.name}}</a> 
             </li>
             {% endfor %} 
     {% endif %}    
-    
-<h1 class="titlemain">What we are blogging about!</h1>
+
+    <h1 class="titlemain">Meeting public places :) ! </h1>
+    {% if places|length == 0 %}
+    <p>No public places yet</p>
+    {% else %}
+    {% for publicplace in places | reverse %}
+    <li class="list2">
+    <a href="/places?id={{publicplace.id}}" class="poster">{{publicplace.name}} </a> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} 
+    </li>
+    {% endfor %} 
+
+    {% endif %}    
+
+    <h1 class="titlemain">What we are blogging about!</h1>
     {% if postshtml|length == 0 %}
     <p>No posts yet</p>
     {% else %}
         {% for post in postshtml | reverse %}
-        <a href="/blog?id={{post.id}}" class="titlepost">{{post.title}}</a> <span id="specialb">by</span> <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">{{post.blog.nickname}}</span></a>
+        <a href="/blog?id={{post.id}}" class="titlepost">{{post.title}}</a> <span id="specialb">by</span> <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">{{post.blog.nickname}}</span></a> at {{post.time}} on {{post.date}}
         <span class="paradf"><p>{{post.body}}</p></span> 
         <hr />
         {% endfor %}
     {% endif %}
+{% else %}
+    <h1 class="titlemain" style="text-align:left">Registered Hobbyists!</h1>
+    {% if hobbyists|length == 0 %}
+    <p>No hobbyists yet</p>
+    {% else %}
+            {% for hobbyist in hobbyists %}
+            <li class="list2">
+            <span class="plaintext2"> {{hobbyist.nickname}} </span> <span class="plaintext">{{hobbyist.city}} {{hobbyist.state}} {{hobbyist.zipcode}}</span> 
+            </li>
+            {% endfor %} 
+    {% endif %}
+
+    <h1 class="titlemain" style="text-align:left">Hobbies practiced by our users!</h1>
+    {% if hobbies|length == 0 %}
+    <p>No hobbies yet</p>
+    {% else %}
+            {% for hobby in hobbies %}
+            <li class="list2">
+            <span class="plaintext">{{hobby.name}}</span> 
+            </li>
+            {% endfor %} 
+    {% endif %}    
+
+    <h1 class="titlemain">Meeting public places :) ! </h1>
+    {% if places|length == 0 %}
+    <p>No public places yet</p>
+    {% else %}
+    {% for publicplace in places %}
+    <li class="list2">
+    <span class="poster">{{publicplace.name}} </span> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} 
+    </li>
+    {% endfor %} 
+
+    {% endif %}    
+
+    <h1 class="titlemain">What we are blogging about!</h1>
+    {% if postshtml|length == 0 %}
+    <p>No posts yet</p>
+    {% else %}
+        {% for post in postshtml | reverse %}
+        <span class="titlepost">{{post.title}} </span> <span id="specialb">by</span> <span class="poster">{{post.blog.nickname}}</span> at {{post.time}} on {{post.date}}
+        <span class="paradf"><p>{{post.body}}</p></span> 
+        <hr />
+        {% endfor %}
+    {% endif %}
+{% endif %}
+
+
+
 
 {% endblock %}

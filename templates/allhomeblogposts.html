@@ -1,12 +1,12 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain">Hobbie Pack!</h1>
+<h1 class="titlemain">Let's talk Hobbies!</h1>
     {% if postshtml|length == 0 %}
     <p>No posts yet</p>
     {% else %}
         {% for post in postshtml | reverse %}
-        <a href="/blog?id={{post.id}}" class="titlepost">{{post.title}}</a> <span id="specialb">by</span> <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">{{post.blog.nickname}}</span></a>
+        <a href="/blog?id={{post.id}}" class="titlepost">{{post.title}}</a> <span id="specialb">by</span> <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">{{post.blog.nickname}}</span></a> at {{post.time}} on {{post.date}}
         <span class="paradf"><p>{{post.body}}</p></span> 
         <hr />
         {% endfor %}

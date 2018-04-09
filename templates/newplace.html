@@ -2,7 +2,8 @@
 
 {% block content %}
     {% if hobbieshtml|length == 0 %}
-    <p>No hobbies yet. you have to add a hobby you practice before adding a new place. SORRY :( </p>
+    <p>You need to add a hobby before adding a new place.</p>
+    <p><a href="/newhobbie">Add</a> a new hobby</p> 
     {% else %}
     <h1 class="titlemain">Add a New Place</h1>
     <form method='post' action="/newplace">

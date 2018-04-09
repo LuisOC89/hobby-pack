@@ -33,12 +33,17 @@ class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(30))
     body = db.Column(db.String(120))
+    date = db.Column(db.String(10))
+    time = db.Column(db.String(5))     
     hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
+    encounter_id = db.Column(db.Integer, db.ForeignKey('encounter.id'))
     blog_answers = db.relationship("Bloganswer", backref="bloganswer")
 
-    def __init__(self, title, body, hobbyist_owner):
+    def __init__(self, title, body, date, time, hobbyist_owner):
         self.title = title
         self.body = body
+        self.date = date
+        self.time = time        
         self.blog = hobbyist_owner
 
 #A blog can have answers (one-to-many-relationship) from other users 
@@ -46,12 +51,16 @@ class Bloganswer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(30))
     body = db.Column(db.String(120))
+    date = db.Column(db.String(10))
+    time = db.Column(db.String(5))     
     hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
     blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'))
 
-    def __init__(self, title, body, blog_related, user_owner):
+    def __init__(self, title, body, date, time, blog_related, user_owner):
         self.title = title
         self.body = body
+        self.date = date
+        self.time = time
         self.bloganswer = blog_related
         self.blogsanswer = user_owner
 
@@ -110,15 +119,19 @@ class Place(db.Model):
 #An encounter can have a hobby, a place and different hobbyists (one-to-many-relationship)
 class Encounter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(60), unique=True)
-    date = db.Column(db.String(60))
-    time = db.Column(db.String(60))
+    name = db.Column(db.String(60), unique=True)    
+    date = db.Column(db.String(10))
+    start_time = db.Column(db.String(5))   
+    duration_hours = db.Column(db.Integer)
+    duration_minutes = db.Column(db.Integer)
     place_id = db.Column(db.Integer, db.ForeignKey('place.id'))
     hobby_id = db.Column(db.Integer, db.ForeignKey('hobby.id'))
 
-    def __init__(self, name, date, time, holding_place, hobby_taking_place):
+    def __init__(self, name, date, time, duration_hours, duration_minutes, holding_place, hobby_taking_place):
         self.name = name
         self.date = date
         self.time = time
+        self.duration_hours = duration_hours
+        self.duration_minutes = duration_minutes
         self.place = holding_place
         self.encounter = hobby_taking_place
