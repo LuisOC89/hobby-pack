@@ -28,7 +28,7 @@
     {% if places|length == 0 %}
     <p>No public places yet</p>
     {% else %}
-    {% for publicplace in places | reverse %}
+    {% for publicplace in places %}
     <li class="list2">
     <a href="/places?id={{publicplace.id}}" class="poster">{{publicplace.name}} </a> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} 
     </li>

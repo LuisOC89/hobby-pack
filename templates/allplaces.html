@@ -1,20 +1,38 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain">Hobbie Pack!</h1>
+<h1 class="titlemain">Places to do hobbies together</h1>
     {% if placeshtml|length == 0 %}
     <p>No public places yet</p>
     {% else %}
-        {% for publicplace in placeshtml | reverse %}        
-        <a href="/places?id={{publicplace.id}}" class="titlepost">{{publicplace.name}} </a> ({{publicplace.hobbyists.nickname}}) hobbyists) (# hobbies )  . 
-        {% if publicplace not in myplaces %}
+        {% if myplaces|length == 0 %}
+        
+        {% else %}   
+        <h2>My Places</h2>       
+        {% for myplace in myplaces %}             
+        <li class="list2">
+            <a href="/places?id={{myplace.id}}" class="poster">{{myplace.name}} </a> | {{myplace.streetaddress}} | {{myplace.city}} {{myplace.state}} {{myplace.zipcode}} (# hobbyists) (# hobbies ). 
+        </li>        
+        {% endfor %}
+        {% endif %}
+
+        {% if notmyplaces|length == 0 %}
+        <p>You are subscribed to all the public places of this website.</p>
+        <p>Add a new one <a href="/newplace">here</a></p>
+        {% else %}
+
+        <h2>Other Places to do hobbies</h2>  
+        {% for publicplace in notmyplaces %}            
+        <li class="list2">
+        <a href="/places?id={{publicplace.id}}" class="poster">{{publicplace.name}} </a> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} (# hobbyists) (# hobbies ). 
         <form action="/newplace" method="post" class="alignedform">            
             <input type="hidden" name="placename" value="{{publicplace.name}}"/>
             <input type="hidden" name="conditional" value="to_add_existing_hobby_to_current_place"/>
             <input type="submit" value="ADD" class="alignedformbutton"/>
         </form> to my places.            
-        {% endif %}
+        </li>
         <hr />
         {% endfor %}
+        {% endif %}
     {% endif %}    
 {% endblock %}

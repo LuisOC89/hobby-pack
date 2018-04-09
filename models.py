@@ -107,6 +107,7 @@ class Place(db.Model):
     city = db.Column(db.String(120))
     state = db.Column(db.String(120))
     zipcode = db.Column(db.String(120))
+    unique_key_address = db.Column(db.String(120))
     encounters = db.relationship("Encounter", backref="event")
 
     def __init__(self, name, staddress, city, state, zipcode):
@@ -115,6 +116,7 @@ class Place(db.Model):
         self.city = city
         self.state = state
         self.zipcode = zipcode
+        self.unique_key_address = name+staddress+city+state+zipcode
     
 #An encounter can have a hobby, a place and different hobbyists (one-to-many-relationship)
 class Encounter(db.Model):

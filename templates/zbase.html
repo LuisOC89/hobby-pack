@@ -59,20 +59,23 @@
             .titlepost{
                 color: rgb(26, 1, 114);
             }
+            .toright{
+                text-align:right;
+            }
 
         </style>
     </head>
 <body>
     <div style='float: right'>
-        {% if 'hobbyist' in session %}
-            <a href="/hobbies?condition=user_title">{{ session['hobbyist'] }}</a> |
-            <a href="/">Home</a> | <a href="/people">Hobbyists</a> | <a href="/hobbies">Hobbies</a> | <a href="/places">Places</a> | <a href="/events">Encounters</a> | <a href="/logout"> logout</a> 
+        {% if 'hobbyist' in session %}            
+            <a href="/">Home</a> | <a href="/people">Hobbyists</a> | <a href="/hobbies">Hobbies</a> | <a href="/places">Places</a> | <a href="/events">Encounters</a> | <a href="/blog">Blog</a><br>  
+            <div class="toright"><a href="/hobbies?condition=user_title">{{ session['hobbyist'] }}</a> | <a href="/logout"> logout </a></div>
         {% else %}
             <a href="/">Home</a> | <a href="/newhobbyist">Sign up</a> | <a href="/login">Login</a> 
         {% endif %}
-    </div>
-            <a href="/blog">Blog</a>
-            &nbsp&nbsp
+    </div>    
+    
+    
             <a href="/newpost">Add new post</a>
             &nbsp&nbsp
             <a href="/newhobbie">Add hobby</a>

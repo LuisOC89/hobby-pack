@@ -7,19 +7,13 @@
     {% else %}
     <h1 class="titlemain">Add a New Place</h1>
     <form method='post' action="/newplace">
-        <label>
+        <p><label>          
             Name of this new public place:
-            <br>
-            <input type="text" name='placename' value="{{newplacename}}"/><br>
-            {% if errorhtml == "no_name" %}
-            <span class="error10">Please fill in the name</span><br>
-            {% else %}
-            {% endif %}    
-        </label>
-        <p><label>Street Address: <input type="text" name="streetaddress" value="{{staddress}}"/></label></p>
-        <span class="error10">{{errorstreet}}</span>
-        <p><label>City: <input type="text" name="city" value="{{city}}"/></label></p>
-        <span class="error10">{{errorcity}}</span>
+            <input type="text" name='placename' value="{{newplacename}}"/>            
+            <span class="error10">{{errorname}}</span>              
+        </label></p>
+        <p><label>Street Address: <input type="text" name="streetaddress" value="{{staddress}}"/></label><span class="error10">{{errorst}}</span></p>        
+        <p><label>City: <input type="text" name="city" value="{{city}}"/></label><span class="error10">{{errorcity}}</span></p>        
         <p><label>State:  
             <select name="states" value="{{state}}">
                     <option value="AL">Alabama</option>
@@ -80,16 +74,20 @@
                     <option value="UM">United States Minor Outlying Islands</option>
                     <option value="VI">Virgin Islands</option>
             </select></label></p> 				
-        <p><label>Zip Code: <input type="text" name="zips" value="{{zipcode}}"/></label></p>
-        <span class="error10">{{errorzip}}</span>
-       
-        <label>Hobbies you practice in this place:<br></label>
-        {% for hobby in hobbieshtml | reverse %}
+        <p><label>Zip Code: <input type="text" name="zips" value="{{zipcode}}"/></label><span class="error10">{{errorzip}}</span></p>
+        <p class="error10">{{errorempty}}{{errorvrepeated}}           
+        {% if errorvrepeated != "" %}
+        <a href="/places">here</a>.
+        {% else %}
+        {% endif %}                      
+        </p> 
+        
+        <label class="list2">Hobbies you practice in this place:<br></label>
+        {% for hobby in hobbieshtml %}
         <input type="checkbox" name="hobbieschecked" id="{{hobby.id}}" value="{{hobby.name}}"> 
-        <label for="{{hobby.name}}">{{hobby.name}}</label>        
-        <hr />
+        <label for="{{hobby.name}}">{{hobby.name}}</label><br>        
         {% endfor %}
-
+        
         <input type="hidden" name="conditional" value="to_add_new_place_to_current_hobby"/>
         <input type="submit" value='Add Entry' />
     </form>
