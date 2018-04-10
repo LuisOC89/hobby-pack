@@ -157,11 +157,24 @@ def listing_public_places():
             amount_hobbyists_in_this_place = Hobbyist.query.filter(Hobbyist.places.any(id=database_id)).count()
             #hobbyists_in_this_place
             
+            #Create dictionary to post amount of hobbyists and amount of places in a hobby
+            dict_hobby_hobbyists = {}
+            total_hobbies = Hobby.query.all()
+            for hobby in total_hobbies:
+                dict_hobby_hobbyists[hobby.name]=Hobbyist.query.filter(Hobbyist.hobbies.any(id=hobby.id)).count()
+            #Checking dictionary just created
+            for hobby1 in dict_hobby_hobbyists:
+                print(hobby1, dict_hobby_hobbyists[hobby1])    
+
+
+
+
+
             '''test = Hobbyist.query.join(hobbieshobbyists).join(Hobby).filter(Hobbyist.places.any(id=database_id))
             print(Hobbyist.query.join(hobbieshobbyists).join(Hobby).filter(Hobbyist.places.any(id=database_id)).count())
             print(test.count())'''
 
-            return render_template('eachplace.html', placehtml = place_python, hobbies=hobbies_in_this_place, no_hobbies=amount_hobbies_in_this_place, hobbyists=hobbyists_in_this_place, no_hobbyists=amount_hobbyists_in_this_place)#, test=test)
+            return render_template('eachplace.html', placehtml = place_python, hobbies=hobbies_in_this_place, no_hobbies=amount_hobbies_in_this_place, hobbyists=hobbyists_in_this_place, no_hobbyists=amount_hobbyists_in_this_place, hobby_no_hobbyists=dict_hobby_hobbyists)#, test=test)
         """elif ((conditional_get_request_id == "None") and (conditional_get_request_hobby != "None")):
             hobby_name = conditional_get_request_hobby        
             current_hobby = Hobby.query.filter_by(nickname=hobby_name).first()

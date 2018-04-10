@@ -6,15 +6,15 @@
     <h2>Hobbies practiced at this place ({{no_hobbies}} total) </h2>       
     {% for myhobby in hobbies %}             
     <li class="list2">
-        <a href="/hobbies?id={{myhobby.id}}" class="titlepost">{{myhobby.name}} </a>  (# hobbyists) (# places )  .
+        <a href="/hobbies?id={{myhobby.id}}" class="titlepost">{{myhobby.name}} </a> ( {{ hobby_no_hobbyists[myhobby.name] }} hobbyists ) (# places )  .
     </li>        
     {% endfor %}
 
     <h2>People that come to this place ({{no_hobbyists}} total)</h2>       
     {% for hobbyist in hobbyists %}        
     <li class="list2">
-        <a href="/blog?hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a> {{hobbyist.hobbies.count}}(# hobbies) {{hobbyist.id.count}} (# places )
-    </li>     
+        <a href="/blog?hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a> (# hobbies) (# places )
+    </li>                                                                                           
     {% endfor %}
 
 {% endblock %}
