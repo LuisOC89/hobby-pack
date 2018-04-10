@@ -1,0 +1,16 @@
+{% extends "zbase.html" %}
+
+{% block content %}
+<h1 class="titlemain">Hobbie Pack!</h1>
+<form method='post' action="/newplace">  
+    <label class="list2">Your Hobbies that you would like to practice in this new place:<br></label>
+    {% for hobby in hobbieshtml %}    
+    <input type="checkbox" name="hobbieschecked" id="{{hobby.id}}" value="{{hobby.name}}"> 
+    <label for="{{hobby.name}}">{{hobby.name}}</label><br>        
+    {% endfor %}           
+    <input type="hidden" name="placekey" value="{{placekey}}">
+    <input type="hidden" name="conditional" value="current_place_to_my_hobbies"> 
+    <input type="submit" value='Add Entry' />
+</form>
+    
+{% endblock %}

@@ -26,8 +26,8 @@
         <li class="list2">
         <a href="/places?id={{publicplace.id}}" class="poster">{{publicplace.name}} </a> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} (# hobbyists) (# hobbies ). 
         <form action="/newplace" method="post" class="alignedform">            
-            <input type="hidden" name="placename" value="{{publicplace.name}}"/>
-            <input type="hidden" name="conditional" value="to_add_existing_hobby_to_current_place"/>
+            <input type="hidden" name="placename" value="{{publicplace.unique_key_address}}"/>
+            <input type="hidden" name="conditional" value="to_add_existing_place_to_my_places"/>
             <input type="submit" value="ADD" class="alignedformbutton"/>
         </form> to my places.            
         </li>
