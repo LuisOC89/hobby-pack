@@ -1,7 +1,7 @@
 from flask import request, redirect, render_template, session, flash, url_for
 from sqlalchemy import desc
 from app import db, app
-from models import Hobbyist, Hobby, Place, Encounter, Blog
+from models import Hobbyist, Hobby, Place, Encounter, Blog, hobbieshobbyists
 from hashingtools import checking_password_hash
 from utils import filling, now1, checking_existing_address_in_db
 import cgi
@@ -157,10 +157,11 @@ def listing_public_places():
             amount_hobbyists_in_this_place = Hobbyist.query.filter(Hobbyist.places.any(id=database_id)).count()
             #hobbyists_in_this_place
             
+            '''test = Hobbyist.query.join(hobbieshobbyists).join(Hobby).filter(Hobbyist.places.any(id=database_id))
+            print(Hobbyist.query.join(hobbieshobbyists).join(Hobby).filter(Hobbyist.places.any(id=database_id)).count())
+            print(test.count())'''
 
-
-
-            return render_template('eachplace.html', placehtml = place_python, hobbies=hobbies_in_this_place, no_hobbies=amount_hobbies_in_this_place, hobbyists=hobbyists_in_this_place, no_hobbyists=amount_hobbyists_in_this_place)
+            return render_template('eachplace.html', placehtml = place_python, hobbies=hobbies_in_this_place, no_hobbies=amount_hobbies_in_this_place, hobbyists=hobbyists_in_this_place, no_hobbyists=amount_hobbyists_in_this_place)#, test=test)
         """elif ((conditional_get_request_id == "None") and (conditional_get_request_hobby != "None")):
             hobby_name = conditional_get_request_hobby        
             current_hobby = Hobby.query.filter_by(nickname=hobby_name).first()
@@ -391,11 +392,13 @@ def adding_place():
         else:
             existing_places_same_street = Place.query.filter_by(streetaddress=streethtml)
             if checking_existing_address_in_db(streethtml, cityhtml, statehtml, zipcodehtml, existing_places_same_street) == True:
-                error_value_repeated = """This place is already registered on this web. If you want to add it to your places click """
+                error_value_repeated = "This place is already registered on this web. If you want to add it to your places click "
                 return render_template('newplace.html', title="New place", hobbieshtml=hobbies_python, newplacename=placehtml, staddress=streethtml, city=cityhtml, zipcode=zipcodehtml, errorvrepeated=error_value_repeated)
             else:
                 error_value_repeated = ""  
-                
+                #Validation to checked that the user selected at least one of his hobbies.
+                if (len(hobbies_practiced) == 0):
+                    return render_template('newplace.html', title="New place", hobbieshtml=hobbies_python, newplacename=placehtml, staddress=streethtml, city=cityhtml, zipcode=zipcodehtml, errorvrepeated="", errornohobbies="You have to choose at least one of the hobbies you practice here.")
                 #This is for knowing how many values there are inside these lists
                 #my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).count()   
                 #print(my_hobbies)
@@ -411,38 +414,37 @@ def adding_place():
                 #my_hobbies1 will be a list with elements looking like: <Hobby_1>. If you want any value, you will have to do it with a for and a dot, like:
                 # for hobby in my_hobbies1:
                 #   print(hobby.name) 
-               
-                '''my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()  
-                my_hobbies_in_this_place = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).filter(Hobby.places.any(name=placehtml)).filter(Hobby.places.any(streetaddress=streethtml)).filter(Hobby.places.any(city=cityhtml)).filter(Hobby.places.any(state=statehtml)).filter(Hobby.places.any(zipcode=zipcodehtml)).all() 
+                else:                    
+                    '''my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()  
+                    my_hobbies_in_this_place = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).filter(Hobby.places.any(name=placehtml)).filter(Hobby.places.any(streetaddress=streethtml)).filter(Hobby.places.any(city=cityhtml)).filter(Hobby.places.any(state=statehtml)).filter(Hobby.places.any(zipcode=zipcodehtml)).all() 
 
-                for myhobbie in my_hobbies:
-                    if myhobbie not in my_hobbies_in_this_place:
-                        blablabla'''         
+                    for myhobbie in my_hobbies:
+                        if myhobbie not in my_hobbies_in_this_place:
+                            blablabla'''         
 
-                new_place = Place(placehtml, streethtml, cityhtml, statehtml, zipcodehtml)
-                db.session.add(new_place)
-                db.session.commit()           
+                    new_place = Place(placehtml, streethtml, cityhtml, statehtml, zipcodehtml)
+                    db.session.add(new_place)
+                    db.session.commit()           
 
-                #To find Place by key_address_validation and avoid duplicating values in database or assigning wrong values to data        
-                place = Place.query.filter_by(name=placehtml).first()
-                
-                #To add place to user                          
-                new_place.hobbyists.append(logged_in_hobbyist()) 
-                db.session.commit() 
-
-                #To add place to hobbies
-                #print(type(request.form.getlist('hobbieschecked')))
-                #print(type(hobbies_practiced))
-                #print(hobbies_practiced)
-                #for hobby in hobbies_practiced:
-                    #print(hobby)
-                for hobby in hobbies_practiced:               
-                    existing_hobbie = Hobby.query.filter_by(name=hobby).first()                        
-                    existing_hobbie.places.append(place) 
-                    db.session.commit()    
+                    #To find Place by key_address_validation and avoid duplicating values in database or assigning wrong values to data        
+                    place = Place.query.filter_by(name=placehtml).first()
                     
-                return render_template('zindex.html', title="Hobby Pack - Sharing our hobbies")
+                    #To add place to user                          
+                    new_place.hobbyists.append(logged_in_hobbyist()) 
+                    db.session.commit() 
 
+                    #To add place to hobbies
+                    #print(type(request.form.getlist('hobbieschecked')))
+                    #print(type(hobbies_practiced))
+                    #print(hobbies_practiced)
+                    #for hobby in hobbies_practiced:
+                        #print(hobby)
+                    for hobby in hobbies_practiced:               
+                        existing_hobbie = Hobby.query.filter_by(name=hobby).first()                        
+                        existing_hobbie.places.append(place) 
+                        db.session.commit()    
+                        
+                    return render_template('zindex.html', title="Hobby Pack - Sharing our hobbies")
 
 '''
 def qty_per_hobby():

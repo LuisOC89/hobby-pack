@@ -75,13 +75,17 @@
                     <option value="VI">Virgin Islands</option>
             </select></label></p> 				
         <p><label>Zip Code: <input type="text" name="zips" value="{{zipcode}}"/></label><span class="error10">{{errorzip}}</span></p>
-        <p class="error10">{{errorempty}}{{errorvrepeated}}           
-        {% if errorvrepeated != "" %}
-        <a href="/places">here</a>.
-        {% else %}
-        {% endif %}                      
-        </p> 
+        <p class="error10"><span>{{errorempty}}</span><span>{{errorvrepeated}}</span><span>{{errornohobbies}}</span>            
+            {% if errorvrepeated != "" %}
+            {% print(errorvrepeated) %}
+            <a href="/places">here</a>.
+            {% else %}
+            
+            {% endif %}                      
+        </p>         
         
+
+
         <label class="list2">Hobbies you practice in this place:<br></label>
         {% for hobby in hobbieshtml %}
         <input type="checkbox" name="hobbieschecked" id="{{hobby.id}}" value="{{hobby.name}}"> 

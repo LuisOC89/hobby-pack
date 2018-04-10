@@ -13,7 +13,7 @@
     <h2>People that come to this place ({{no_hobbyists}} total)</h2>       
     {% for hobbyist in hobbyists %}        
     <li class="list2">
-        <a href="/blog?hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a> {{hobbyist.hobbies.count}}(# hobbies) (# places )
+        <a href="/blog?hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a> {{hobbyist.hobbies.count}}(# hobbies) {{hobbyist.id.count}} (# places )
     </li>     
     {% endfor %}
 
