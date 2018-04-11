@@ -2,7 +2,9 @@
 
 {% block content %}
 <h1 class="titlemain">Hobbie Pack!</h1>
-<form method='post' action="/newplace">  
+
+{% if errorhobbies == "" %}
+<form method='post' action="/newplace">      
     <label class="list2">Your Hobbies that you would like to practice in this new place:<br></label>
     {% for hobby in hobbieshtml %}    
     <input type="checkbox" name="hobbieschecked" id="{{hobby.id}}" value="{{hobby.name}}"> 
@@ -12,5 +14,9 @@
     <input type="hidden" name="conditional" value="current_place_to_my_hobbies"> 
     <input type="submit" value='Add Entry' />
 </form>
-    
+{% else %}
+<p>You dont have hobbies yet. To add a new place to one of your current hobbies, you will have to have at least one hobby.</p>
+<p>If you want to add a new hobby click <a href="/newhobbie"> here </a>.</p>
+{% endif %}    
+
 {% endblock %}

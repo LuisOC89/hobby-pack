@@ -1,19 +1,40 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain">Hobbie Pack!</h1>
+<h1 class="titlemain">Hobbies that somebody on this page loves ... :)</h1>
     {% if hobbieshtml|length == 0 %}
     <p>No hobbies yet</p>
+    <p>If you want to add a new hobby click <a href="/newhobbie"> here </a>.</p>
     {% else %}
-        {% for hobby in hobbieshtml | reverse %}
+        {% if myhobbies|length == 0 %}
         
-        <a href="/hobbies?id={{hobby.id}}" class="titlepost">{{hobby.name}} </a> ({{hobby.hobbyists.nickname}}) hobbyists) (# places )  . 
+        {% else %}   
+        <h2>My Hobbies</h2>       
+        {% for myhobby in myhobbies %}             
+        <li class="list2">
+            <a href="/hobbies?id={{myhobby.id}}" class="poster">{{myhobby.name}} </a> (# hobbyists) (# places). 
+        </li>        
+        {% endfor %}
+        {% endif %}
+
+        {% if notmyhobbies|length == 0 %}
+        <p>You practice already all the hobbies registered on this website.</p>
+        <p>Add a new one <a href="/newhobbie">here</a></p>
+        {% else %}
+
+        <h2>Other Hobbies practiced by other people on this website</h2>  
+        {% for hobby in notmyhobbies %}            
+        <li class="list2">
+        <a href="/hobbies?id={{hobby.id}}" class="poster">{{hobby.name}} </a> (# hobbyists) (# places). 
         <form action="/newhobbie" method="post" class="alignedform">            
             <input type="hidden" name="hobbyname" value="{{hobby.name}}"/>
+            <input type="hidden" name="conditional_to_redirect" value="Display_all_hobbies"/>
             <input type="hidden" name="conditional" value="to_add_existing_hobby_to_current_user"/>
             <input type="submit" value="ADD" class="alignedformbutton"/>
-        </form> to my hobbies.    
+        </form> to my hobbies.            
+        </li>
         <hr />
         {% endfor %}
-    {% endif %}    
+        {% endif %}
+    {% endif %}   
 {% endblock %}

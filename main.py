@@ -48,7 +48,7 @@ def login():
                 #return redirect("/login")
                 return render_template('zlogin.html', hobbyistname=hobbyist_python)
         flash('This username does not exist. :/', "error10")
-        return redirect("/login", title="Login in")
+        return redirect("/login")
 
 @app.route('/logout')
 def saliendo():
@@ -100,9 +100,11 @@ def listing_hobbies():
         conditional_get_request_hobby = str(request.args.get("hobby"))    
         if ((conditional_get_request_id == "None") and (conditional_get_request_hobby =="None") and conditional=="None"):        
             hobbies_python = Hobby.query.all()  
+            my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all() 
+            not_my_hobbies = [x for x in hobbies_python if x not in my_hobbies]
             hobbyists_python = Hobbyist.query.all()
             places_python = Place.query.all()
-            return render_template('allhobbies.html', title="Hobbies", hobbieshtml=hobbies_python, hobbyistshtml=hobbyists_python, placeshtml=places_python)
+            return render_template('allhobbies.html', title="Hobbies", hobbieshtml=hobbies_python, hobbyistshtml=hobbyists_python, placeshtml=places_python, myhobbies=my_hobbies, notmyhobbies=not_my_hobbies)
         elif ((conditional_get_request_id != "None") and (conditional_get_request_hobby == "None")): 
             database_id = int(conditional_get_request_id)
             current_hobby = Hobby.query.get(database_id)
@@ -314,7 +316,7 @@ def adding_hobbie():
         return render_template('newhobby.html', title="New hobby")
 
     if request.method == 'POST':
-        conditional = str(request.form['conditional'])        
+        conditional = str(request.form['conditional'])              
         if (conditional == "to_add_new_hobby_to_current_user"):
             hobby_name = str(request.form['hobbyname'])    
             hobby_already_exists = Hobby.query.filter_by(name=hobby_name).count()  
@@ -345,6 +347,7 @@ def adding_hobbie():
                 db.session.commit()    
                 return redirect('''/hobbies?id='''+str(new_hobbie.id))
         elif (conditional == "to_add_existing_hobby_to_current_user"):
+            conditional_to_redirect = str(request.form['conditional_to_redirect'])  
             hobby_name = request.form['hobbyname']     
             #current_hobby = Hobby.query
             print (hobby_name)
@@ -352,12 +355,15 @@ def adding_hobbie():
             if (hobby_name =="") :
                 error = "no_name"     
                 return render_template('newhobby.html',title="New hobby", newhobbyname=hobby_name, errorhtml = error)
-            else:
+            else:                
                 #new_hobbie = Hobby(hobby_name)  
                 existing_hobbie = Hobby.query.filter_by(name=hobby_name).first()                        
                 existing_hobbie.hobbyists.append(logged_in_hobbyist()) 
                 db.session.commit()    
-                return redirect('''/hobbies?id='''+str(existing_hobbie.id))
+                if conditional_to_redirect == ("Display_specific_hobby") :
+                    return redirect('''/hobbies?id='''+str(existing_hobbie.id))
+                elif conditional_to_redirect == ("Display_all_hobbies") :
+                    return redirect("/hobbies")
 
 @app.route('/newplace', methods=['POST', 'GET'])
 def adding_place():    
@@ -404,7 +410,7 @@ def adding_place():
             #Final validation - Validation pre-database (checking all the data fields are valid)
             if ((error_empty != "") or (error_name != "") or (error_street != "") or (error_city != "") or (error_zip != "")):
                 return render_template('newplace.html', title="New place", hobbieshtml=hobbies_python, newplacename=placehtml, staddress=streethtml, city=cityhtml, zipcode=zipcodehtml, errorname=error_name, errorst=error_street, errorcity=error_city, errorzip=error_zip, errorempty=error_empty, errorvrepeated="")
-            
+        
             #validation para same street same city same state same zipcode
             else:
                 existing_places_same_street = Place.query.filter_by(streetaddress=streethtml)
@@ -466,7 +472,12 @@ def adding_place():
         elif (conditional=="to_add_existing_place_to_my_places"):
             place_key_address = request.form['placename']            
             my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()
-            return render_template('newcurrentplace.html', title="Hobby Pack - Sharing our hobbies", hobbieshtml=my_hobbies, placekey=place_key_address)
+            qty_my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).count()
+            print(qty_my_hobbies)
+            if qty_my_hobbies != 0 :
+                return render_template('newcurrentplace.html', title="Hobby Pack - Sharing our hobbies", hobbieshtml=my_hobbies, placekey=place_key_address, errorhobbies="")
+            else:
+                return render_template('newcurrentplace.html', title="Hobby Pack - Sharing our hobbies", hobbieshtml=my_hobbies, placekey=place_key_address, errorhobbies="NoHobbiesYet")
 
         elif (conditional=="current_place_to_my_hobbies"):
             place_key_address = request.form['placekey']  
