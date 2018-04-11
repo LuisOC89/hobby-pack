@@ -488,9 +488,9 @@ def adding_place():
             db.session.commit()
 
             for hobby in hobbies_practiced:               
-                            existing_hobbie = Hobby.query.filter_by(name=hobby).first()                        
-                            existing_hobbie.places.append(place) 
-                            db.session.commit()   
+                existing_hobbie = Hobby.query.filter_by(name=hobby).first()                        
+                existing_hobbie.places.append(place) 
+                db.session.commit()   
             
             return render_template('allplaces.html', title="Hobby Pack - Sharing our hobbies")
 
