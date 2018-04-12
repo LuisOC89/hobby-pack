@@ -189,24 +189,29 @@ def listing_public_places():
 @app.route("/myinfo", methods=['GET', 'POST'])
 def my_info():     
     if request.method == 'GET':
-        condition=request.args.get('condition')
+        condition=request.args.get('condition') 
+        #To show the info of the user is logged in       
         if condition == "show_all_info_user":
             hobbyist = logged_in_hobbyist()
-            my_hobbies = Hobby.query.order_by(Hobby.name).filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()     
-            my_places = Place.query.filter(Place.hobbyists.any(nickname=logged_in_hobbyist().nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()       
-            my_posts = Blog.query.filter_by(hobbyist_id=logged_in_hobbyist().id).all()
-            my_encounters = Encounter.query.all()  
-            return render_template('eachhobbyist.html', title="Hobby Pack - Sharing our hobbies", hobbyist=hobbyist, my_hobbies=my_hobbies, my_places=my_places, my_encounters=my_encounters, my_posts=my_posts)
-        if condition == "show_other_info_user":
+            conditional = "my_profile"
+            #To show the info of other user in the website
+        elif condition == "show_other_info_user": 
             hobbyist = Hobbyist.query.filter_by(nickname=request.args.get('hobbyist')).first()
-            my_hobbies = Hobby.query.order_by(Hobby.name).filter(Hobby.hobbyists.any(nickname=hobbyist.nickname)).all()     
-            my_places = Place.query.filter(Place.hobbyists.any(nickname=hobbyist.nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()       
-            my_posts = Blog.query.filter_by(hobbyist_id=hobbyist.id).all()
-            my_encounters = Encounter.query.all()  
-            return render_template('eachhobbyist.html', title="Hobby Pack - Sharing our hobbies", hobbyist=hobbyist, my_hobbies=my_hobbies, my_places=my_places, my_encounters=my_encounters, my_posts=my_posts)
+            conditional = "other_user_profile"
+        my_hobbies = Hobby.query.order_by(Hobby.name).filter(Hobby.hobbyists.any(nickname=hobbyist.nickname)).all()  
+        my_places = Place.query.filter(Place.hobbyists.any(nickname=hobbyist.nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()       
+        my_posts = Blog.query.filter_by(hobbyist_id=hobbyist.id).all()
+        my_encounters = Encounter.query.all()  
+        #Dictionary to store hobbies and places in the form of {'hobby1':[place1, place2, place3], 'hobby2':[place1, place1]}. This is to see where the person practices what hobbies
+        dict_what_hobbie_where_places = {}
+        for hobby in my_hobbies:
+            dict_what_hobbie_where_places[hobby.name] = []
+            my_places_this_hobbie = Place.query.filter(Place.hobbies.any(name=hobby.name)).filter(Place.hobbyists.any(nickname=hobbyist.nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all() 
+            for place in my_places_this_hobbie:
+                dict_what_hobbie_where_places[hobby.name].append(place)
 
-
-
+        return render_template('eachhobbyist.html', title="Hobby Pack - Sharing our hobbies", hobbyist=hobbyist, my_hobbies=my_hobbies, my_places=my_places, my_encounters=my_encounters, my_posts=my_posts, conditional=conditional, dict_hobby_places=dict_what_hobbie_where_places)
+        
 
 @app.route("/newhobbyist", methods=['GET', 'POST'])
 def signup():
