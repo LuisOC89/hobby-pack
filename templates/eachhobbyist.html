@@ -1,14 +1,41 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain">Hobbie Pack!</h1>
-    {% if hobbieshtml|length == 0 %}
+<h1 class="centered">{{hobbyist.nickname}}</h1> 
+<h2 class = "centered">{{hobbyist.city}} | {{hobbyist.state}} | {{hobbyist.zipcode}}</h2>
+    
+    <h1 class="titlemain" style="text-align:left">Hobbies that {{hobbyist.nickname}} loves :) !</h1>
+    {% if my_hobbies|length == 0 %}
     <p>No hobbies yet</p>
     {% else %}
-        {% for hobbie in hobbieshtml | reverse %}
-        <a href="/hobbies?id={{hobbie.id}}" class="titlepost">{{hobbie.name}}</a> <span id="specialb">by</span> <a href="/blog?hobbyist={{hobbie.hobbyists.nickname}}"><span class="poster">{{ session['hobbyist'] }}</span></a>
+            {% for hobby in my_hobbies %}
+            <li class="list2">
+            <a href="/hobbies?id={{hobby.id}}" class="poster">{{hobby.name}}</a>                
+            </li>
+            {% endfor %} 
+    {% endif %}    
+
+    <h1 class="titlemain">Places where {{hobbyist.nickname}} goes :) ! </h1>
+    {% if my_places|length == 0 %}
+    <p>No public places yet</p>
+    {% else %}
+    {% for publicplace in my_places %}
+    <li class="list2">
+    <a href="/places?id={{publicplace.id}}" class="poster">{{publicplace.name}} </a> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} 
+    </li>
+    {% endfor %} 
+
+    {% endif %}    
+
+    <h1 class="titlemain">Posts of {{hobbyist.nickname}} to the blog!</h1>
+    {% if my_posts|length == 0 %}
+    <p>No posts yet</p>
+    {% else %}
+        {% for post in my_posts %}
+        <a href="/blog?id={{post.id}}" class="titlepost">{{post.title}}</a> <span id="specialb">by</span> <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">{{post.blog.nickname}}</span></a> at {{post.time}} on {{post.date}}
+        <span class="paradf"><p>{{post.body}}</p></span> 
         <hr />
         {% endfor %}
     {% endif %}
-    
+
 {% endblock %}

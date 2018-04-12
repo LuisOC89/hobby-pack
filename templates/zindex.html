@@ -6,11 +6,11 @@
     {% if hobbyists|length == 0 %}
     <p>No hobbyists yet</p>
     {% else %}
-            {% for hobbyist in hobbyists %}
-            <li class="list2">
-            <a href="/blog?hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}}</a> <span>{{hobbyist.city}} {{hobbyist.state}} {{hobbyist.zipcode}}</span> 
-            </li>
-            {% endfor %} 
+        {% for hobbyist in hobbyists %}
+        <li class="list2">
+        <a href="/myinfo?hobbyist={{hobbyist.nickname}}&condition=show_other_info_user" class="poster">{{hobbyist.nickname}}</a> <span>{{hobbyist.city}} {{hobbyist.state}} {{hobbyist.zipcode}}</span> 
+        </li>
+        {% endfor %} 
     {% endif %}
 
     <h1 class="titlemain" style="text-align:left">Hobbies practiced by our users!</h1>

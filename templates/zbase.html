@@ -34,9 +34,6 @@
                 font-size: 20px;
                 font-style: italic; 
             }
-            .list2{
-                text-align: left;
-            }
             .alignedform{display:inline;
                 vertical-align:top;
                 text-align:center;
@@ -62,6 +59,9 @@
             .toright{
                 text-align:right;
             }
+            .centered{
+                text-align:center;
+            }
 
         </style>
     </head>
@@ -69,7 +69,7 @@
     <div style='float: right'>
         {% if 'hobbyist' in session %}            
             <a href="/">Home</a> | <a href="/people">Hobbyists</a> | <a href="/hobbies">Hobbies</a> | <a href="/places">Places</a> | <a href="/events">Encounters</a> | <a href="/blog">Blog</a><br>  
-            <div class="toright"><a href="/hobbies?condition=user_title">{{ session['hobbyist'] }}</a> | <a href="/logout"> logout </a></div>
+            <div class="toright"><a href="/myinfo?condition=show_all_info_user">{{ session['hobbyist'] }}</a> | <a href="/logout"> logout </a></div>
         {% else %}
             <a href="/">Home</a> | <a href="/newhobbyist">Sign up</a> | <a href="/login">Login</a> 
         {% endif %}

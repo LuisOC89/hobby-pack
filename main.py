@@ -20,14 +20,13 @@ def require_login():
         return redirect("/login")
 
 @app.route('/', methods=['POST','GET'])
-def index():
-    if request.method == 'GET':
-        hobbyists = Hobbyist.query.order_by(Hobbyist.nickname).all()
-        hobbies = Hobby.query.order_by(Hobby.name).all()
-        places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
-        encounters = Encounter.query.all()
-        posts = Blog.query.all()
-        return render_template('zindex.html',title="Hobby Pack - Sharing our hobbies", hobbyists=hobbyists, hobbies=hobbies, places=places, encounters=encounters, postshtml=posts)
+def index():    
+    hobbyists = Hobbyist.query.order_by(Hobbyist.nickname).all()
+    hobbies = Hobby.query.order_by(Hobby.name).all()
+    places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
+    encounters = Encounter.query.all()
+    posts = Blog.query.all()
+    return render_template('zindex.html',title="Hobby Pack - Sharing our hobbies", hobbyists=hobbyists, hobbies=hobbies, places=places, encounters=encounters, postshtml=posts)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -42,7 +41,7 @@ def login():
             if checking_password_hash(password_python, hobbyist.password) == True:
                 session['hobbyist'] = hobbyist_python
                 flash('Welcome back, ' + str(hobbyist_python) + '.', 'allgood')
-                return redirect("/newpost")
+                return redirect("/")
             elif checking_password_hash(password_python, hobbyist.password) == False:
                 flash("Sorry " + str(hobbyist_python) + ", that was not your password. :( ", "error10")
                 #return redirect("/login")
@@ -186,6 +185,28 @@ def listing_public_places():
         '''if (conditional == "user_title"):        
             hobbies_python = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                           
             return render_template('eachhobbyist.html', title="Hobbie Pack!", hobbieshtml=hobbies_python)'''
+
+@app.route("/myinfo", methods=['GET', 'POST'])
+def my_info():     
+    if request.method == 'GET':
+        condition=request.args.get('condition')
+        if condition == "show_all_info_user":
+            hobbyist = logged_in_hobbyist()
+            my_hobbies = Hobby.query.order_by(Hobby.name).filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()     
+            my_places = Place.query.filter(Place.hobbyists.any(nickname=logged_in_hobbyist().nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()       
+            my_posts = Blog.query.filter_by(hobbyist_id=logged_in_hobbyist().id).all()
+            my_encounters = Encounter.query.all()  
+            return render_template('eachhobbyist.html', title="Hobby Pack - Sharing our hobbies", hobbyist=hobbyist, my_hobbies=my_hobbies, my_places=my_places, my_encounters=my_encounters, my_posts=my_posts)
+        if condition == "show_other_info_user":
+            hobbyist = Hobbyist.query.filter_by(nickname=request.args.get('hobbyist')).first()
+            my_hobbies = Hobby.query.order_by(Hobby.name).filter(Hobby.hobbyists.any(nickname=hobbyist.nickname)).all()     
+            my_places = Place.query.filter(Place.hobbyists.any(nickname=hobbyist.nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()       
+            my_posts = Blog.query.filter_by(hobbyist_id=hobbyist.id).all()
+            my_encounters = Encounter.query.all()  
+            return render_template('eachhobbyist.html', title="Hobby Pack - Sharing our hobbies", hobbyist=hobbyist, my_hobbies=my_hobbies, my_places=my_places, my_encounters=my_encounters, my_posts=my_posts)
+
+
+
 
 @app.route("/newhobbyist", methods=['GET', 'POST'])
 def signup():
