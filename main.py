@@ -105,12 +105,18 @@ def listing_hobbies():
         conditional_get_request_id = str(request.args.get("id"))    
         conditional_get_request_hobby = str(request.args.get("hobby"))    
         if ((conditional_get_request_id == "None") and (conditional_get_request_hobby =="None") and conditional=="None"):        
-            hobbies_python = Hobby.query.all()  
+            all_hobbies = Hobby.query.all()  
             my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all() 
-            not_my_hobbies = [x for x in hobbies_python if x not in my_hobbies]
-            hobbyists_python = Hobbyist.query.all()
-            places_python = Place.query.all()
-            return render_template('allhobbies.html', title="Hobbies", hobbieshtml=hobbies_python, hobbyistshtml=hobbyists_python, placeshtml=places_python, myhobbies=my_hobbies, notmyhobbies=not_my_hobbies)
+            not_my_hobbies = [x for x in all_hobbies if x not in my_hobbies]
+            
+            #Dictionary to help: {"swimming": [3 hobbyists, 1 place], "skating": [1 hobbyist, 7, places]}
+            hobbies_amount_hobbyists_amount_places = {}
+            for hobby in all_hobbies:
+                hobbies_amount_hobbyists_amount_places[hobby.name]=[]
+                hobbies_amount_hobbyists_amount_places[hobby.name].append(Hobbyist.query.filter(Hobbyist.hobbies.any(name=hobby.name)).count())
+                hobbies_amount_hobbyists_amount_places[hobby.name].append(Place.query.filter(Place.hobbies.any(name=hobby.name)).count())
+   
+            return render_template('allhobbies.html', title="Hobbies", hobbieshtml=all_hobbies, myhobbies=my_hobbies, notmyhobbies=not_my_hobbies, dict_helper=hobbies_amount_hobbyists_amount_places)
         elif ((conditional_get_request_id != "None") and (conditional_get_request_hobby == "None")): 
             database_id = int(conditional_get_request_id)
             current_hobby = Hobby.query.get(database_id)
@@ -531,15 +537,12 @@ def adding_place():
                 existing_hobbie = Hobby.query.filter_by(name=hobby).first()                        
                 existing_hobbie.places.append(place) 
                 db.session.commit()   
+                       
+            all_places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()      
+            my_places = Place.query.filter(Place.hobbyists.any(nickname=logged_in_hobbyist().nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all() 
+            not_my_places = [x for x in all_places if x not in my_places]
             
-            return render_template('allplaces.html', title="Hobby Pack - Sharing our hobbies")
-
-'''
-def qty_per_hobby():
-    hobby_times = {}
-
-    current_hobby = Hobbyist.query.filter_by(nickname=session['hobbyist']).first()'''
-
+            return render_template('allplaces.html', title="Hobby Pack - Sharing our hobbies", placeshtml=all_places, myplaces=my_places, notmyplaces=not_my_places)
 
 if __name__ == '__main__':
     app.run()
