@@ -134,7 +134,7 @@ def listing_hobbies():
 
 @app.route('/people', methods=['POST','GET'])
 def showing_all_people():
-    hobbyists = Hobbyist.query.order_by(Hobbyist.state).order_by(Hobbyist.nickname).all()
+    hobbyists = Hobbyist.query.order_by(Hobbyist.state).order_by(Hobbyist.zipcode).order_by(Hobbyist.nickname).all()
 
     #Dictionary to keep number of hobbies and places per hobbyist: {Luis: [2 hobbies, 3 places], Rafa: [3 hobbies, 1 place]}
     hobbyist_amount_hobbies_amount_places = {}
@@ -153,7 +153,7 @@ def listing_public_places():
         conditional_get_request_id = str(request.args.get("id"))    
         conditional_get_request_hobby = str(request.args.get("hobby"))    
         if ((conditional_get_request_id == "None") and (conditional_get_request_hobby =="None") and conditional=="None"):        
-            places_python = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()      
+            all_places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()      
             
             #---------------------------my_places_already = (Session.query(Place, Hobby, Hobbyist).filter(P))   
             #---------------------------my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()
@@ -162,11 +162,19 @@ def listing_public_places():
             my_places = Place.query.filter(Place.hobbyists.any(nickname=logged_in_hobbyist().nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
             
             #Subtracting places of the current user from all the places of the website 
-            not_my_places = [x for x in places_python if x not in my_places]
-            
+            not_my_places = [x for x in all_places if x not in my_places]
+                        
             #Place.query.filter(Place.hobbyists.nickname!=logged_in_hobbyist().nickname).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
 
-            return render_template('allplaces.html', title="Hobbie Pack!", placeshtml=places_python, myplaces=my_places, notmyplaces=not_my_places)
+            # Helper: {"Place1": [#people, #hobbies], "Place2": [#people, #hobbies]}
+            place_amount_people_amount_hobbies = {}
+            for place in all_places:
+                place_amount_people_amount_hobbies[place.unique_key_address]=[]
+                place_amount_people_amount_hobbies[place.unique_key_address].append(Hobbyist.query.filter(Hobbyist.places.any(unique_key_address=place.unique_key_address)).count())
+                place_amount_people_amount_hobbies[place.unique_key_address].append(Hobby.query.filter(Hobby.places.any(unique_key_address=place.unique_key_address)).count())
+                
+            return render_template('allplaces.html', title="Hobbie Pack!", placeshtml=all_places, myplaces=my_places, notmyplaces=not_my_places, dict_helper=place_amount_people_amount_hobbies)
+
         elif ((conditional_get_request_id != "None") and (conditional_get_request_hobby == "None")): 
             database_id = int(conditional_get_request_id)
             current_place = Place.query.get(database_id)
@@ -520,6 +528,9 @@ def adding_place():
             my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()
             qty_my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).count()
             print(qty_my_hobbies)
+
+    
+
             if qty_my_hobbies != 0 :
                 return render_template('newcurrentplace.html', title="Hobby Pack - Sharing our hobbies", hobbieshtml=my_hobbies, placekey=place_key_address, errorhobbies="")
             else:
@@ -541,8 +552,14 @@ def adding_place():
             all_places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()      
             my_places = Place.query.filter(Place.hobbyists.any(nickname=logged_in_hobbyist().nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all() 
             not_my_places = [x for x in all_places if x not in my_places]
+
+            place_amount_people_amount_hobbies = {}
+            for place in all_places:
+                place_amount_people_amount_hobbies[place.unique_key_address]=[]
+                place_amount_people_amount_hobbies[place.unique_key_address].append(Hobbyist.query.filter(Hobbyist.places.any(unique_key_address=place.unique_key_address)).count())
+                place_amount_people_amount_hobbies[place.unique_key_address].append(Hobby.query.filter(Hobby.places.any(unique_key_address=place.unique_key_address)).count())
             
-            return render_template('allplaces.html', title="Hobby Pack - Sharing our hobbies", placeshtml=all_places, myplaces=my_places, notmyplaces=not_my_places)
+            return render_template('allplaces.html', title="Hobby Pack - Sharing our hobbies", placeshtml=all_places, myplaces=my_places, notmyplaces=not_my_places, dict_helper=place_amount_people_amount_hobbies)
 
 if __name__ == '__main__':
     app.run()

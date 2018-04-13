@@ -12,7 +12,19 @@
         <h2>My Places</h2>       
         {% for myplace in myplaces %}             
         <li class="list2">
-            <a href="/places?id={{myplace.id}}" class="poster">{{myplace.name}} </a> | {{myplace.streetaddress}} | {{myplace.city}} {{myplace.state}} {{myplace.zipcode}} (# hobbyists) (# hobbies ). 
+            <a href="/places?id={{myplace.id}}" class="poster">{{myplace.name}} </a> | {{myplace.streetaddress}} | {{myplace.city}} {{myplace.state}} {{myplace.zipcode}} 
+            
+            {% if dict_helper[myplace.unique_key_address][0] == 1 %}                           
+            (<span class="red"> {{dict_helper[myplace.unique_key_address][0]}} person </span>, 
+            {% else %}            
+            (<span class="red"> {{dict_helper[myplace.unique_key_address][0]}} people </span>, 
+            {% endif %}
+            {% if dict_helper[myplace.unique_key_address][1] == 1 %}                 
+            <span class="orange">{{dict_helper[myplace.unique_key_address][1]}} hobby </span>).
+            {% else %}            
+            <span class="orange">{{dict_helper[myplace.unique_key_address][1]}} hobbies </span>).
+            {% endif %}               
+            
         </li>        
         {% endfor %}
         {% endif %}
@@ -25,7 +37,19 @@
         <h2>Other Places to do hobbies</h2>  
         {% for publicplace in notmyplaces %}            
         <li class="list2">
-        <a href="/places?id={{publicplace.id}}" class="poster">{{publicplace.name}} </a> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} (# hobbyists) (# hobbies ). 
+        <a href="/places?id={{publicplace.id}}" class="poster">{{publicplace.name}} </a> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} 
+        
+            {% if dict_helper[publicplace.unique_key_address][0] == 1 %}                           
+            (<span class="red"> {{dict_helper[publicplace.unique_key_address][0]}} person </span>, 
+            {% else %}            
+            (<span class="red"> {{dict_helper[publicplace.unique_key_address][0]}} people </span>, 
+            {% endif %}
+            {% if dict_helper[publicplace.unique_key_address][1] == 1 %}                 
+            <span class="orange">{{dict_helper[publicplace.unique_key_address][1]}} hobby </span>).
+            {% else %}            
+            <span class="orange">{{dict_helper[publicplace.unique_key_address][1]}} hobbies </span>).
+            {% endif %} 
+
         <form action="/newplace" method="post" class="alignedform">            
             <input type="hidden" name="placename" value="{{publicplace.unique_key_address}}"/>
             <input type="hidden" name="conditional" value="to_add_existing_place_to_my_places"/>
