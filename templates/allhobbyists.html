@@ -8,6 +8,22 @@
             {% for hobbyist in hobbyists %}
             <li class="list2">
             <a href="/blog?hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}}</a> 
+            <span>{{hobbyist.city}} {{hobbyist.state}} {{hobbyist.zipcode}} </span> 
+            
+            {% if hobbyists_properties[hobbyist.nickname][0] == 0 %}
+            (<span class="red"> This person doesn't have any hobby yet :/ </span>,
+            {% elif hobbyists_properties[hobbyist.nickname][0] == 1 %}            
+            (<span class="red"> {{hobbyists_properties[hobbyist.nickname][0]}} hobby </span>, 
+            {% else %}            
+            (<span class="red"> {{hobbyists_properties[hobbyist.nickname][0]}} hobbies </span>, 
+            {% endif %}
+            {% if hobbyists_properties[hobbyist.nickname][1] == 0 %}
+            <span class="orange">this person doesn't practice a hobby in any public place yet :/ </span>). 
+            {% elif hobbyists_properties[hobbyist.nickname][1] == 1 %}            
+            <span class="orange">{{hobbyists_properties[hobbyist.nickname][1]}} place </span>).
+            {% else %}            
+            <span class="orange">{{hobbyists_properties[hobbyist.nickname][1]}} places </span>).
+            {% endif %}                        
             </li>
             {% endfor %} 
     {% endif %}

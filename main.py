@@ -21,12 +21,19 @@ def require_login():
 
 @app.route('/', methods=['POST','GET'])
 def index():    
-    hobbyists = Hobbyist.query.order_by(Hobbyist.nickname).all()
+    hobbyists = Hobbyist.query.order_by(Hobbyist.state).order_by(Hobbyist.nickname).all()
     hobbies = Hobby.query.order_by(Hobby.name).all()
     places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
     encounters = Encounter.query.all()
     posts = Blog.query.all()
-    return render_template('zindex.html',title="Hobby Pack - Sharing our hobbies", hobbyists=hobbyists, hobbies=hobbies, places=places, encounters=encounters, postshtml=posts)
+
+    #Create dictionary to post amount of hobbyists per hobby. Structure: dictionary = {"hobby1": "4" hobbyists, "hobby2": "3" hobbyists}
+    dict_hobby_hobbyists = {}
+    total_hobbies = Hobby.query.all()
+    for hobby in total_hobbies:
+        dict_hobby_hobbyists[hobby.name]=Hobbyist.query.filter(Hobbyist.hobbies.any(id=hobby.id)).count()
+                
+    return render_template('zindex.html',title="Hobby Pack - Sharing our hobbies", hobbyists=hobbyists, hobbies=hobbies, places=places, encounters=encounters, postshtml=posts, users_per_hobby=dict_hobby_hobbyists)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -121,8 +128,17 @@ def listing_hobbies():
 
 @app.route('/people', methods=['POST','GET'])
 def showing_all_people():
-    hobbyists = Hobbyist.query.all()
-    return render_template('allhobbyists.html',title="Hobbyists", hobbyists=hobbyists)
+    hobbyists = Hobbyist.query.order_by(Hobbyist.state).order_by(Hobbyist.nickname).all()
+
+    #Dictionary to keep number of hobbies and places per hobbyist: {Luis: [2 hobbies, 3 places], Rafa: [3 hobbies, 1 place]}
+    hobbyist_amount_hobbies_amount_places = {}
+    for hobbyist in hobbyists:
+        hobbyist_amount_hobbies_amount_places[hobbyist.nickname] = []
+        #First value of the list for amount hobbies
+        hobbyist_amount_hobbies_amount_places[hobbyist.nickname].append(Hobby.query.filter(Hobby.hobbyists.any(nickname=hobbyist.nickname)).count())
+        #Second value of the list for amount of places
+        hobbyist_amount_hobbies_amount_places[hobbyist.nickname].append(Place.query.filter(Place.hobbyists.any(nickname=hobbyist.nickname)).count())        
+    return render_template('allhobbyists.html',title="Hobbyists", hobbyists=hobbyists, hobbyists_properties=hobbyist_amount_hobbies_amount_places)
 
 @app.route('/places', methods=['POST', 'GET'])
 def listing_public_places():  
@@ -148,8 +164,7 @@ def listing_public_places():
         elif ((conditional_get_request_id != "None") and (conditional_get_request_hobby == "None")): 
             database_id = int(conditional_get_request_id)
             current_place = Place.query.get(database_id)
-            place_python = current_place.name       
-
+            
             #my_hobbies_in_this_place1 = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).filter(Hobby.places.any(name=placehtml)).filter(Hobby.places.any(streetaddress=streethtml)).filter(Hobby.places.any(city=cityhtml)).filter(Hobby.places.any(state=statehtml)).filter(Hobby.places.any(zipcode=zipcodehtml)).all() 
 
             hobbies_in_this_place = Hobby.query.filter(Hobby.places.any(id=database_id)).all() 
@@ -158,24 +173,23 @@ def listing_public_places():
             amount_hobbyists_in_this_place = Hobbyist.query.filter(Hobbyist.places.any(id=database_id)).count()
             #hobbyists_in_this_place
             
-            #Create dictionary to post amount of hobbyists and amount of places in a hobby
-            dict_hobby_hobbyists = {}
+            #Create dictionary to post amount of hobbyists and amount of places in a hobby. Structure: dictionary = {"hobby1": ["4" hobbyists, "3" places], "hobby2": ["3" hobbyists, "0" places]}
+            dict_hobby_hobbyists_places = {}
             total_hobbies = Hobby.query.all()
             for hobby in total_hobbies:
-                dict_hobby_hobbyists[hobby.name]=Hobbyist.query.filter(Hobbyist.hobbies.any(id=hobby.id)).count()
+                dict_hobby_hobbyists_places[hobby.name]=[]
+                dict_hobby_hobbyists_places[hobby.name].append(Hobbyist.query.filter(Hobbyist.hobbies.any(id=hobby.id)).count())
+                dict_hobby_hobbyists_places[hobby.name].append(Place.query.filter(Place.hobbies.any(id=hobby.id)).count())
+                
             #Checking dictionary just created
-            for hobby1 in dict_hobby_hobbyists:
-                print(hobby1, dict_hobby_hobbyists[hobby1])    
-
-
-
-
+            for hobby1 in dict_hobby_hobbyists_places:
+                print(hobby1, dict_hobby_hobbyists_places[hobby1][0], dict_hobby_hobbyists_places[hobby1][1] )    
 
             '''test = Hobbyist.query.join(hobbieshobbyists).join(Hobby).filter(Hobbyist.places.any(id=database_id))
             print(Hobbyist.query.join(hobbieshobbyists).join(Hobby).filter(Hobbyist.places.any(id=database_id)).count())
             print(test.count())'''
 
-            return render_template('eachplace.html', placehtml = place_python, hobbies=hobbies_in_this_place, no_hobbies=amount_hobbies_in_this_place, hobbyists=hobbyists_in_this_place, no_hobbyists=amount_hobbyists_in_this_place, hobby_no_hobbyists=dict_hobby_hobbyists)#, test=test)
+            return render_template('eachplace.html', placehtml = current_place, hobbies=hobbies_in_this_place, no_hobbies=amount_hobbies_in_this_place, hobbyists=hobbyists_in_this_place, no_hobbyists=amount_hobbyists_in_this_place, hobby_no_hobbyists_no_places=dict_hobby_hobbyists_places)#, test=test)
         """elif ((conditional_get_request_id == "None") and (conditional_get_request_hobby != "None")):
             hobby_name = conditional_get_request_hobby        
             current_hobby = Hobby.query.filter_by(nickname=hobby_name).first()

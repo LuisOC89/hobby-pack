@@ -1,12 +1,25 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain">{{placehtml}}</h1>  
+<h1 class="titlemain">{{placehtml.name}}</h1>  
+<h2 class="centered">{{placehtml.streetaddress}} | {{placehtml.city}} | {{placehtml.state}} | {{placehtml.zipcode}} |</h2>  
 
     <h2>Hobbies practiced at this place ({{no_hobbies}} total) </h2>       
     {% for myhobby in hobbies %}             
     <li class="list2">
-        <a href="/hobbies?id={{myhobby.id}}" class="titlepost">{{myhobby.name}} </a> ( {{ hobby_no_hobbyists[myhobby.name] }} hobbyists ) (# places )  .
+        <a href="/hobbies?id={{myhobby.id}}" class="titlepost">{{myhobby.name}} </a> ( {{ hobby_no_hobbyists_no_places[myhobby.name][0] }} 
+        {% if hobby_no_hobbyists_no_places[myhobby.name][0] < 2 %}        
+        hobbyist,  
+        {% else %}
+        hobbyists, 
+        {% endif %}
+
+        {% if hobby_no_hobbyists_no_places[myhobby.name][1] == 1 %}        
+        {{hobby_no_hobbyists_no_places[myhobby.name][1]}} place ).        
+        {% else %}
+        {{hobby_no_hobbyists_no_places[myhobby.name][1]}} places ).
+        {% endif %}
+
     </li>        
     {% endfor %}
 
