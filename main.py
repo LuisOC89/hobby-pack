@@ -72,8 +72,10 @@ def listing_blogs():
     #print(conditional_get_request_hobbyist)
     #if both are none, it means that this is a get request without passing an attribute from the view to the controller
     if ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist =="None")):
-        #This one shows all the posts of everyone in the blog 
-        posts_python = Blog.query.order_by(desc(Blog.date)).order_by(desc(Blog.time)).all()  
+        
+        #This one shows all the posts of everyone in the blog order by year, by month, by day, by hour, by minute
+        posts_python = Blog.query.all()  
+
         return render_template('allhomeblogposts.html', title="Blogging Hobbies", postshtml=posts_python)
     #if conditional_get_request_id is not "None", then we are bringing the attribute "id" from the view to the controller
     elif ((conditional_get_request_id != "None") and (conditional_get_request_hobbyist=="None")): 
@@ -221,6 +223,33 @@ def listing_public_places():
         '''if (conditional == "user_title"):        
             hobbies_python = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                           
             return render_template('eachhobbyist.html', title="Hobbie Pack!", hobbieshtml=hobbies_python)'''
+
+''' for encounters: Just for an idea:
+#How to organize based on date and time:
+        #I subtract the substrings, convert them and compared them: (( date: MM/DD/YYYY time: HH/MM )) 
+        #year=Blog.date[6:4] #starting at space 6 and taking 4 spaces
+        #month=Blog.date[0:2]
+        #day=Blog.date[3:2]
+        #hour=Blog.time[0:2]
+        #minutes=Blog.time[3:2]
+
+
+#This dict will take all the info from the query and organize the posts by year, month, day, hour and minute, plus containing some important info used in the
+        dict_organized_posts = {}
+        for post in posts_python:
+            dict_organized_posts[post.id]=[]
+            dict_organized_posts[post.id].append(post.title)
+            dict_organized_posts[post.id].append(post.blog.nickname)
+            dict_organized_posts[post.id].append(post.time) #for the whole time
+            dict_organized_posts[post.id].append(post.time[0:2]) #for the hours
+            dict_organized_posts[post.id].append(post.time[3:2]) #for the minutes
+            dict_organized_posts[post.id].append(post.date) #for the whole date
+            dict_organized_posts[post.id].append(post.date[6:4]) #for the year
+            dict_organized_posts[post.id].append(post.date[0:2]) #for the month
+            dict_organized_posts[post.id].append(post.date[3:2]) #for the day
+            
+#It would have the structure: {(id1: 1, [title, nickname, wholetime, hours, minutes, date, year, month, day] }
+             '''
 
 @app.route("/myinfo", methods=['GET', 'POST'])
 def my_info():     

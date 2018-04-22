@@ -43,11 +43,19 @@
     {% if my_posts|length == 0 %}
     <p>No posts yet</p>
     {% else %}
-        {% for post in my_posts %}
-        <a href="/blog?id={{post.id}}" class="titlepost">{{post.title}}</a> <span id="specialb">by</span> <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">{{post.blog.nickname}}</span></a> at {{post.time}} on {{post.date}}
+    {% for post in my_posts | reverse %}
+        <a href="/blog?id={{post.id}}" class="titlepost">{{post.title}}</a> <span id="specialb">by</span> 
+    
+        {% if post.blog.nickname == session['hobbyist'] %}
+            <a href="/myinfo?condition=show_all_info_user" class="poster">{{post.blog.nickname}} </a> 
+        {% else %}
+            <a href="/myinfo?condition=show_other_info_user&hobbyist={{post.blog.nickname}}" class="poster">{{post.blog.nickname}} </a> 
+        {% endif %}
+        in 
+        <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">posts of {{post.blog.nickname}}</span></a> at {{post.time}} on {{post.date}}
         <span class="paradf"><p>{{post.body}}</p></span> 
         <hr />
-        {% endfor %}
+    {% endfor %}    
     {% endif %}
 {% elif conditional == "other_user_profile" %}    
     <h1 class="titlemain" style="text-align:left">Hobbies that {{hobbyist.nickname}} loves :) !</h1>
@@ -77,11 +85,27 @@
     {% if my_posts|length == 0 %}
     <p>No posts yet</p>
     {% else %}
-        {% for post in my_posts %}
-        <a href="/blog?id={{post.id}}" class="titlepost">{{post.title}}</a> <span id="specialb">by</span> <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">{{post.blog.nickname}}</span></a> at {{post.time}} on {{post.date}}
+        
+        {% for post in my_posts | reverse %}
+        <a href="/blog?id={{post.id}}" class="titlepost">{{post.title}}</a> <span id="specialb">by</span> 
+    
+        {% if post.blog.nickname == session['hobbyist'] %}
+            <a href="/myinfo?condition=show_all_info_user" class="poster">{{post.blog.nickname}} </a> 
+        {% else %}
+            <a href="/myinfo?condition=show_other_info_user&hobbyist={{post.blog.nickname}}" class="poster">{{post.blog.nickname}} </a> 
+        {% endif %}
+        in 
+        <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">posts of {{post.blog.nickname}}</span></a> at {{post.time}} on {{post.date}}
         <span class="paradf"><p>{{post.body}}</p></span> 
         <hr />
-        {% endfor %}
+        {% endfor %}    
+
     {% endif %}
+
+    
+
+
+
+
 {% endif %}
 {% endblock %}

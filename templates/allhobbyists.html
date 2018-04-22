@@ -7,7 +7,13 @@
     {% else %}
             {% for hobbyist in hobbyists %}
             <li class="list2">
-            <a href="/blog?hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}}</a> 
+
+            {% if hobbyist.nickname == session['hobbyist'] %}
+            <a href="/myinfo?condition=show_all_info_user" class="poster">{{hobbyist.nickname}} </a> 
+            {% else %}
+            <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a> 
+            {% endif %}
+
             <span>{{hobbyist.city}} {{hobbyist.state}} {{hobbyist.zipcode}} </span> 
             
             {% if hobbyists_properties[hobbyist.nickname][0] == 0 %}
