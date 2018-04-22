@@ -197,13 +197,21 @@ def listing_public_places():
                 
             #Checking dictionary just created
             for hobby1 in dict_hobby_hobbyists_places:
-                print(hobby1, dict_hobby_hobbyists_places[hobby1][0], dict_hobby_hobbyists_places[hobby1][1] )    
+                print(hobby1, dict_hobby_hobbyists_places[hobby1][0], dict_hobby_hobbyists_places[hobby1][1])    
+
+            #Create dictionary to post amount of hobbies and amount of places per hobbyist. Structure: dictionary = {"hobbyist1": ["4" hobbies, "3" places], "hobbyist2": ["3" hobbies, "0" places]}
+            dict_hobbyist_hobbies_places = {}
+            total_hobbyists = Hobbyist.query.all()
+            for hobbyist in total_hobbyists:
+                dict_hobbyist_hobbies_places[hobbyist.nickname]=[]
+                dict_hobbyist_hobbies_places[hobbyist.nickname].append(Hobby.query.filter(Hobby.hobbyists.any(id=hobbyist.id)).count())
+                dict_hobbyist_hobbies_places[hobbyist.nickname].append(Place.query.filter(Place.hobbyists.any(id=hobbyist.id)).count())
 
             '''test = Hobbyist.query.join(hobbieshobbyists).join(Hobby).filter(Hobbyist.places.any(id=database_id))
             print(Hobbyist.query.join(hobbieshobbyists).join(Hobby).filter(Hobbyist.places.any(id=database_id)).count())
             print(test.count())'''
 
-            return render_template('eachplace.html', placehtml = current_place, hobbies=hobbies_in_this_place, no_hobbies=amount_hobbies_in_this_place, hobbyists=hobbyists_in_this_place, no_hobbyists=amount_hobbyists_in_this_place, hobby_no_hobbyists_no_places=dict_hobby_hobbyists_places)#, test=test)
+            return render_template('eachplace.html', placehtml = current_place, hobbies=hobbies_in_this_place, no_hobbies=amount_hobbies_in_this_place, hobbyists=hobbyists_in_this_place, no_hobbyists=amount_hobbyists_in_this_place, hobby_no_hobbyists_no_places=dict_hobby_hobbyists_places, hobbyist_no_hobbies_no_places=dict_hobbyist_hobbies_places)#, test=test)
         """elif ((conditional_get_request_id == "None") and (conditional_get_request_hobby != "None")):
             hobby_name = conditional_get_request_hobby        
             current_hobby = Hobby.query.filter_by(nickname=hobby_name).first()
