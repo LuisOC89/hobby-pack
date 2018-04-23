@@ -124,7 +124,7 @@ def listing_hobbies():
             database_id = int(conditional_get_request_id)
             current_hobby = Hobby.query.get(database_id)
             hobby_python = current_hobby        
-            
+            my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all() 
             """elif ((conditional_get_request_id == "None") and (conditional_get_request_hobby != "None")):
                 hobby_name = conditional_get_request_hobby        
                 current_hobby = Hobby.query.filter_by(nickname=hobby_name).first()
@@ -139,15 +139,15 @@ def listing_hobbies():
             for place in this_hobby_places:
                 #Initializing the list of lists
                 dict_where_place_what_hobbyists[place.unique_key_address] = []                
-                this_place_no_hobbyists = Hobbyist.query.filter(Hobbyist.places.any(unique_key_address=place.unique_key_address)).order_by(Hobbyist.nickname).count() 
+                this_place_no_hobbyists = Hobbyist.query.filter(Hobbyist.hobbies.any(name=hobby_python.name)).filter(Hobbyist.places.any(unique_key_address=place.unique_key_address)).order_by(Hobbyist.nickname).count() 
                 dict_where_place_what_hobbyists[place.unique_key_address].append(this_place_no_hobbyists) #For zipcode of place
                 #Initializing the second list (for hobbyists on this place)
                 dict_where_place_what_hobbyists[place.unique_key_address].append([])
-                this_place_hobbyists = Hobbyist.query.filter(Hobbyist.places.any(unique_key_address=place.unique_key_address)).order_by(Hobbyist.nickname).all()                 
+                this_place_hobbyists = Hobbyist.query.filter(Hobbyist.hobbies.any(name=hobby_python.name)).filter(Hobbyist.places.any(unique_key_address=place.unique_key_address)).order_by(Hobbyist.nickname).all()                 
                 for hobbyist in this_place_hobbyists:
                     dict_where_place_what_hobbyists[place.unique_key_address][1].append(hobbyist) 
             
-            return render_template('eachhobby.html', title="About this hobby", hobbyhtml = hobby_python, dict_place_hobbyists=dict_where_place_what_hobbyists, places=this_hobby_places) 
+            return render_template('eachhobby.html', title="About this hobby", hobbyhtml = hobby_python, dict_place_hobbyists=dict_where_place_what_hobbyists, places=this_hobby_places, my_hobbies=my_hobbies) 
 
         if (conditional == "user_title"):        
             hobbies_python = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                           
