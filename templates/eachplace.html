@@ -4,6 +4,16 @@
 <h1 class="titlemain">{{placehtml.name}}</h1>  
 <h2 class="centered">{{placehtml.streetaddress}} | {{placehtml.city}} | {{placehtml.state}} | {{placehtml.zipcode}} |</h2>  
 
+{% if placehtml not in my_places %}
+<h2 class = centered>  
+<form action="/newplace" method="post" class="alignedform">            
+    <input type="hidden" name="placename" value="{{placehtml.unique_key_address}}"/>
+    <input type="hidden" name="conditional" value="to_add_existing_place_to_my_places"/>
+    <input type="submit" value="ADD" class="alignedformbutton"/>
+</form> to my places.   
+</h2>  
+{% endif %}
+
     <h2>Hobbies practiced at this place ({{no_hobbies}} total) </h2>       
     {% for myhobby in hobbies %}             
     <li class="list2">

@@ -68,7 +68,7 @@
             <a href="/hobbies?id={{hobby.id}}" class="poster">{{hobby.name}}</a>   
                 {% if dict_hobby_places[hobby.name]|length == 0 %}
                 <ul>
-                    You don't practice this hobby in a public place yet. Go to places <a href="/places">here</a> and add this hobby to a place. 
+                    {{hobbyist.nickname}} doesn't practice this hobby in a public place yet.  
                 </ul> 
                 {% else %}
                 {% for place in dict_hobby_places[hobby.name] %}

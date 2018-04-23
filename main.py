@@ -27,13 +27,18 @@ def index():
     encounters = Encounter.query.all()
     posts = Blog.query.all()
 
+    #For the process of signing up. To pass "None" to the view as text
+    welcome_message = str(request.args.get("welcome_message"))
+    if (welcome_message == "None") :
+        welcome_message = "None"
+
     #Create dictionary to post amount of hobbyists per hobby. Structure: dictionary = {"hobby1": "4" hobbyists, "hobby2": "3" hobbyists}
     dict_hobby_hobbyists = {}
     total_hobbies = Hobby.query.all()
     for hobby in total_hobbies:
         dict_hobby_hobbyists[hobby.name]=Hobbyist.query.filter(Hobbyist.hobbies.any(id=hobby.id)).count()
                 
-    return render_template('zindex.html',title="Hobby Pack - Sharing our hobbies", hobbyists=hobbyists, hobbies=hobbies, places=places, encounters=encounters, postshtml=posts, users_per_hobby=dict_hobby_hobbyists)
+    return render_template('zindex.html',title="Hobby Pack - Sharing our hobbies", hobbyists=hobbyists, hobbies=hobbies, places=places, encounters=encounters, postshtml=posts, users_per_hobby=dict_hobby_hobbyists, welcomessage=welcome_message)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -132,6 +137,7 @@ def listing_hobbies():
                 posts_python = Hobby.query.filter_by(hobby_id=current_hobby_id).all()
                 return render_template('hobbies.html', title="Hobbie Pack!", postshtml=posts_python)"""
            
+            this_hobby_hobbyists = Hobbyist.query.filter(Hobbyist.hobbies.any(name=hobby_python.name)).order_by(Hobbyist.nickname).all()
             this_hobby_places = Place.query.filter(Place.hobbies.any(name=hobby_python.name)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()   
 
             #Dictionary to store hobbyists and places in the form of: {'place1.unique_key_address': [amount_of_hobbyists_for_place1,[hobbyist1, hobbyist2, hobbyist3]]}
@@ -147,7 +153,7 @@ def listing_hobbies():
                 for hobbyist in this_place_hobbyists:
                     dict_where_place_what_hobbyists[place.unique_key_address][1].append(hobbyist) 
             
-            return render_template('eachhobby.html', title="About this hobby", hobbyhtml = hobby_python, dict_place_hobbyists=dict_where_place_what_hobbyists, places=this_hobby_places, my_hobbies=my_hobbies) 
+            return render_template('eachhobby.html', title="About this hobby", hobbyhtml = hobby_python, dict_place_hobbyists=dict_where_place_what_hobbyists, places=this_hobby_places, my_hobbies=my_hobbies, hobby_hobbyists=this_hobby_hobbyists) 
 
         if (conditional == "user_title"):        
             hobbies_python = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                           
@@ -199,7 +205,7 @@ def listing_public_places():
         elif ((conditional_get_request_id != "None") and (conditional_get_request_hobby == "None")): 
             database_id = int(conditional_get_request_id)
             current_place = Place.query.get(database_id)
-            
+            my_places = Place.query.filter(Place.hobbyists.any(nickname=logged_in_hobbyist().nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
             #my_hobbies_in_this_place1 = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).filter(Hobby.places.any(name=placehtml)).filter(Hobby.places.any(streetaddress=streethtml)).filter(Hobby.places.any(city=cityhtml)).filter(Hobby.places.any(state=statehtml)).filter(Hobby.places.any(zipcode=zipcodehtml)).all() 
 
             hobbies_in_this_place = Hobby.query.filter(Hobby.places.any(id=database_id)).all() 
@@ -232,7 +238,7 @@ def listing_public_places():
             print(Hobbyist.query.join(hobbieshobbyists).join(Hobby).filter(Hobbyist.places.any(id=database_id)).count())
             print(test.count())'''
 
-            return render_template('eachplace.html', placehtml = current_place, hobbies=hobbies_in_this_place, no_hobbies=amount_hobbies_in_this_place, hobbyists=hobbyists_in_this_place, no_hobbyists=amount_hobbyists_in_this_place, hobby_no_hobbyists_no_places=dict_hobby_hobbyists_places, hobbyist_no_hobbies_no_places=dict_hobbyist_hobbies_places)#, test=test)
+            return render_template('eachplace.html', placehtml = current_place, hobbies=hobbies_in_this_place, no_hobbies=amount_hobbies_in_this_place, hobbyists=hobbyists_in_this_place, no_hobbyists=amount_hobbyists_in_this_place, hobby_no_hobbyists_no_places=dict_hobby_hobbyists_places, hobbyist_no_hobbies_no_places=dict_hobbyist_hobbies_places, my_places=my_places)#, test=test)
         """elif ((conditional_get_request_id == "None") and (conditional_get_request_hobby != "None")):
             hobby_name = conditional_get_request_hobby        
             current_hobby = Hobby.query.filter_by(nickname=hobby_name).first()
@@ -367,13 +373,13 @@ def signup():
                         session['visits'] = session.get('visits') + 1
                     else:
                         session['visits'] = 1  
-                    if (session['visits'] == 1):
+                    if (session['visits'] != 1):
                         welcome_message = 'Logged in. Welcome, ' + str(hobbyist.nickname)    
                     else:
                         welcome_message = ''
                     #flash('Logged in. Welcome, ' + str(hobbyist.nickname), 'allgood')
                     #Redirect and url_for are get requests. adding_post is the function controller in main. 
-                    return redirect(url_for("adding_post", title="Posting my ideas", welcomessage=welcome_message))
+                    return redirect(url_for("index", title="Posting my ideas", welcome_message=welcome_message))
                 else:
                     error_empty = '''The email address "''' + str(email) + '''" already exists. Are you sure you are not signed up already?'''                
                     return render_template('newhobbyist.html', title="Signing up" , nickname=hobbyistname, email=email, city=city, zipcode=zipcode, errorempty=error_empty)

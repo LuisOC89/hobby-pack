@@ -2,6 +2,14 @@
 
 {% block content %}
 {% if 'hobbyist' in session %}
+
+    {% if welcomessage != "None" %}
+    <br><br>
+    <span class="allgood">{{welcomessage}}</span>
+    {% else %}
+        
+    {% endif %}
+    
     <h1 class="titlemain" style="text-align:left">Registered Hobbyists!</h1>
     {% if hobbyists|length == 0 %}
     <p>No hobbyists yet</p>
