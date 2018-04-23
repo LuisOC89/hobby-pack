@@ -2,4 +2,32 @@
 
 {% block content %}
 <h1 class="titlemain">{{hobbyhtml.name}}</h1>    
+
+{% if places|length == 0 %}
+    <p>This hobby is not practiced in a public place yet</p>
+{% else %}
+    <span class="titlemain">Places where this hobby is practiced and people who practices it:</span>
+    {% for publicplace in places %}
+    <li class="list2">
+    <a href="/places?id={{publicplace.id}}" class="poster">{{publicplace.name}}</a> | {{publicplace.streetaddress}} | {{publicplace.city}} | {{publicplace.state}} | {{publicplace.zipcode}} 
+        <br><span class="different"> (
+        {% if dict_place_hobbyists[publicplace.unique_key_address][0] == 1 %}
+        {{dict_place_hobbyists[publicplace.unique_key_address][0]}} hobbyist practicing this hobby in this place
+        {% else %}
+        {{dict_place_hobbyists[publicplace.unique_key_address][0]}} hobbyists practicing this hobby in this place
+        {% endif %}
+        ): </span> 
+                        
+            {% for hobbyist in dict_place_hobbyists[publicplace.unique_key_address][1] %}
+                {% if hobbyist.nickname == session['hobbyist'] %}
+                <a href="/myinfo?condition=show_all_info_user" class="poster">{{hobbyist.nickname}} </a> 
+                {% else %}
+                <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a> 
+                {% endif %}    
+                {{ "," if not loop.last }}                              
+            {% endfor %}
+
+        <br><br>
+    {% endfor %}    
+{% endif %}
 {% endblock %}
