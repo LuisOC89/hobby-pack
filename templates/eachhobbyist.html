@@ -59,12 +59,24 @@
     {% endif %}
 {% elif conditional == "other_user_profile" %}    
     <h1 class="titlemain" style="text-align:left">Hobbies that {{hobbyist.nickname}} loves :) !</h1>
+       
     {% if my_hobbies|length == 0 %}
     <p>No hobbies yet</p>
     {% else %}
             {% for hobby in my_hobbies %}
             <li class="list2">
-            <a href="/hobbies?id={{hobby.id}}" class="poster">{{hobby.name}}</a>                
+            <a href="/hobbies?id={{hobby.id}}" class="poster">{{hobby.name}}</a>   
+                {% if dict_hobby_places[hobby.name]|length == 0 %}
+                <ul>
+                    You don't practice this hobby in a public place yet. Go to places <a href="/places">here</a> and add this hobby to a place. 
+                </ul> 
+                {% else %}
+                {% for place in dict_hobby_places[hobby.name] %}
+                <ul>
+                    + <a href="/places?id={{place.id}}" class="poster">{{place.name}}</a> | {{place.streetaddress}} | {{place.city}} | {{place.state}} | {{place.zipcode}}
+                </ul>             
+                {% endfor %}
+            {% endif %}                 
             </li>
             {% endfor %} 
     {% endif %}    

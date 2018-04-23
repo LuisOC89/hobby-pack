@@ -119,10 +119,30 @@ def listing_hobbies():
                 hobbies_amount_hobbyists_amount_places[hobby.name].append(Place.query.filter(Place.hobbies.any(name=hobby.name)).count())
    
             return render_template('allhobbies.html', title="Hobbies", hobbieshtml=all_hobbies, myhobbies=my_hobbies, notmyhobbies=not_my_hobbies, dict_helper=hobbies_amount_hobbyists_amount_places)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         elif ((conditional_get_request_id != "None") and (conditional_get_request_hobby == "None")): 
             database_id = int(conditional_get_request_id)
             current_hobby = Hobby.query.get(database_id)
-            hobby_python = current_hobby.name        
+            hobby_python = current_hobby        
             return render_template('eachhobby.html', title="About this hobby", hobbyhtml = hobby_python) 
         """elif ((conditional_get_request_id == "None") and (conditional_get_request_hobby != "None")):
             hobby_name = conditional_get_request_hobby        
@@ -130,6 +150,51 @@ def listing_hobbies():
             current_hobby_id = current_hobby.id
             posts_python = Hobby.query.filter_by(hobby_id=current_hobby_id).all()
             return render_template('hobbies.html', title="Hobbie Pack!", postshtml=posts_python)"""
+
+        this_hobby_hobbyists = Hobbyist.query.order_by(Hobbyist.nickname).filter(Hobbyist.hobbies.any(name=hobby.name)).all() 
+        this_hobby_places = Place.query.filter(Place.hobbies.any(name=hobby.name)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()   
+
+
+        '''
+
+        my_hobbies = Hobby.query.order_by(Hobby.name).filter(Hobby.hobbyists.any(nickname=hobbyist.nickname)).all()  
+        my_places = Place.query.filter(Place.hobbyists.any(nickname=hobbyist.nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()       
+        my_posts = Blog.query.filter_by(hobbyist_id=hobbyist.id).all()
+        my_encounters = Encounter.query.all()  
+        #Dictionary to store hobbies and places in the form of {'hobby1':[place1, place2, place3], 'hobby2':[place1, place1]}. This is to see where the person practices what hobbies
+        dict_what_hobbie_where_places = {}
+        for hobby in my_hobbies:
+            dict_what_hobbie_where_places[hobby.name] = []
+            my_places_this_hobbie = Place.query.filter(Place.hobbies.any(name=hobby.name)).filter(Place.hobbyists.any(nickname=hobbyist.nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all() 
+            for place in my_places_this_hobbie:
+                dict_what_hobbie_where_places[hobby.name].append(place)
+
+        return render_template('eachhobbyist.html', title="Hobby Pack - Sharing our hobbies", hobbyist=hobbyist, my_hobbies=my_hobbies, my_places=my_places, my_encounters=my_encounters, my_posts=my_posts, conditional=conditional, dict_hobby_places=dict_what_hobbie_where_places)
+        
+        '''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if (conditional == "user_title"):        
             hobbies_python = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                           
             return render_template('eachhobbyist.html', title="About this hobbyist", hobbieshtml=hobbies_python)
