@@ -302,7 +302,6 @@ def my_info():
 
         return render_template('eachhobbyist.html', title="Hobby Pack - Sharing our hobbies", hobbyist=hobbyist, my_hobbies=my_hobbies, my_places=my_places, my_encounters=my_encounters, my_posts=my_posts, conditional=conditional, dict_hobby_places=dict_what_hobbie_where_places)
         
-
 @app.route("/newhobbyist", methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -591,8 +590,6 @@ def adding_place():
             qty_my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).count()
             print(qty_my_hobbies)
 
-    
-
             if qty_my_hobbies != 0 :
                 return render_template('newcurrentplace.html', title="Hobby Pack - Sharing our hobbies", hobbieshtml=my_hobbies, placekey=place_key_address, errorhobbies="")
             else:
@@ -622,6 +619,51 @@ def adding_place():
                 place_amount_people_amount_hobbies[place.unique_key_address].append(Hobby.query.filter(Hobby.places.any(unique_key_address=place.unique_key_address)).count())
             
             return render_template('allplaces.html', title="Hobby Pack - Sharing our hobbies", placeshtml=all_places, myplaces=my_places, notmyplaces=not_my_places, dict_helper=place_amount_people_amount_hobbies)
+
+        elif (conditional=="to_add_existing_hobby_to_existing_place"):
+            this_hobby = request.form['hobbyname']
+            my_places_this_hobbie = Place.query.filter(Place.hobbies.any(name=this_hobby)).filter(Place.hobbyists.any(nickname=logged_in_hobbyist().nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all() 
+            all_places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
+            my_places_not_this_hobby_yet = [x for x in all_places if x not in my_places_this_hobbie] 
+            return render_template('existingplaceexistinghobby.html', title="Hobby Pack - Linking your hobbies to your places", missing_placeshtml_for_me_for_this_hobby=my_places_not_this_hobby_yet, hobby=this_hobby, errorempty="")
+
+        elif (conditional=="picking_missing_place"):
+            #To check that is directing here correctly
+            #print("\n\nIM here\n\n")
+            this_hobby = str(request.form['hobby'])
+            #print(this_hobby)
+            picked_place_id = str(request.form.get('radioplace')) 
+            #If none of the places as options in radio buttons get selected           
+            if picked_place_id == "None":       
+                #print(this_hobby)   
+
+                my_places_this_hobbie = Place.query.filter(Place.hobbies.any(name=this_hobby)).filter(Place.hobbyists.any(nickname=logged_in_hobbyist().nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all() 
+                all_places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
+                my_places_not_this_hobby_yet = [x for x in all_places if x not in my_places_this_hobbie] 
+                return render_template('existingplaceexistinghobby.html', title="Hobby Pack - Linking your hobbies to your places", missing_placeshtml_for_me_for_this_hobby=my_places_not_this_hobby_yet, hobby=this_hobby, errorempty="You didn't select any option.")
+            
+            else:                
+                place_id = int(picked_place_id)
+                current_place = Place.query.filter_by(id=place_id).first()
+                my_places = Place.query.filter(Place.hobbyists.any(nickname=logged_in_hobbyist().nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all() 
+                
+                if current_place not in my_places:
+                    current_place.hobbyists.append(logged_in_hobbyist())    
+                    db.session.commit()
+                                         
+                existing_hobbie = Hobby.query.filter_by(name=this_hobby).first()                        
+                existing_hobbie.places.append(current_place) 
+                db.session.commit()   
+
+                print("fine")                
+                return redirect('/myinfo?condition=show_all_info_user')
+
+            #place = Place.query.filter_by(id=picked_place_id).first()
+            #this_hobby = request.form['hobbyname']
+            #my_places_this_hobbie = Place.query.filter(Place.hobbies.any(name=this_hobby)).filter(Place.hobbyists.any(nickname=logged_in_hobbyist().nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all() 
+            #all_places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
+            #my_places_not_this_hobby_yet = [x for x in all_places if x not in my_places_this_hobbie] 
+            #return render_template('existingplaceexistinghobby.html', title="Hobby Pack - Linking your hobbies to your places", missing_placeshtml_for_me_for_this_hobby=my_places_not_this_hobby_yet, hobby=this_hobby)
 
 if __name__ == '__main__':
     app.run()

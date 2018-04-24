@@ -38,8 +38,8 @@
 
         <h2>Other Hobbies practiced by other people on this website</h2>  
         {% for hobby in notmyhobbies %}            
-        <li class="list2">
-        <a href="/hobbies?id={{hobby.id}}" class="poster">{{hobby.name}} </a> 
+            <li class="list2">
+            <a href="/hobbies?id={{hobby.id}}" class="poster">{{hobby.name}} </a> 
         
             {% if dict_helper[hobby.name][0] == 1 %}                           
             (<span class="red"> {{dict_helper[hobby.name][0]}} person </span>, 
@@ -54,12 +54,12 @@
             <span class="orange">{{dict_helper[hobby.name][1]}} places </span>).
             {% endif %}       
                         
-        <form action="/newhobbie" method="post" class="alignedform">            
-            <input type="hidden" name="hobbyname" value="{{hobby.name}}"/>
-            <input type="hidden" name="conditional_to_redirect" value="Display_all_hobbies"/>
-            <input type="hidden" name="conditional" value="to_add_existing_hobby_to_current_user"/>
-            <input type="submit" value="ADD" class="alignedformbutton"/>
-        </form> to my hobbies.            
+            <form action="/newhobbie" method="post" class="alignedform">            
+                <input type="hidden" name="hobbyname" value="{{hobby.name}}"/>
+                <input type="hidden" name="conditional_to_redirect" value="Display_all_hobbies"/>
+                <input type="hidden" name="conditional" value="to_add_existing_hobby_to_current_user"/>
+                <input type="submit" value="ADD" class="alignedformbutton"/>
+            </form> to my hobbies.            
         </li>
         <hr />
         {% endfor %}

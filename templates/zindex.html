@@ -110,7 +110,7 @@
     {% if postshtml|length == 0 %}
     <p>No posts yet</p>
     {% else %}
-        {% for post in postshtml %}
+        {% for post in postshtml | reverse %}
         <span class="titlepost">{{post.title}} </span> <span id="specialb">by</span> <span class="poster">{{post.blog.nickname}}</span> at {{post.time}} on {{post.date}}
         <span class="paradf"><p>{{post.body}}</p></span> 
         <hr />

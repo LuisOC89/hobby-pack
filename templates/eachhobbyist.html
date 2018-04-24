@@ -14,7 +14,12 @@
             <a href="/hobbies?id={{hobby.id}}" class="poster">{{hobby.name}}</a>   
                 {% if dict_hobby_places[hobby.name]|length == 0 %}
                 <ul>
-                    You don't practice this hobby in a public place yet. Go to places <a href="/places">here</a> and add this hobby to a place. 
+                    You don't practice this hobby in a public place yet.
+                    <form action="/newplace" method="post" class="alignedform">            
+                        <input type="hidden" name="hobbyname" value="{{hobby.name}}"/>  
+                        <input type="hidden" name="conditional" value="to_add_existing_hobby_to_existing_place"/>
+                        <input type="submit" value="ADD" class="alignedformbutton"/>
+                    </form> existing place to practice {{hobby.name}} or create a new place click <a href="/places">here</a>  
                 </ul> 
                 {% else %}
                 {% for place in dict_hobby_places[hobby.name] %}
@@ -22,6 +27,13 @@
                     + <a href="/places?id={{place.id}}" class="poster">{{place.name}}</a> | {{place.streetaddress}} | {{place.city}} | {{place.state}} | {{place.zipcode}}
                 </ul>             
                 {% endfor %}
+                <ul>
+                    <form action="/newplace" method="post" class="alignedform">            
+                        <input type="hidden" name="hobbyname" value="{{hobby.name}}"/>  
+                        <input type="hidden" name="conditional" value="to_add_existing_hobby_to_existing_place"/>
+                        <input type="submit" value="ADD" class="alignedformbutton"/>
+                    </form> other existing place to practice {{hobby.name}}.  
+                </ul>
                 {% endif %}
             </li>
             {% endfor %} 
@@ -76,7 +88,7 @@
                     + <a href="/places?id={{place.id}}" class="poster">{{place.name}}</a> | {{place.streetaddress}} | {{place.city}} | {{place.state}} | {{place.zipcode}}
                 </ul>             
                 {% endfor %}
-            {% endif %}                 
+                {% endif %}   
             </li>
             {% endfor %} 
     {% endif %}    
@@ -113,11 +125,6 @@
         {% endfor %}    
 
     {% endif %}
-
-    
-
-
-
 
 {% endif %}
 {% endblock %}

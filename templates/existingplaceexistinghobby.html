@@ -1,0 +1,25 @@
+{% extends "zbase.html" %}
+
+{% block content %}
+<h1 class="centered">{{ session['hobbyist'] }}</h1> 
+<h2 class = "centered">{{hobby}}</h2>
+      
+<h2 class="titlepost"> Existing Places to pick from: </h2>
+    {% if missing_placeshtml_for_me_for_this_hobby|length == 0 %}
+    <p>You practice this hobby in all the public places registered in this website. If you want, you could add a new place <a href="/newplace"> here </a> </p>
+    {% else %}
+    <form method='post' action="/newplace">
+        {% if errorempty != "" %}
+            <p class="error10"><span>{{errorempty}}</span> You have to select one of these existing places or create a new place <a href="/newplace"> here </a></p>      
+        {% else %}
+        {% endif %}
+        {% for publicplace in missing_placeshtml_for_me_for_this_hobby %}
+            <input type="radio" name="radioplace" value={{publicplace.id}}> {{publicplace.name}} | {{publicplace.streetaddress}} {{publicplace.city}} {{publicplace.state}}, {{publicplace.zipcode}} <br>
+        {% endfor %} 
+        <input type="hidden" value={{hobby}} name="hobby" />
+        <input type="hidden" value="picking_missing_place" name="conditional" /><br>
+        <input type="submit" value='Add it' />
+    </form>
+    {% endif %}
+
+{% endblock %}
