@@ -339,6 +339,16 @@ def signup():
         #Validation for zipcode (length 5 in US)
         if ((len(zipcode) != 5) and (len(zipcode) > 0)):
             error_zip = 'The zip code entered is invalid. It has to be 5 characters long.'
+        #validation just numbers in zipcode    
+        elif (len(zipcode) == 5):
+            indicator_letter = 0
+            for character in zipcode:
+                if character.isalpha():
+                    indicator_letter = indicator_letter + 1   
+                else:
+                    indicator_letter = indicator_letter
+            if indicator_letter != 0:
+                error_zip = 'The zip code entered is invalid. It has to have just numbers.'
         else:
             error_zip = ""
         #validation for email
@@ -397,33 +407,44 @@ def adding_post():
         return render_template('newpost.html', title="Posting my ideas", welcomemessage=welcomessage)
 
     if request.method == 'POST':
-        post_title = request.form['posttitle']
-        post_body = request.form['postbody']
-        post_already_exists = Blog.query.filter_by(title=post_title).count()              
+        condition = request.form['condition']
+        if condition == "from_new_post":
 
-        #Validation to make sure that the new post has title. 
-        if ((post_title =="") and (post_body!="")):
-            error = "notitle"                       
-        #Validation to make sure that the new post has body. 
-        elif ((post_title !="") and (post_body=="")):
-            error = "nobody"                   
-        #Validation to make sure that the new post has both title and body. 
-        elif ((post_title =="") and (post_body=="")):
-            error = "bothempty"
-        #Validation to make sure there are no other posts with the same title
-        elif (post_already_exists == 1):
-            error = "titleexists"
-        else:
-            error = ""
+            post_title = request.form['posttitle']
+            post_body = request.form['postbody']
+            post_already_exists = Blog.query.filter_by(title=post_title).count()              
 
-        if (error!=""):    
-            return render_template('newpost.html',title="Posting an idea", newtitle=post_title, newbody=post_body, errorhtml = error)
-        else:
-            new_post = Blog(post_title, post_body, filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year), filling(now1().hour)+":"+filling(now1().minute), logged_in_hobbyist())
-            db.session.add(new_post)
-            db.session.commit()
-            #print(new_post.id)
-            return redirect('''/blog?id='''+str(new_post.id))
+            #Validation to make sure that the new post has title. 
+            if ((post_title =="") and (post_body!="")):
+                error = "notitle"                       
+            #Validation to make sure that the new post has body. 
+            elif ((post_title !="") and (post_body=="")):
+                error = "nobody"                   
+            #Validation to make sure that the new post has both title and body. 
+            elif ((post_title =="") and (post_body=="")):
+                error = "bothempty"
+            #Validation to make sure there are no other posts with the same title
+            elif (post_already_exists == 1):
+                error = "titleexists"
+            else:
+                error = ""
+
+            if (error!=""):    
+                return render_template('newpost.html',title="Posting an idea", newtitle=post_title, newbody=post_body, errorhtml = error)
+            else:
+                new_post = Blog(post_title, post_body, filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year), filling(now1().hour)+":"+filling(now1().minute), logged_in_hobbyist())
+                db.session.add(new_post)
+                db.session.commit()
+                #print(new_post.id)
+                return redirect('''/blog?id='''+str(new_post.id))
+        elif condition == "from_answer_to_post":
+            post_that_you_will_answer_id = request.form['post_id']
+            post_that_you_will_answer = Blog.query.filter_by(id=post_that_you_will_answer_id).first()
+
+            return render_template("newpostanswer.html", post_to_answer=post_that_you_will_answer)
+
+        elif condition=="from_new_answer_to_post":
+            return render_template("zindex.html")
 
 @app.route('/newhobbie', methods=['POST', 'GET'])
 def adding_hobbie():

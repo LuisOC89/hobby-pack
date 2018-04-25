@@ -8,6 +8,14 @@
         {% for post in postshtml | reverse %}
         <a href="/blog?id={{post.id}}" class="titlepost">{{post.title}}</a> <span id="specialb">by</span> <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">{{post.blog.nickname}}</span></a> at {{post.time}} on {{post.date}}
         <span class="paradf"><p>{{post.body}}</p></span> 
+
+        <form action="/newpost" method="post" class="alignedform">            
+            <input type="hidden" name="post_id" value={{post.id}}/>
+            <input type="hidden" name="conditional_to_redirect" value="Display_all_hobbies"/>
+            <input type="hidden" name="condition" value="from_answer_to_post" id="just to delimitate value of value" />
+            <input type="submit" value="COMMENT" class="alignedformbutton"/>
+        </form> this post.  
+
         <hr />
         {% endfor %}
     {% endif %}

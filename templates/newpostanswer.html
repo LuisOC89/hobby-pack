@@ -1,0 +1,44 @@
+{% extends "zbase.html" %}
+
+{% block content %}
+
+<h1 class="titlemain">Answering this post</h1>
+
+    <h2 class="titlemain"><span class="toleft">{{post_to_answer.title}}</span></h2>
+    <p class="paradf">{{post_to_answer.body}}</p>
+    <p>Written by: <a href="/blog?hobbyist={{post_to_answer.blog.nickname}}">{{post_to_answer.blog.nickname}}</a></p>
+
+    <h2 class="titlemain">What I want to say</h2>
+        
+    <form method='post' action="/newpost">
+        <label>
+            Title for your comment to this post:
+            <br>
+            <input type="text" name='posttitle' value="{{newtitle}}"/><br>
+            {% if errorhtml == "notitle" %}
+            <span class="error10">Please fill in the title</span>
+            {% elif errorhtml == "bothempty" %}
+            <span class="error10">Please fill in the title</span>
+            {% elif errorhtml == "titleexists" %}
+            <span class="error10">There is another post with the same title. Please change the name of the title. </span><br>
+            <span class="error10">If you want to repply to an original post you will have to do it <a href="/blog">here</a>.</span>
+            {% else %}
+            {% endif %}    
+        </label>
+        <br><br>
+        <label>Your comment:<br>
+            <textarea name="postbody">{{newbody}}</textarea>
+        </label><br>
+        {% if errorhtml == "nobody" %}
+        <span class="error10">Please fill in the body</span>
+        {% elif errorhtml == "bothempty" %}
+        <span class="error10">Please fill in the body</span>
+        {% else %}
+        {% endif %}
+        <br>
+        <br>
+        <input type="hidden" value="from_new_answer_to_post" name='condition' id="just to delimitate name" /><br>
+        <input type="submit" value='Add Entry' />
+    </form>
+
+{% endblock %}
