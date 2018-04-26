@@ -50,6 +50,12 @@
 
     {% endif %}    
 
+
+
+
+
+
+
     <h1 class="titlemain">What we are blogging about!</h1>
     {% if postshtml|length == 0 %}
     <p>No posts yet</p>
@@ -63,14 +69,23 @@
         <a href="/myinfo?condition=show_other_info_user&hobbyist={{post.blog.nickname}}" class="poster">{{post.blog.nickname}} </a> 
         {% endif %}
         in 
-        <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">posts of {{post.blog.nickname}}</span>
-        
-        
-        </a> at {{post.time}} on {{post.date}}
+        <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">posts of {{post.blog.nickname}}</span></a> at {{post.time}} on {{post.date}}
+
         <span class="paradf"><p>{{post.body}}</p></span> 
-        <hr />
+
+            {% for answer in posts_and_answers[post.id] | reverse %}
+            <div class="marginleft"><a href="/blog?id={{post.id}}&answer_id={{answer.id}}" class="titlepost"><span class="centered">{{answer.title}}</a></span> <span id="specialb">by</span> <a href="/blog?hobbyist={{answer.blogsanswer.nickname}}"><span class="poster">{{answer.blogsanswer.nickname}}</span></a>  at {{answer.time}} on {{answer.date}}
+            <span class="paradf"><p>{{answer.body}}</p></span> 
+                        
+            <hr>
+            </div>                
+            {% endfor %}
+
+            <hr />
         {% endfor %}
     {% endif %}
+    
+    
 {% else %}
     <h1 class="titlemain" style="text-align:left">Registered Hobbyists!</h1>
     {% if hobbyists|length == 0 %}
@@ -113,6 +128,15 @@
         {% for post in postshtml | reverse %}
         <span class="titlepost">{{post.title}} </span> <span id="specialb">by</span> <span class="poster">{{post.blog.nickname}}</span> at {{post.time}} on {{post.date}}
         <span class="paradf"><p>{{post.body}}</p></span> 
+        
+            {% for answer in posts_and_answers[post.id] | reverse %}
+            <div class="marginleft"><span class="titlepost"><span class="centered">{{answer.title}}</span></span> <span id="specialb">by</span> <span href="/blog?hobbyist={{answer.blogsanswer.nickname}}"><span class="poster">{{answer.blogsanswer.nickname}}</span></span>  at {{answer.time}} on {{answer.date}}
+            <span class="paradf"><p>{{answer.body}}</p></span> 
+                        
+            <hr>
+            </div>                
+            {% endfor %}
+
         <hr />
         {% endfor %}
     {% endif %}

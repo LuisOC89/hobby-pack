@@ -1,7 +1,7 @@
 from flask import request, redirect, render_template, session, flash, url_for
 from sqlalchemy import desc
 from app import db, app
-from models import Hobbyist, Hobby, Place, Encounter, Blog, hobbieshobbyists
+from models import Hobbyist, Hobby, Place, Encounter, Blog, hobbieshobbyists, Bloganswer
 from hashingtools import checking_password_hash
 from utils import filling, now1, checking_existing_address_in_db
 import cgi
@@ -37,8 +37,20 @@ def index():
     total_hobbies = Hobby.query.all()
     for hobby in total_hobbies:
         dict_hobby_hobbyists[hobby.name]=Hobbyist.query.filter(Hobbyist.hobbies.any(id=hobby.id)).count()
+
+    #This will have all the posts with their answers: {Post1: [answer1, answer2, answer3], Post2: [answer1]}
+    dict_posts_and_its_answers = {}
+    for post in posts:
+        #Initializing the list of lists
+        dict_posts_and_its_answers[post.id] = []                
+                        
+        this_post_answers = Bloganswer.query.filter_by(blog_id=post.id).all()                 
+                        
+        for b_answer in this_post_answers:
+            print (b_answer)
+            dict_posts_and_its_answers[post.id].append(b_answer)
                 
-    return render_template('zindex.html',title="Hobby Pack - Sharing our hobbies", hobbyists=hobbyists, hobbies=hobbies, places=places, encounters=encounters, postshtml=posts, users_per_hobby=dict_hobby_hobbyists, welcomessage=welcome_message)
+    return render_template('zindex.html',title="Hobby Pack - Sharing our hobbies", hobbyists=hobbyists, hobbies=hobbies, places=places, encounters=encounters, postshtml=posts, users_per_hobby=dict_hobby_hobbyists, welcomessage=welcome_message, posts_and_answers=dict_posts_and_its_answers)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -75,25 +87,54 @@ def listing_blogs():
     #My error here (AttributeError: 'NoneType' object has no attribute 'id') is that I was looking for this value in html in homeblogposts.html instead of index.html
     #print(conditional_get_request_id)
     #print(conditional_get_request_hobbyist)
+
+    #This will help to identify if this is an answer to a post created or a new post created
+    conditional_get_request_id_answer = str(request.args.get("answer_id"))
+
     #if both are none, it means that this is a get request without passing an attribute from the view to the controller
     if ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist =="None")):
         
         #This one shows all the posts of everyone in the blog order by year, by month, by day, by hour, by minute
         posts_python = Blog.query.all()  
 
-        return render_template('allhomeblogposts.html', title="Blogging Hobbies", postshtml=posts_python)
+        #This will have all the posts with their answers: {Post1: [answer1, answer2, answer3], Post2: [answer1]}
+        dict_posts_python_and_its_answers = {}
+        for post in posts_python:
+                #Initializing the list of lists
+                dict_posts_python_and_its_answers[post.id] = []                
+                                
+                this_post_answers = Bloganswer.query.filter_by(blog_id=post.id).all()                 
+                                
+                for b_answer in this_post_answers:
+                    print (b_answer)
+                    dict_posts_python_and_its_answers[post.id].append(b_answer)
+
+        return render_template('allhomeblogposts.html', title="Blogging Hobbies", postshtml=posts_python, posts_and_answers=dict_posts_python_and_its_answers)
     #if conditional_get_request_id is not "None", then we are bringing the attribute "id" from the view to the controller
     elif ((conditional_get_request_id != "None") and (conditional_get_request_hobbyist=="None")): 
-        database_id = int(conditional_get_request_id)
-        #print(database_id)
-        current_post = Blog.query.get(database_id)
-        title_python = current_post.title
-        #print(title_python)
-        body_python = current_post.body
-        #print(body_python)
-        hobbyist_owner_python = current_post.blog.nickname
-        #print(hobbyist_owner_python)
-        return render_template('eachblog.html', title="Reading my blog", titlehtml = title_python, bodyhtml=body_python, ownerhtml = hobbyist_owner_python) 
+        if conditional_get_request_id_answer=="None":
+            database_id = int(conditional_get_request_id)
+            #print(database_id)
+            current_post = Blog.query.get(database_id)
+            title_python = current_post.title
+            #print(title_python)
+            body_python = current_post.body
+            #print(body_python)
+            hobbyist_owner_python = current_post.blog.nickname
+            #print(hobbyist_owner_python)
+            return render_template('eachblog.html', title="Reading my blog", titlehtml = title_python, bodyhtml=body_python, ownerhtml = hobbyist_owner_python) 
+        else:
+            database_id = int(conditional_get_request_id_answer)
+            #print(database_id)
+            current_post_answer = Bloganswer.query.get(database_id)
+            title_python = current_post_answer.title
+            #print(title_python)
+            body_python = current_post_answer.body
+            #print(body_python)
+            hobbyist_owner_python = current_post_answer.blogsanswer.nickname
+            #print(hobbyist_owner_python)
+            return render_template('eachblog.html', title="Reading my blog", titlehtml = title_python, bodyhtml=body_python, ownerhtml = hobbyist_owner_python) 
+
     #if conditional_get_request_hobbyist is not "None", then we are bringing the attribute "hobbyist" from the view to the controller
     elif ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist != "None")):
         hobbyist_name = conditional_get_request_hobbyist
@@ -441,10 +482,42 @@ def adding_post():
             post_that_you_will_answer_id = request.form['post_id']
             post_that_you_will_answer = Blog.query.filter_by(id=post_that_you_will_answer_id).first()
 
-            return render_template("newpostanswer.html", post_to_answer=post_that_you_will_answer)
+            post_that_you_will_answer_existing_answers = Bloganswer.query.filter_by(blog_id=post_that_you_will_answer.id).all()    
+                       
+            return render_template("newpostanswer.html", post_to_answer=post_that_you_will_answer, answers=post_that_you_will_answer_existing_answers)
 
         elif condition=="from_new_answer_to_post":
-            return render_template("zindex.html")
+            post_that_you_will_answer_id = request.form['post2answer_id']
+            post_that_you_will_answer = Blog.query.filter_by(id=post_that_you_will_answer_id).first()
+
+            post_title = request.form['posttitle']
+            post_body = request.form['postbody']
+            post_already_exists = Blog.query.filter_by(title=post_title).count()              
+
+            #Validation to make sure that the new post has title. 
+            if ((post_title =="") and (post_body!="")):
+                error = "notitle"                       
+            #Validation to make sure that the new post has body. 
+            elif ((post_title !="") and (post_body=="")):
+                error = "nobody"                   
+            #Validation to make sure that the new post has both title and body. 
+            elif ((post_title =="") and (post_body=="")):
+                error = "bothempty"
+            #Validation to make sure there are no other posts with the same title
+            elif (post_already_exists == 1):
+                error = "titleexists"
+            else:
+                error = ""
+
+            if (error!=""):    
+                return render_template('newpostanswer.html',title="Posting an idea", newtitle=post_title, newbody=post_body, errorhtml = error, post_to_answer=post_that_you_will_answer)
+            else:
+                post_body = request.form['postbody']                
+                new_post_answer = Bloganswer(post_title, post_body, filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year), filling(now1().hour)+":"+filling(now1().minute), post_that_you_will_answer ,logged_in_hobbyist())
+                db.session.add(new_post_answer)
+                db.session.commit()
+                #print(new_post_answer.id)
+                return redirect('''/blog?id='''+str(new_post_answer.id)+'''&answer_id='''+str(new_post_answer.id))
 
 @app.route('/newhobbie', methods=['POST', 'GET'])
 def adding_hobbie():
@@ -541,6 +614,16 @@ def adding_place():
             #Validation for zipcode (length 5 in US)
             if ((len(zipcodehtml) != 5) and (len(zipcodehtml) > 0)):
                 error_zip = 'The zip code entered is invalid. It has to be 5 characters long.'
+            #validation just numbers in zipcode    
+            elif (len(zipcodehtml) == 5):
+                indicator_letter = 0
+                for character in zipcodehtml:
+                    if character.isalpha():
+                        indicator_letter = indicator_letter + 1   
+                    else:
+                        indicator_letter = indicator_letter
+                if indicator_letter != 0:
+                    error_zip = 'The zip code entered is invalid. It has to have just numbers.'
             else:
                 error_zip = ""
             #Final validation - Validation pre-database (checking all the data fields are valid)
