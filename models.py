@@ -35,8 +35,7 @@ class Blog(db.Model):
     body = db.Column(db.String(120))
     date = db.Column(db.String(10))
     time = db.Column(db.String(5))       
-    hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
-    encounter_id = db.Column(db.Integer, db.ForeignKey('encounter.id'))
+    hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))    
     blog_answers = db.relationship("Bloganswer", backref="bloganswer")
 
     def __init__(self, title, body, date, time, hobbyist_owner):
@@ -118,22 +117,81 @@ class Place(db.Model):
         self.zipcode = zipcode
         self.unique_key_address = name+staddress+city+state+zipcode
     
+
+
+
+
+
+
+
+
+#TODO#1: Make sure that the classes are declared correctly
+'''
+
+
 #An encounter can have a hobby, a place and different hobbyists (one-to-many-relationship)
 class Encounter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), unique=True)    
     date = db.Column(db.String(10))
     start_time = db.Column(db.String(5))   
-    duration_hours = db.Column(db.Integer)
-    duration_minutes = db.Column(db.Integer)
+    duration_time = db.Column(db.String(5))
+    creator_hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
     place_id = db.Column(db.Integer, db.ForeignKey('place.id'))
     hobby_id = db.Column(db.Integer, db.ForeignKey('hobby.id'))
+    attendance_taken_status = db.Column(db.Boolean)
+    supposed_participants = db.relationship("Hobbyist", backref="hobbyist") 
+    
+    comments_before_event = db.relationship("Event_comment", backref="event_comment")
 
-    def __init__(self, name, date, time, duration_hours, duration_minutes, holding_place, hobby_taking_place):
+    attendance_participants = db.relationship("Hobbyist", backref="hobbyist")
+    recap = db.relationship("Event_comment", backref="event_comment")
+    
+    comments_after_event = db.relationship("Event_comment", backref="event_comment")
+
+    def __init__(self, name, date, time, duration, holding_place, hobby_taking_place, owner):
         self.name = name
         self.date = date
-        self.time = time
-        self.duration_hours = duration_hours
-        self.duration_minutes = duration_minutes
+        self.start_time = time
+        self.duration_time = duration        
+        self.creator_id = owner
         self.place = holding_place
         self.encounter = hobby_taking_place
+
+class Event_comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100))
+    
+    #type can be just "comment_before", "recap", "comment_after"
+    type = db.Column(db.String(14))
+
+    user_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id')) 
+    event_id = db.Column(db.Integer, db.ForeignKey('encounter.id')) 
+
+    def __init__(self, title, type):
+        self.title = title
+        self.type = type
+        
+'''
+    
+
+#For chat feature
+class Chat(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    is_a_group = db.Column(db.Boolean)
+    group_name = db.Column(db.String(60))
+    participants = db.relationship("Hobbyist", backref="hobbyist")
+    comments = db.relationship("Chat_comment", backref="chat_comment")
+
+    def __init__(self, is_a_group, name_of_group):
+        self.is_a_group = is_a_group
+        self.group_name = name_of_group
+        
+class Chat_comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    comment = db.Column(db.String(500))
+    owner_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
+    chat_id = db.Column(db.Integer, db.ForeignKey('chat.id')) 
+
+    def __init__(self, comment):
+        self.comment = comment
