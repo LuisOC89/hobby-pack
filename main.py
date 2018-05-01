@@ -869,7 +869,7 @@ def creating_chat():
     if request.method == 'POST':
         condition = request.form['condition']
         if condition == "from_allchats_view":      
-            my_chats = Chat.query.filter(Chat.participants.any(nickname=logged_in_hobbyist().nickname)).all()
+            '''my_chats = Chat.query.filter(Chat.participants.any(nickname=logged_in_hobbyist().nickname)).all()'''
             other_hobbyists = Hobbyist.query.filter(Hobbyist.id!=logged_in_hobbyist().id).order_by(Hobbyist.nickname).all() 
 
             #dict in the form: {user1: [hobby1, hobby2, hobby3], user2: [hobby3]}
@@ -889,13 +889,12 @@ def creating_chat():
         
         elif condition == "from_newchat_view_validation":
             initial_message = request.form['initial_message']
-            post_body = request.form['postbody']
-            post_already_exists = Blog.query.filter_by(title=post_title).count()              
-
-            #Validation to make sure that the new post has title. 
-            if ((post_title =="") and (post_body!="")):
-                error = "notitle"                       
-            #Validation to make sure that the new post has body. 
+            people_invited = request.form.getlist('peoplechecked')
+            
+            #Validation to make sure that there is a message. 
+            if (initial_message ==""):
+                error_message = "nomessage"                       
+            #Validation to make sure that a user was selected. 
             elif ((post_title !="") and (post_body=="")):
                 error = "nobody"                   
             #Validation to make sure that the new post has both title and body. 
