@@ -1,0 +1,38 @@
+{% extends "zbase.html" %}
+
+{% block content %}
+    <h1 class="titlemain">Sending messages, sharing ideas</h1>
+        
+    <form method='post' action="/newpost">
+        <label>
+            Initial message:<br>
+            <textarea name="initial_message">{{new_initial_message}}</textarea><br>
+            {% if errormessage == "nomessage" %}
+            <span class="error10">You can not send an empty message. No cool. Please enter a valid message (something)</span>
+            {% endif %}
+
+            Who would you like to send this message?
+            <br>
+            {% for person in other_people %}
+                <input type="checkbox" name="peoplechecked" id="{{person.id}}" value="{{person.nickname}}"> 
+                <label for="{{person.nickname}}">{{person.nickname}} {{person.city}} {{person.state}} {{person.zipcode}}  
+                {% if dict_user_hobbies[person.nickname] | length == 0 %}
+                    (No hobbies yet)
+                {% else %}      
+                    (              
+                    {% for hobby in dict_user_hobbies[person.nickname] %}
+                        hobby
+                    {% endfor %}
+                    )
+                {% endif %}                
+            </label><br>                 
+            {% endfor %}  
+            {% if errorpeople == "nopeople" %}   
+            <span class="error10">Don't forget to select at least a receiver of your message.</span>           
+            {% endif %}
+            <input type="hidden" name="condition" value="from_newchat_view_validation"/>
+            <input type="submit" value='Add Entry' />
+            
+    </form>
+
+{% endblock %}

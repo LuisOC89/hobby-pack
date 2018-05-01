@@ -1,0 +1,39 @@
+{% extends "zbase.html" %}
+
+{% block content %}
+<h1 class="titlemain">Let's message Hobbies!</h1>
+    {% if chats|length == 0 %}
+    <p>No chats yet</p>
+    <form action="/newchat" method="post" class="alignedform">                        
+        <input type="hidden" name="condition" value="from_allchats_view" id="just to delimitate value of value" />
+        <input type="submit" value="CREATE" class="alignedformbutton"/>
+    </form> new chat. <br><br>
+    {% else %}
+        {% for chat in chats | reverse %}
+        <!--<a href="/blog?id={{post.id}}" class="titlepost">{{post.title}}</a> <span id="specialb">by</span> <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">{{post.blog.nickname}}</span></a> at {{post.time}} on {{post.date}}
+        <span class="paradf"><p>{{post.body}}</p></span> 
+
+        <form action="/newchat" method="post" class="alignedform">                        
+            <input type="hidden" name="condition" value="from_allchats_view" id="just to delimitate value of value" />
+            <input type="submit" value="CREATE" class="alignedformbutton"/>
+        </form> new chat. <br><br> 
+
+            {% for answer in posts_and_answers[post.id] | reverse %}
+                <div class="marginleft"><a href="/blog?id={{post.id}}&answer_id={{answer.id}}" class="titlepost"><span class="centered">{{answer.title}}</a></span> <span id="specialb">by</span> <a href="/blog?hobbyist={{answer.blogsanswer.nickname}}"><span class="poster">{{answer.blogsanswer.nickname}}</span></a>  at {{answer.time}} on {{answer.date}}
+                <span class="paradf"><p>{{answer.body}}</p></span> 
+                
+                <form action="/newpost" method="post" class="alignedform">            
+                    <input type="hidden" name="post_id" value={{post.id}}/>    
+                    <input type="hidden" name="post_id" value={{answer.id}}/>                  
+                    <input type="hidden" name="condition" value="from_answer_to_post" id="just to delimitate value of value" />
+                    <input type="submit" value="COMMENT" class="alignedformbutton"/>
+                </form> this post. <br><br>
+                <hr>
+                </div>                
+            {% endfor %}
+
+        <hr />
+        {% endfor %}//-->
+    {% endif %}
+    
+{% endblock %}

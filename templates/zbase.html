@@ -85,15 +85,16 @@
 <body>
     <div style='float: right'>
         {% if 'hobbyist' in session %}            
-            <a href="/">Home</a> | <a href="/people">Hobbyists</a> | <a href="/hobbies">Hobbies</a> | <a href="/places">Places</a> | <a href="/events">Encounters</a> | <a href="/blog">Blog</a><br>  
+            <a href="/">Home</a> | <a href="/blog">Blog</a> | <a href="/chat">Chat</a> | <a href="/people">Hobbyists</a> | <a href="/hobbies">Hobbies</a> | <a href="/places">Places</a> | <a href="/events">Encounters</a><br>   
             <div class="toright"><a href="/myinfo?condition=show_all_info_user">{{ session['hobbyist'] }}</a> | <a href="/logout"> logout </a></div>
         {% else %}
             <a href="/">Home</a> | <a href="/newhobbyist">Sign up</a> | <a href="/login">Login</a> 
         {% endif %}
     </div>    
-    
-    
+        
             <a href="/newpost">Add new post</a>
+            &nbsp&nbsp
+            <a href="/newchat">Start messaging</a>
             &nbsp&nbsp
             <a href="/newhobbie">Add new hobby</a>
             &nbsp&nbsp

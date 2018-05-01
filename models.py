@@ -26,6 +26,10 @@ hobbiesplaces = db.Table('hobbiesplaces',
     db.Column('hobby_id', db.Integer, db.ForeignKey('hobby.id')),
     db.Column('place_id', db.Integer, db.ForeignKey("place.id"))
 )
+chatshobbyists = db.Table('chatshobbyists',
+    db.Column('chat_id', db.Integer, db.ForeignKey('chat.id')),
+    db.Column('participant_id', db.Integer, db.ForeignKey("hobbyist.id"))
+)
 
 # Classes Hobbyist, Hobby, Place, Encounter, Blog
 #A blog will belong to just one user (one-to-many-relationship)
@@ -79,6 +83,7 @@ class Hobbyist(db.Model):
     places = db.relationship('Place', secondary=placeshobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
     encounters = db.relationship('Encounter', secondary=encountershobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
     blogsanswers = db.relationship("Bloganswer", backref="blogsanswer")
+    chats = db.relationship('Chat', secondary=chatshobbyists, backref=db.backref('participants', lazy='dynamic'))
 
     def __init__(self, nickname, email, city, state, zipcode, password_to_be_hashed):
         self.nickname = nickname
@@ -117,13 +122,23 @@ class Place(db.Model):
         self.zipcode = zipcode
         self.unique_key_address = name+staddress+city+state+zipcode
     
+class Encounter(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(60), unique=True)    
+    date = db.Column(db.String(10))
+    start_time = db.Column(db.String(5))   
+    duration_hours = db.Column(db.Integer)
+    duration_minutes = db.Column(db.Integer)
+    place_id = db.Column(db.Integer, db.ForeignKey('place.id'))
+    hobby_id = db.Column(db.Integer, db.ForeignKey('hobby.id'))
 
-
-
-
-
-
-
+    def __init__(self, name, date, time, duration_hours, duration_minutes, holding_place, hobby_taking_place):
+        self.name = name
+        self.date = date
+        self.time = time
+        self.duration_hours = duration_hours
+        self.duration_minutes = duration_minutes
+        self.place = holding_place
 
 #TODO#1: Make sure that the classes are declared correctly
 '''
@@ -179,8 +194,7 @@ class Event_comment(db.Model):
 class Chat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     is_a_group = db.Column(db.Boolean)
-    group_name = db.Column(db.String(60))
-    participants = db.relationship("Hobbyist", backref="hobbyist")
+    name = db.Column(db.String(60))
     comments = db.relationship("Chat_comment", backref="chat_comment")
 
     def __init__(self, is_a_group, name_of_group):
@@ -189,8 +203,10 @@ class Chat(db.Model):
         
 class Chat_comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    comment = db.Column(db.String(500))
-    owner_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
+    comment = db.Column(db.String(1000))
+    date = db.Column(db.String(10))
+    time = db.Column(db.String(5)) 
+    hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
     chat_id = db.Column(db.Integer, db.ForeignKey('chat.id')) 
 
     def __init__(self, comment):

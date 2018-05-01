@@ -1,7 +1,7 @@
 from flask import request, redirect, render_template, session, flash, url_for
 from sqlalchemy import desc
 from app import db, app
-from models import Hobbyist, Hobby, Place, Encounter, Blog, hobbieshobbyists, Bloganswer
+from models import Hobbyist, Hobby, Place, Blog, Bloganswer, Encounter, Chat, Chat_comment
 from hashingtools import checking_password_hash
 from utils import filling, now1, checking_existing_address_in_db
 import cgi
@@ -390,6 +390,8 @@ def signup():
                     indicator_letter = indicator_letter
             if indicator_letter != 0:
                 error_zip = 'The zip code entered is invalid. It has to have just numbers.'
+            else:
+                error_zip = ""
         else:
             error_zip = ""
         #validation for email
@@ -624,6 +626,8 @@ def adding_place():
                         indicator_letter = indicator_letter
                 if indicator_letter != 0:
                     error_zip = 'The zip code entered is invalid. It has to have just numbers.'
+                else:
+                    error_zip = ""
             else:
                 error_zip = ""
             #Final validation - Validation pre-database (checking all the data fields are valid)
@@ -685,8 +689,11 @@ def adding_place():
                             existing_hobbie = Hobby.query.filter_by(name=hobby).first()                        
                             existing_hobbie.places.append(place) 
                             db.session.commit()    
-                            
-                        return render_template('zindex.html', title="Hobby Pack - Sharing our hobbies")
+
+                        """return redirect('''/blog?id='''+str(new_post_answer.id)+'''&answer_id='''+str(new_post_answer.id))"""
+                        return redirect("/myinfo?condition=show_all_info_user&answer_id=Hobby Pack - Sharing our hobbies")
+                        '''<a href="/myinfo?condition=show_all_info_user">                           
+                        return redirect(url_for("index", title="Hobby Pack - Sharing our hobbies"))'''
 
         elif (conditional=="to_add_existing_place_to_my_places"):
             place_key_address = request.form['placename']            
@@ -768,6 +775,200 @@ def adding_place():
             #all_places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
             #my_places_not_this_hobby_yet = [x for x in all_places if x not in my_places_this_hobbie] 
             #return render_template('existingplaceexistinghobby.html', title="Hobby Pack - Linking your hobbies to your places", missing_placeshtml_for_me_for_this_hobby=my_places_not_this_hobby_yet, hobby=this_hobby)
+
+
+
+
+
+
+
+
+
+
+
+
+
+@app.route('/chat', methods=['POST', 'GET'])
+def listing_chats():
+    #This will identify if this is a post request
+    if request.method == "GET":                
+        
+        #This will help to identify if this is a get request from a specific view
+        conditional = str(request.args.get("condition"))
+
+        #if conditional is none, it means that this is a get request without passing any attribute from the view to the controller, so its just a click on zBase.html
+        if (conditional == "None"):
+            
+            #This one shows all the posts of everyone in the blog order by year, by month, by day, by hour, by minute
+            # Example: posts_python = Blog.query.all()               
+            my_chats = Chat.query.filter(Chat.participants.any(nickname=logged_in_hobbyist().nickname)).all()
+
+            #This will have all the posts with their answers: {Post1: [answer1, answer2, answer3], Post2: [answer1]}
+            '''dict_posts_python_and_its_answers = {}
+            for post in posts_python:
+                    #Initializing the list of lists
+                    dict_posts_python_and_its_answers[post.id] = []                
+                                    
+                    this_post_answers = Bloganswer.query.filter_by(blog_id=post.id).all()                 
+                                    
+                    for b_answer in this_post_answers:
+                        print (b_answer)
+                        dict_posts_python_and_its_answers[post.id].append(b_answer)'''
+
+            #Example: return render_template('allhomeblogposts.html', title="Blogging Hobbies", postshtml=posts_python, posts_and_answers=dict_posts_python_and_its_answers)
+            return render_template('allchats.html', title="Messages", chats=my_chats)
+            
+        
+        '''#if conditional_get_request_id is not "None", then we are bringing the attribute "id" from the view to the controller
+        elif ((conditional_get_request_id != "None") and (conditional_get_request_hobbyist=="None")): 
+            if conditional_get_request_id_answer=="None":
+                database_id = int(conditional_get_request_id)
+                #print(database_id)
+                current_post = Blog.query.get(database_id)
+                title_python = current_post.title
+                #print(title_python)
+                body_python = current_post.body
+                #print(body_python)
+                hobbyist_owner_python = current_post.blog.nickname
+                #print(hobbyist_owner_python)
+                return render_template('eachblog.html', title="Reading my blog", titlehtml = title_python, bodyhtml=body_python, ownerhtml = hobbyist_owner_python) 
+            else:
+                database_id = int(conditional_get_request_id_answer)
+                #print(database_id)
+                current_post_answer = Bloganswer.query.get(database_id)
+                title_python = current_post_answer.title
+                #print(title_python)
+                body_python = current_post_answer.body
+                #print(body_python)
+                hobbyist_owner_python = current_post_answer.blogsanswer.nickname
+                #print(hobbyist_owner_python)
+                return render_template('eachblog.html', title="Reading my blog", titlehtml = title_python, bodyhtml=body_python, ownerhtml = hobbyist_owner_python) 
+
+        #if conditional_get_request_hobbyist is not "None", then we are bringing the attribute "hobbyist" from the view to the controller
+        elif ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist != "None")):
+            hobbyist_name = conditional_get_request_hobbyist
+            #print(hobbyist_name)
+            current_hobbyist = Hobbyist.query.filter_by(nickname=hobbyist_name).first()
+            #print(current_hobbyist)
+            #This one shows all the blogs of just this particular hobbyist
+            current_hobbyist_id = current_hobbyist.id
+            posts_python = Blog.query.filter_by(hobbyist_id=current_hobbyist_id).all()
+            return render_template('allhomeblogposts.html', title="Just blogging",postshtml=posts_python)
+        '''
+
+#TODO#3 Adding a chat (similar to adding a blog)
+
+@app.route('/newchat', methods=['POST', 'GET'])
+def creating_post():
+    '''if request.method == "GET":
+        # Because the url_for points to the function "adding_post"(controller), not the template "newpost.html" (view), we have to extract the value of the argument "welcomessage" first as a get request.
+        # When welcomemessage is empty, it passes the value "None". 
+        welcomessage=request.args.get('welcomessage')
+        return render_template('newpost.html', title="Posting my ideas", welcomemessage=welcomessage)'''
+
+    if request.method == 'POST':
+        condition = request.form['condition']
+        if condition == "from_allchats_view":      
+            my_chats = Chat.query.filter(Chat.participants.any(nickname=logged_in_hobbyist().nickname)).all()
+            other_hobbyists = Hobbyist.query.filter(Hobbyist.id!=logged_in_hobbyist().id).order_by(Hobbyist.nickname).all() 
+
+            #dict in the form: {user1: [hobby1, hobby2, hobby3], user2: [hobby3]}
+            dict_user_hobbies = {}
+            for user in other_hobbyists:
+                dict_user_hobbies[user.nickname] = []
+                hobbies_this_user = Hobby.query.filter(Hobby.hobbyists.any(nickname=user.nickname)).all() 
+                for hobby in hobbies_this_user:                    
+                    dict_user_hobbies[user.nickname].append(hobby)
+            '''for hobby in my_hobbies:
+                dict_what_hobbie_where_places[hobby.name] = []
+                my_places_this_hobbie = Place.query.filter(Place.hobbies.any(name=hobby.name)).filter(Place.hobbyists.any(nickname=hobbyist.nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all() 
+                for place in my_places_this_hobbie:
+                    dict_what_hobbie_where_places[hobby.name].append(place)'''
+
+            return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage="", dict_user_hobbies=dict_user_hobbies)
+        
+        elif condition == "from_newchat_view_validation":
+            post_title = request.form['posttitle']
+            post_body = request.form['postbody']
+            post_already_exists = Blog.query.filter_by(title=post_title).count()              
+
+            #Validation to make sure that the new post has title. 
+            if ((post_title =="") and (post_body!="")):
+                error = "notitle"                       
+            #Validation to make sure that the new post has body. 
+            elif ((post_title !="") and (post_body=="")):
+                error = "nobody"                   
+            #Validation to make sure that the new post has both title and body. 
+            elif ((post_title =="") and (post_body=="")):
+                error = "bothempty"
+            #Validation to make sure there are no other posts with the same title
+            elif (post_already_exists == 1):
+                error = "titleexists"
+            else:
+                error = ""
+
+            if (error!=""):    
+                return render_template('newpost.html',title="Posting an idea", newtitle=post_title, newbody=post_body, errorhtml = error)
+            else:
+                new_post = Blog(post_title, post_body, filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year), filling(now1().hour)+":"+filling(now1().minute), logged_in_hobbyist())
+                db.session.add(new_post)
+                db.session.commit()
+                #print(new_post.id)
+                return redirect('''/blog?id='''+str(new_post.id))
+        elif condition == "from_answer_to_post":
+            post_that_you_will_answer_id = request.form['post_id']
+            post_that_you_will_answer = Blog.query.filter_by(id=post_that_you_will_answer_id).first()
+
+            post_that_you_will_answer_existing_answers = Bloganswer.query.filter_by(blog_id=post_that_you_will_answer.id).all()    
+                       
+            return render_template("newpostanswer.html", post_to_answer=post_that_you_will_answer, answers=post_that_you_will_answer_existing_answers)
+
+        elif condition=="from_new_answer_to_post":
+            post_that_you_will_answer_id = request.form['post2answer_id']
+            post_that_you_will_answer = Blog.query.filter_by(id=post_that_you_will_answer_id).first()
+
+            post_title = request.form['posttitle']
+            post_body = request.form['postbody']
+            post_already_exists = Blog.query.filter_by(title=post_title).count()              
+
+            #Validation to make sure that the new post has title. 
+            if ((post_title =="") and (post_body!="")):
+                error = "notitle"                       
+            #Validation to make sure that the new post has body. 
+            elif ((post_title !="") and (post_body=="")):
+                error = "nobody"                   
+            #Validation to make sure that the new post has both title and body. 
+            elif ((post_title =="") and (post_body=="")):
+                error = "bothempty"
+            #Validation to make sure there are no other posts with the same title
+            elif (post_already_exists == 1):
+                error = "titleexists"
+            else:
+                error = ""
+
+            if (error!=""):    
+                return render_template('newpostanswer.html',title="Posting an idea", newtitle=post_title, newbody=post_body, errorhtml = error, post_to_answer=post_that_you_will_answer)
+            else:
+                post_body = request.form['postbody']                
+                new_post_answer = Bloganswer(post_title, post_body, filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year), filling(now1().hour)+":"+filling(now1().minute), post_that_you_will_answer ,logged_in_hobbyist())
+                db.session.add(new_post_answer)
+                db.session.commit()
+                #print(new_post_answer.id)
+                return redirect('''/blog?id='''+str(new_post_answer.id)+'''&answer_id='''+str(new_post_answer.id))
+
+
+#TODO encounters (show all, show each)
+#TODO adding encounters (add encounter, add attendance later, add recap, add comment)
+
+# Views allevents.html, eachevent.html, newevent.html
+# Missing view - we are not going to do a new view, just a text bar for new comment (consider recap, after and before)
+
+# Chat views missing: All my_chats, each chat, newchat  
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run()
