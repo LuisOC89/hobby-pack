@@ -144,7 +144,7 @@ def listing_blogs():
         #This one shows all the blogs of just this particular hobbyist
         current_hobbyist_id = current_hobbyist.id
         posts_python = Blog.query.filter_by(hobbyist_id=current_hobbyist_id).all()
-        return render_template('allhomeblogposts.html', title="Just blogging",postshtml=posts_python)
+        return render_template('allhomeblogposts.html', title="Just blogging",postshtml=posts_python, posts_and_answers="N/A")
 
 @app.route('/hobbies', methods=['POST', 'GET'])
 def listing_hobbies():  
@@ -859,7 +859,7 @@ def listing_chats():
 #TODO#3 Adding a chat (similar to adding a blog)
 
 @app.route('/newchat', methods=['POST', 'GET'])
-def creating_post():
+def creating_chat():
     '''if request.method == "GET":
         # Because the url_for points to the function "adding_post"(controller), not the template "newpost.html" (view), we have to extract the value of the argument "welcomessage" first as a get request.
         # When welcomemessage is empty, it passes the value "None". 
@@ -888,7 +888,7 @@ def creating_post():
             return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage="", dict_user_hobbies=dict_user_hobbies)
         
         elif condition == "from_newchat_view_validation":
-            post_title = request.form['posttitle']
+            initial_message = request.form['initial_message']
             post_body = request.form['postbody']
             post_already_exists = Blog.query.filter_by(title=post_title).count()              
 

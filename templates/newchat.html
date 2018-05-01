@@ -3,7 +3,7 @@
 {% block content %}
     <h1 class="titlemain">Sending messages, sharing ideas</h1>
         
-    <form method='post' action="/newpost">
+    <form method='post' action="/newchat">
         <label>
             Initial message:<br>
             <textarea name="initial_message">{{new_initial_message}}</textarea><br>
@@ -17,12 +17,13 @@
                 <input type="checkbox" name="peoplechecked" id="{{person.id}}" value="{{person.nickname}}"> 
                 <label for="{{person.nickname}}">{{person.nickname}} {{person.city}} {{person.state}} {{person.zipcode}}  
                 {% if dict_user_hobbies[person.nickname] | length == 0 %}
-                    (No hobbies yet)
+                    ( No hobbies yet )
                 {% else %}      
-                    (              
-                    {% for hobby in dict_user_hobbies[person.nickname] %}
-                        hobby
-                    {% endfor %}
+                    (
+                        {% for hobby in dict_user_hobbies[person.nickname] %}
+                            {{hobby.name}}
+                            {{"," if not loop.last }} 
+                        {% endfor %}
                     )
                 {% endif %}                
             </label><br>                 
@@ -31,7 +32,7 @@
             <span class="error10">Don't forget to select at least a receiver of your message.</span>           
             {% endif %}
             <input type="hidden" name="condition" value="from_newchat_view_validation"/>
-            <input type="submit" value='Add Entry' />
+            <input type="submit" value='Send' />
             
     </form>
 
