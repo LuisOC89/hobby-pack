@@ -3,14 +3,17 @@
 {% block content %}
     <h1 class="titlemain">Sending messages, sharing ideas</h1>
         
+    {% if other_people | length == 0 %}
+        Nobody else on the website yet. Invite your friends to sign up.
+    {% else %}
     <form method='post' action="/newchat">
         <label>
-            Initial message:<br>
-            <textarea name="initial_message">{{new_initial_message}}</textarea><br>
-            {% if errormessage == "nomessage" %}
-            <span class="error10">You can not send an empty message. No cool. Please enter a valid message (something)</span>
-            {% endif %}
-
+        Initial message:<br>
+        <textarea name="initial_message">{{new_initial_message}}</textarea><br>
+        {% if errormessage == "nomessage" %}
+        <span class="error10">You can not send an empty message. No cool. Please enter a valid message (something)</span><br>
+        {% endif %}
+        
             Who would you like to send this message?
             <br>
             {% for person in other_people %}
@@ -29,11 +32,13 @@
             </label><br>                 
             {% endfor %}  
             {% if errorpeople == "nopeople" %}   
-            <span class="error10">Don't forget to select at least a receiver of your message.</span>           
+            <span class="error10">Don't forget to select at least a receiver for your message.</span><br>    
+            {% elif errorpeople == "chat_exists" %}
+            <span class="error10">You have already a chat with {{other_person}}. Please check it out !here!</span><br>        
             {% endif %}
             <input type="hidden" name="condition" value="from_newchat_view_validation"/>
-            <input type="submit" value='Send' />
-            
+            <input type="submit" value='Send' />            
     </form>
+    {% endif %}
 
 {% endblock %}

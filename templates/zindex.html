@@ -129,7 +129,7 @@
         <span class="titlepost">{{post.title}} </span> <span id="specialb">by</span> <span class="poster">{{post.blog.nickname}}</span> at {{post.time}} on {{post.date}}
         <span class="paradf"><p>{{post.body}}</p></span> 
         
-            {% for answer in posts_and_answers[post.id] | reverse %}
+            {% for answer in posts_and_answers[post.id] %}
             <div class="marginleft"><span class="titlepost"><span class="centered">{{answer.title}}</span></span> <span id="specialb">by</span> <span href="/blog?hobbyist={{answer.blogsanswer.nickname}}"><span class="poster">{{answer.blogsanswer.nickname}}</span></span>  at {{answer.time}} on {{answer.date}}
             <span class="paradf"><p>{{answer.body}}</p></span> 
                         

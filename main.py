@@ -815,36 +815,95 @@ def listing_chats():
                         print (b_answer)
                         dict_posts_python_and_its_answers[post.id].append(b_answer)'''
 
-            #Example: return render_template('allhomeblogposts.html', title="Blogging Hobbies", postshtml=posts_python, posts_and_answers=dict_posts_python_and_its_answers)
-            return render_template('allchats.html', title="Messages", chats=my_chats)
-            
-        
-        '''#if conditional_get_request_id is not "None", then we are bringing the attribute "id" from the view to the controller
-        elif ((conditional_get_request_id != "None") and (conditional_get_request_hobbyist=="None")): 
-            if conditional_get_request_id_answer=="None":
-                database_id = int(conditional_get_request_id)
-                #print(database_id)
-                current_post = Blog.query.get(database_id)
-                title_python = current_post.title
-                #print(title_python)
-                body_python = current_post.body
-                #print(body_python)
-                hobbyist_owner_python = current_post.blog.nickname
-                #print(hobbyist_owner_python)
-                return render_template('eachblog.html', title="Reading my blog", titlehtml = title_python, bodyhtml=body_python, ownerhtml = hobbyist_owner_python) 
-            else:
-                database_id = int(conditional_get_request_id_answer)
-                #print(database_id)
-                current_post_answer = Bloganswer.query.get(database_id)
-                title_python = current_post_answer.title
-                #print(title_python)
-                body_python = current_post_answer.body
-                #print(body_python)
-                hobbyist_owner_python = current_post_answer.blogsanswer.nickname
-                #print(hobbyist_owner_python)
-                return render_template('eachblog.html', title="Reading my blog", titlehtml = title_python, bodyhtml=body_python, ownerhtml = hobbyist_owner_python) 
+             #This will have all the chats with their comments: 
+             # {Chat1: [[chat_name_for_this_user, last_comment_this_chat, date_or_time],[comment1, comment2, comment3]], 
+             # Chat2: [[chat_name_for_this_user, last_comment_this_chat, date_or_time],[comment1]]}            
+            dict_chats_and_their_comments = {}
+            for chat in my_chats:
+                this_chat_comments = Chat_comment.query.filter_by(chat_id=chat.id).all() 
+                name_to_process = chat.name.split(",") 
+                for name in name_to_process:
+                    if name != logged_in_hobbyist().nickname:
+                        chat_name = name 
+                #Initializing the list of lists                                
+                dict_chats_and_their_comments[chat.id] = [] 
+                #{chat1:[]}
+                dict_chats_and_their_comments[chat.id].append([])
+                #chat1:[[]]
+                dict_chats_and_their_comments[chat.id][0].append(chat_name)                
+                dict_chats_and_their_comments[chat.id][0].append(this_chat_comments[-1])
+                print("\n"+this_chat_comments[-1].comment+"\n")
 
-        #if conditional_get_request_hobbyist is not "None", then we are bringing the attribute "hobbyist" from the view to the controller
+                #To decide wheather to show date or time
+                date_this_chat_last_comment = this_chat_comments[-1].date
+                time_this_chat_last_comment = this_chat_comments[-1].time
+
+                #if year today is greater than year of comment 
+                print("\n"+date_this_chat_last_comment+"\n")
+                print("\n"+str(type(date_this_chat_last_comment))+"\n")
+                
+                year_last_comment=date_this_chat_last_comment[6:10]
+                print("\n"+year_last_comment+"\n")
+
+                if (int(now1().year) > int(date_this_chat_last_comment[6:10])):                     
+                    date_or_time = date_this_chat_last_comment
+                else:
+                    if (now1().month > int(date_this_chat_last_comment[0:2])):
+                        date_or_time = date_this_chat_last_comment                        
+                    else:
+                        if (now1().day > int(date_this_chat_last_comment[3:5])):
+                            date_or_time = date_this_chat_last_comment
+                        else:
+                            date_or_time = time_this_chat_last_comment
+                dict_chats_and_their_comments[chat.id][0].append(date_or_time)
+
+                #How to organize based on date and time:
+                #I subtract the substrings, convert them and compared them: (( date: MM/DD/YYYY time: HH/MM )) 
+                #year=Blog.date[6:10] #starting at space 6 and until space 10
+                #month=Blog.date[0:2]
+                #day=Blog.date[3:5]
+                #hour=Blog.time[0:2]
+                #minutes=Blog.time[3:5]
+
+                dict_chats_and_their_comments[chat.id].append([])                                                
+                for comment in this_chat_comments:
+                    print (comment.comment)
+                    dict_chats_and_their_comments[chat.id][1].append(comment)
+
+            #Example: return render_template('allhomeblogposts.html', title="Blogging Hobbies", postshtml=posts_python, posts_and_answers=dict_posts_python_and_its_answers)
+            return render_template('allchats.html', title="Messages", chats=my_chats, chat_comments=dict_chats_and_their_comments)
+        elif (conditional == "see_this_chat"):
+            database_id = int(request.args.get("chat_id"))            
+            current_chat = Chat.query.filter_by(id=database_id).first()   
+            
+            name_to_process = current_chat.name.split(",") 
+            for name in name_to_process:
+                if name != logged_in_hobbyist().nickname:
+                    chat_name = name 
+                
+            all_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).all()
+            my_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).filter_by(hobbyist_id=logged_in_hobbyist().id).all()
+    
+            # dictionary_of_chats_and_their_seen_for_this_user_names
+            # dict: {chat1: name_I_should_see, chat2: name_I_should_see}       
+            return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name,comments=all_comments, my_comments=my_comments) 
+
+
+        elif (conditional == "just_created_chat"):              
+            database_id = int(request.args.get("chat_id"))            
+            current_chat = Chat.query.filter_by(id=database_id).first()     
+
+            name_to_process = current_chat.name.split(",") 
+            for name in name_to_process:
+                if name != logged_in_hobbyist().nickname:
+                    chat_name = name 
+
+
+            # dictionary_of_chats_and_their_seen_for_this_user_names
+            # dict: {chat1: name_I_should_see, chat2: name_I_should_see}       
+            return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name) 
+        
+        '''#if conditional_get_request_hobbyist is not "None", then we are bringing the attribute "hobbyist" from the view to the controller
         elif ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist != "None")):
             hobbyist_name = conditional_get_request_hobbyist
             #print(hobbyist_name)
@@ -868,24 +927,24 @@ def creating_chat():
 
     if request.method == 'POST':
         condition = request.form['condition']
+        other_hobbyists = Hobbyist.query.filter(Hobbyist.id!=logged_in_hobbyist().id).order_by(Hobbyist.nickname).all() 
+
+        #dict in the form: {user1: [hobby1, hobby2, hobby3], user2: [hobby3]}
+        dict_user_hobbies = {}
+        for user in other_hobbyists:
+            dict_user_hobbies[user.nickname] = []
+            hobbies_this_user = Hobby.query.filter(Hobby.hobbyists.any(nickname=user.nickname)).all() 
+            for hobby in hobbies_this_user:                    
+                dict_user_hobbies[user.nickname].append(hobby)
+        '''for hobby in my_hobbies:
+            dict_what_hobbie_where_places[hobby.name] = []
+            my_places_this_hobbie = Place.query.filter(Place.hobbies.any(name=hobby.name)).filter(Place.hobbyists.any(nickname=hobbyist.nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all() 
+            for place in my_places_this_hobbie:
+                dict_what_hobbie_where_places[hobby.name].append(place)'''
+
         if condition == "from_allchats_view":      
-            '''my_chats = Chat.query.filter(Chat.participants.any(nickname=logged_in_hobbyist().nickname)).all()'''
-            other_hobbyists = Hobbyist.query.filter(Hobbyist.id!=logged_in_hobbyist().id).order_by(Hobbyist.nickname).all() 
-
-            #dict in the form: {user1: [hobby1, hobby2, hobby3], user2: [hobby3]}
-            dict_user_hobbies = {}
-            for user in other_hobbyists:
-                dict_user_hobbies[user.nickname] = []
-                hobbies_this_user = Hobby.query.filter(Hobby.hobbyists.any(nickname=user.nickname)).all() 
-                for hobby in hobbies_this_user:                    
-                    dict_user_hobbies[user.nickname].append(hobby)
-            '''for hobby in my_hobbies:
-                dict_what_hobbie_where_places[hobby.name] = []
-                my_places_this_hobbie = Place.query.filter(Place.hobbies.any(name=hobby.name)).filter(Place.hobbyists.any(nickname=hobbyist.nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all() 
-                for place in my_places_this_hobbie:
-                    dict_what_hobbie_where_places[hobby.name].append(place)'''
-
-            return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage="", dict_user_hobbies=dict_user_hobbies)
+            '''my_chats = Chat.query.filter(Chat.participants.any(nickname=logged_in_hobbyist().nickname)).all()'''            
+            return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage="", errorpeople="", dict_user_hobbies=dict_user_hobbies)
         
         elif condition == "from_newchat_view_validation":
             initial_message = request.form['initial_message']
@@ -893,28 +952,64 @@ def creating_chat():
             
             #Validation to make sure that there is a message. 
             if (initial_message ==""):
-                error_message = "nomessage"                       
-            #Validation to make sure that a user was selected. 
-            elif ((post_title !="") and (post_body=="")):
-                error = "nobody"                   
-            #Validation to make sure that the new post has both title and body. 
-            elif ((post_title =="") and (post_body=="")):
-                error = "bothempty"
-            #Validation to make sure there are no other posts with the same title
-            elif (post_already_exists == 1):
-                error = "titleexists"
-            else:
-                error = ""
+                error_message = "nomessage"  
+            else: 
+                error_message = "" 
 
-            if (error!=""):    
-                return render_template('newpost.html',title="Posting an idea", newtitle=post_title, newbody=post_body, errorhtml = error)
+            #Validation to checked that the user selected at least one of his hobbies.
+            if (len(people_invited) == 0):
+                error_people = "nopeople"
             else:
-                new_post = Blog(post_title, post_body, filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year), filling(now1().hour)+":"+filling(now1().minute), logged_in_hobbyist())
-                db.session.add(new_post)
-                db.session.commit()
-                #print(new_post.id)
-                return redirect('''/blog?id='''+str(new_post.id))
-        elif condition == "from_answer_to_post":
+                error_people = ""
+                
+            if (error_people != "") or (error_message != ""):                
+                return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage=error_message, errorpeople=error_people, dict_user_hobbies=dict_user_hobbies)
+            else:
+                if (len(people_invited) == 1):                    
+
+                    #What happens if Luis invites Rafa. Is it the same if Rafa invites Luis?
+                    #It would be Rafa,Luis vs. Luis,Rafa
+                    #I'm going to sort the names alphabetically so it will always be the same name Luis,Rafa
+                    if logged_in_hobbyist().nickname < people_invited[0]:
+                        name_chat = logged_in_hobbyist().nickname+","+people_invited[0]
+                    else:
+                        name_chat = people_invited[0]+","+logged_in_hobbyist().nickname
+                    
+                    #To check if this chat already exists
+                    chat_exists = Chat.query.filter_by(name=name_chat).count()  
+
+                    #There is a chat already with this name
+                    if (chat_exists == 1):                        
+                        return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage="", errorpeople="chat_exists", dict_user_hobbies=dict_user_hobbies, other_person=people_invited[0])
+                    elif (chat_exists == 0):
+                        is_a_group = False
+                        
+                        new_chat = Chat(is_a_group, name_chat)
+                        db.session.add(new_chat)
+                        db.session.commit()
+
+                        #To add chat to users in chat   
+                        # Self creator                       
+                        new_chat.participants.append(logged_in_hobbyist()) 
+                        # Other person
+                        other_person = Hobbyist.query.filter_by(nickname=people_invited[0]).first()                         
+                        new_chat.participants.append(other_person)
+                        db.session.commit() 
+
+                        #To add comment to database and relate to chat
+                        this_chat = Chat.query.filter_by(name=name_chat).first()   
+                        new_comment = Chat_comment(initial_message, filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year), filling(now1().hour)+":"+filling(now1().minute), logged_in_hobbyist(), this_chat)
+                        db.session.add(new_comment)
+                        db.session.commit()
+
+                        #print(new_post.id)
+                        return redirect('''/chat?condition=just_created_chat&chat_id='''+str(new_chat.id))
+
+
+
+
+
+        """elif condition == "from_answer_to_post":
             post_that_you_will_answer_id = request.form['post_id']
             post_that_you_will_answer = Blog.query.filter_by(id=post_that_you_will_answer_id).first()
 
@@ -953,7 +1048,7 @@ def creating_chat():
                 db.session.add(new_post_answer)
                 db.session.commit()
                 #print(new_post_answer.id)
-                return redirect('''/blog?id='''+str(new_post_answer.id)+'''&answer_id='''+str(new_post_answer.id))
+                return redirect('''/blog?id='''+str(new_post_answer.id)+'''&answer_id='''+str(new_post_answer.id))"""
 
 
 #TODO encounters (show all, show each)

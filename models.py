@@ -77,6 +77,7 @@ class Hobbyist(db.Model):
     zipcode = db.Column(db.String(5))
     password = db.Column(db.String(120))
     blogs = db.relationship("Blog", backref="blog")
+    comments = db.relationship("Chat_comment", backref="chat_comment")
     # "hobbies" will be an attribute in this class to relate class-table "Hobbyist" to class-table "Hobby" using helper table "hobbieshobbyists" and creating the attribute 
     # "hobbyists" indirectly in class-table "Hobby", thats why we dont declare field "hobbyists" in table "Hobby"
     hobbies = db.relationship('Hobby', secondary=hobbieshobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
@@ -194,12 +195,12 @@ class Event_comment(db.Model):
 class Chat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     is_a_group = db.Column(db.Boolean)
-    name = db.Column(db.String(60))
-    comments = db.relationship("Chat_comment", backref="chat_comment")
+    name = db.Column(db.String(1000))
+    comments = db.relationship("Chat_comment", backref="chat_comments")
 
-    def __init__(self, is_a_group, name_of_group):
+    def __init__(self, is_a_group, name_of_chat):
         self.is_a_group = is_a_group
-        self.group_name = name_of_group
+        self.name = name_of_chat
         
 class Chat_comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -209,5 +210,9 @@ class Chat_comment(db.Model):
     hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
     chat_id = db.Column(db.Integer, db.ForeignKey('chat.id')) 
 
-    def __init__(self, comment):
+    def __init__(self, comment, date, time, comment_owner, chat_belonging):
         self.comment = comment
+        self.date = date
+        self.time = time
+        self.chat_comment = comment_owner
+        self.chat_comments = chat_belonging

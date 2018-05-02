@@ -17,7 +17,7 @@
 
             {% if posts_and_answers == "N/A" %}
             {% else %}
-                {% for answer in posts_and_answers[post.id] | reverse %}
+                {% for answer in posts_and_answers[post.id] %}
                     <div class="marginleft"><a href="/blog?id={{post.id}}&answer_id={{answer.id}}" class="titlepost"><span class="centered">{{answer.title}}</a></span> <span id="specialb">by</span> <a href="/blog?hobbyist={{answer.blogsanswer.nickname}}"><span class="poster">{{answer.blogsanswer.nickname}}</span></a>  at {{answer.time}} on {{answer.date}}
                     <span class="paradf"><p>{{answer.body}}</p></span> 
                     

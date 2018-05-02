@@ -1,0 +1,23 @@
+{% extends "zbase.html" %}
+
+{% block content %}
+<h1 class="titlemain">{{chat_name}}</h1>
+
+{% for comment in comments | reverse %}
+    {% if comment in my_comments %}
+    <div class="mycomment"><span>{{comment.comment}}</span> <br> <span class=toright>{{comment.date}} | {{comment.time}}</span></div>
+    {% else %}
+    <div class="otherscomment"><span>{{comment.comment}}</span> <br> <span class=toright>{{comment.date}} | {{comment.time}}</span></div>
+    {% endif %}
+
+    <form action="/newchat" method="post" class="alignedform">            
+        <div class="centered">
+            <input type="text" name="hobbyist_html" value="{{hobbyist}}"/>       
+            <input type="hidden" name="chat_id" value={{chat.id}}/>            
+            <input type="hidden" name="condition" value="new_comment_existent_chat" id="just to delimitate value of value" />
+            <input type="submit" value="->" class="alignedformbutton"/>
+        </div>
+    </form>
+{% endfor %}
+
+{% endblock %}
