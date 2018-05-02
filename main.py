@@ -920,11 +920,22 @@ def listing_chats():
 
 @app.route('/newchat', methods=['POST', 'GET'])
 def creating_chat():
-    '''if request.method == "GET":
-        # Because the url_for points to the function "adding_post"(controller), not the template "newpost.html" (view), we have to extract the value of the argument "welcomessage" first as a get request.
-        # When welcomemessage is empty, it passes the value "None". 
-        welcomessage=request.args.get('welcomessage')
-        return render_template('newpost.html', title="Posting my ideas", welcomemessage=welcomessage)'''
+    #Same function than below post request, just watching behavior 
+    if request.method == "GET":
+        condition = request.args.get('condition')
+        other_hobbyists = Hobbyist.query.filter(Hobbyist.id!=logged_in_hobbyist().id).order_by(Hobbyist.nickname).all() 
+
+        #dict in the form: {user1: [hobby1, hobby2, hobby3], user2: [hobby3]}
+        dict_user_hobbies = {}
+        for user in other_hobbyists:
+            dict_user_hobbies[user.nickname] = []
+            hobbies_this_user = Hobby.query.filter(Hobby.hobbyists.any(nickname=user.nickname)).all() 
+            for hobby in hobbies_this_user:                    
+                dict_user_hobbies[user.nickname].append(hobby)
+        
+        if condition == "from_allchats_view":      
+            return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage="", errorpeople="", dict_user_hobbies=dict_user_hobbies)
+        
 
     if request.method == 'POST':
         condition = request.form['condition']
