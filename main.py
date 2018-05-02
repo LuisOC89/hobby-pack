@@ -899,10 +899,12 @@ def listing_chats():
                 if name != logged_in_hobbyist().nickname:
                     chat_name = name 
 
-
+            all_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).all()
+            my_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).filter_by(hobbyist_id=logged_in_hobbyist().id).all()
+    
             # dictionary_of_chats_and_their_seen_for_this_user_names
-            # dict: {chat1: name_I_should_see, chat2: name_I_should_see}       
-            return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name) 
+            # dict: {chat1: name_I_should_see, chat2: name_I_should_see}              
+            return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name, comments=all_comments, my_comments=my_comments) 
         
         '''#if conditional_get_request_hobbyist is not "None", then we are bringing the attribute "hobbyist" from the view to the controller
         elif ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist != "None")):
@@ -1015,7 +1017,61 @@ def creating_chat():
                         db.session.commit()
 
                         #print(new_post.id)
-                        return redirect('''/chat?condition=just_created_chat&chat_id='''+str(new_chat.id))
+                        return redirect("/chat?condition=just_created_chat&chat_id="+str(new_chat.id))
+                
+                elif (len(people_invited) > 1):   
+                    people_invited_to_text = ",".join(people_invited)                     
+                    return render_template('newgroup.html',title="Creating a chat", initial_message=initial_message, people_invited=people_invited_to_text)
+                                       
+        elif condition == "from_newgroup_view_validation":
+            initial_message = request.form['initial_message']
+            people_invited_as_text = request.form['people_invited']
+            people_invited_back_to_list = people_invited_as_text.split(",")
+
+            chat_name = request.form['group_name'] 
+            
+            '''for person in people_invited_back_to_list:
+                print("\n"+person+"\n")'''
+
+            #Validation to make sure that the user wrote a name.
+            if (chat_name == ""):
+                error_name = "empty"
+            else:
+                #To check if this chat already exists
+                chat_exists = Chat.query.filter_by(name=chat_name).count()
+                if (chat_exists == 1):   
+                    error_name = "chat_exists"  
+                else:
+                    error_name = ""    
+
+            if (error_name != ""):                
+                return render_template('newgroup.html',title="Creating a chat", initial_message=initial_message, people_invited=people_invited_as_text, errorname=error_name, name_of_group=chat_name)
+            else:                
+                is_a_group = True
+                            
+                new_chat = Chat(is_a_group, chat_name)
+                db.session.add(new_chat)
+                db.session.commit()
+
+                #To add chat to users in chat   
+                # Self creator                       
+                new_chat.participants.append(logged_in_hobbyist()) 
+                
+                # Other people
+                for other_person in people_invited_back_to_list:
+                    other_person_to_add = Hobbyist.query.filter_by(nickname=other_person).first()                         
+                    new_chat.participants.append(other_person_to_add)
+                    db.session.commit() 
+
+                #To add comment to database and relate to chat
+                this_chat = Chat.query.filter_by(name=chat_name).first()   
+                new_comment = Chat_comment(initial_message, filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year), filling(now1().hour)+":"+filling(now1().minute), logged_in_hobbyist(), this_chat)
+                db.session.add(new_comment)
+                db.session.commit()
+
+                #print(new_post.id)
+                return redirect('''/chat?condition=just_created_chat&chat_id='''+str(new_chat.id))
+
         elif condition == "new_comment_existent_chat":
             message = request.form['comment']
             

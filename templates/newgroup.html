@@ -1,0 +1,19 @@
+{% extends "zbase.html" %}
+
+{% block content %}
+    <h1 class="titlemain">Giving name to the group</h1>
+        
+    <form method='post' action="/newchat">            
+        <label>Name of group: <input type="text" name="group_name" ></label>
+        <textarea style="visibility:hidden" name="initial_message">{{initial_message}}</textarea>
+        <input type="hidden" name="people_invited" value={{people_invited}} />
+        <input type="hidden" name="condition" value="from_newgroup_view_validation" />
+        <input type="submit" value='Create' />     
+        {% if errorname == "empty" %}   
+        <span class="error10">Assign a name to your group to make it easy to identify the topic of the chat. Example: "Exercise with dumbells" </span><br>    
+        {% elif errorname == "chat_exists" %}
+        <span class="error10">You have already a chat named {{name_of_group}}. Assign another name. </span><br>        
+        {% endif %}       
+    </form>
+    
+{% endblock %}

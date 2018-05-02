@@ -9,7 +9,7 @@
     <form method='post' action="/newchat">
         <label>
         Initial message:<br>
-        <textarea name="initial_message">{{new_initial_message}}</textarea><br>
+        <textarea name="initial_message"></textarea><br>
         {% if errormessage == "nomessage" %}
         <span class="error10">You can not send an empty message. No cool. Please enter a valid message (something)</span><br>
         {% endif %}
@@ -34,9 +34,9 @@
             {% if errorpeople == "nopeople" %}   
             <span class="error10">Don't forget to select at least a receiver for your message.</span><br>    
             {% elif errorpeople == "chat_exists" %}
-            <span class="error10">You have already a chat with {{other_person}}. Please check it out !here!</span><br>        
+            <span class="error10">You have already a chat with {{other_person}}. Please check it out <a href="/chat">here!</a></span><br>        
             {% endif %}
-            <input type="hidden" name="condition" value="from_newchat_view_validation"/>
+            <input type="hidden" name="condition" value="from_newchat_view_validation" />
             <input type="submit" value='Send' />            
     </form>
     {% endif %}
