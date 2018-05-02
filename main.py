@@ -872,6 +872,7 @@ def listing_chats():
 
             #Example: return render_template('allhomeblogposts.html', title="Blogging Hobbies", postshtml=posts_python, posts_and_answers=dict_posts_python_and_its_answers)
             return render_template('allchats.html', title="Messages", chats=my_chats, chat_comments=dict_chats_and_their_comments)
+        
         elif (conditional == "see_this_chat"):
             database_id = int(request.args.get("chat_id"))            
             current_chat = Chat.query.filter_by(id=database_id).first()   
@@ -1004,7 +1005,46 @@ def creating_chat():
 
                         #print(new_post.id)
                         return redirect('''/chat?condition=just_created_chat&chat_id='''+str(new_chat.id))
-
+        elif condition == "new_comment_existent_chat":
+            message = request.form['comment']
+            
+            #Validation to make sure that there is a message. 
+            if (message ==""):
+                database_id = int(request.form["chat_id"])            
+                current_chat = Chat.query.filter_by(id=database_id).first()   
+                
+                name_to_process = current_chat.name.split(",") 
+                for name in name_to_process:
+                    if name != logged_in_hobbyist().nickname:
+                        chat_name = name 
+                    
+                all_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).all()
+                my_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).filter_by(hobbyist_id=logged_in_hobbyist().id).all()
+        
+                # dictionary_of_chats_and_their_seen_for_this_user_names
+                # dict: {chat1: name_I_should_see, chat2: name_I_should_see}       
+                return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name,comments=all_comments, my_comments=my_comments) 
+            
+            else:
+                database_id = int(request.form["chat_id"])            
+                current_chat = Chat.query.filter_by(id=database_id).first()   
+                
+                name_to_process = current_chat.name.split(",") 
+                for name in name_to_process:
+                    if name != logged_in_hobbyist().nickname:
+                        chat_name = name 
+                
+                new_comment = Chat_comment(message, filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year), filling(now1().hour)+":"+filling(now1().minute), logged_in_hobbyist(), current_chat)
+                db.session.add(new_comment)
+                db.session.commit()
+                
+                all_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).all()
+                my_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).filter_by(hobbyist_id=logged_in_hobbyist().id).all()
+        
+                # dictionary_of_chats_and_their_seen_for_this_user_names
+                # dict: {chat1: name_I_should_see, chat2: name_I_should_see}       
+                return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name,comments=all_comments, my_comments=my_comments) 
+            
 
 
 
