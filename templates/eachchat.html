@@ -2,23 +2,48 @@
 
 {% block content %}
 <br><br>
-<h1 class="titlemain"><div class="screenright">{{chat_name}}</div></h1>
 
-{% for comment in comments %}
-    {% if comment in my_comments %}
-    <div class="mycomment"><span>{{comment.comment}}</span> <br> <div class="mini"><span class="toright">{{comment.date}} | {{comment.time}}</span></div></div>
-    {% else %}
-    <div class="otherscomment"><span>{{comment.comment}}</span> <br> <div class="mini">{{comment.date}} | {{comment.time}}</div></div>
-    {% endif %}
-{% endfor %}
+{% if chat.is_a_group == False %}
+    <h1 class="titlemain"><div class="screenright">{{chat_name}}</div></h1>
 
-<form action="/newchat" method="post" class="alignedform">            
-    <div class="centered">
-        <input type="text" name="comment" value="" id="to_delimitate" />       
-        <input type="hidden" name="chat_id" value={{chat.id}} />            
-        <input type="hidden" name="condition" value="new_comment_existent_chat" id="just to delimitate value of value" />
-        <input type="submit" value="->" class="alignedformbutton"/> <br>(Click frequently to update the messages)
-    </div>
-</form>
+    {% for comment in comments %}
+        {% if comment in my_comments %}
+            <div class="mycomment"><span>{{comment.comment}}</span> <br> <div class="mini"><span class="toright">{{comment.date}} | {{comment.time}}</span></div></div>
+        {% else %}
+            <div class="otherscomment"><span>{{comment.comment}}</span> <br> <div class="mini">{{comment.date}} | {{comment.time}}</div></div>
+        {% endif %}
+    {% endfor %}
+
+    <form action="/newchat" method="post" class="alignedform">            
+        <div class="centered">
+            <input type="text" name="comment" value="" id="to_delimitate" />       
+            <input type="hidden" name="chat_id" value={{chat.id}} />            
+            <input type="hidden" name="condition" value="new_comment_existent_chat" id="just to delimitate value of value" />
+            <input type="submit" value="->" class="alignedformbutton"/> <br>(Click frequently to update the messages)
+        </div>
+    </form>
+
+{% elif chat.is_a_group == True %}
+    <h1 class="titlemain"><div class="screenright">{{chat_name}}</div></h1>
+    <h2 class="orange"><div class="screenright">{{other_participants}}</div></h2>
+    {% for comment in comments %}
+        {% if comment in my_comments %}
+            <div class="mycomment"><span>{{comment.comment}}</span> <br> <div class="mini"><span class="toright">{{comment.date}} | {{comment.time}}</span></div></div>
+        {% else %}            
+            <div class="otherscomment"><span>{{comment.comment}}</span> <br> <div class="mini">{{comment.chat_comment.nickname}} | {{comment.date}} | {{comment.time}}</div></div>
+        {% endif %}
+    {% endfor %}
+
+    <form action="/newchat" method="post" class="alignedform">            
+        <div class="centered">
+            <input type="text" name="comment" value="" id="to_delimitate" />       
+            <input type="hidden" name="chat_id" value={{chat.id}} />            
+            <input type="hidden" name="condition" value="new_comment_existent_chat" id="just to delimitate value of value" />
+            <input type="submit" value="->" class="alignedformbutton"/> <br>(Click frequently to update the messages)
+        </div>
+    </form>
+{% endif %}
+
+
 
 {% endblock %}

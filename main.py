@@ -803,6 +803,9 @@ def listing_chats():
             # Example: posts_python = Blog.query.all()               
             my_chats = Chat.query.filter(Chat.participants.any(nickname=logged_in_hobbyist().nickname)).all()
 
+            '''Finally. Join of two tables and ordering depending on a value of a table
+            my_chats = Chat.query.filter(Chat.participants.any(nickname=logged_in_hobbyist().nickname)).join(Chat_comment).order_by(Chat_comment.time).order_by(Chat_comment.date).all()'''
+
             #This will have all the posts with their answers: {Post1: [answer1, answer2, answer3], Post2: [answer1]}
             '''dict_posts_python_and_its_answers = {}
             for post in posts_python:
@@ -816,8 +819,8 @@ def listing_chats():
                         dict_posts_python_and_its_answers[post.id].append(b_answer)'''
 
              #This will have all the chats with their comments: 
-             # {Chat1: [[chat_name_for_this_user, last_comment_this_chat, date_or_time],[comment1, comment2, comment3]], 
-             # Chat2: [[chat_name_for_this_user, last_comment_this_chat, date_or_time],[comment1]]}            
+             # {Chat1: [[chat_name_for_this_user, last_comment_this_chat, date_or_time, other_users_names],[comment1, comment2, comment3]], 
+             # Chat2: [[chat_name_for_this_user, last_comment_this_chat, date_or_time, other_users_names],[comment1]]}            
             dict_chats_and_their_comments = {}
             for chat in my_chats:
                 this_chat_comments = Chat_comment.query.filter_by(chat_id=chat.id).all() 
@@ -857,6 +860,19 @@ def listing_chats():
                             date_or_time = time_this_chat_last_comment
                 dict_chats_and_their_comments[chat.id][0].append(date_or_time)
 
+                current_chat_hobbyists = Hobbyist.query.filter(Hobbyist.chats.any(id=chat.id)).all()   
+                                 
+                #To help me store names of people in this chat group: [person1, person2, person3]}
+                this_chat_other_participants = []
+                for hobbyist in current_chat_hobbyists:
+                    if (hobbyist.nickname!=logged_in_hobbyist().nickname):
+                        this_chat_other_participants.append(hobbyist.nickname)
+
+                #To help me store the other people's names
+                other_participants_to_text = ",".join(this_chat_other_participants)
+
+                dict_chats_and_their_comments[chat.id][0].append(other_participants_to_text)
+
                 #How to organize based on date and time:
                 #I subtract the substrings, convert them and compared them: (( date: MM/DD/YYYY time: HH/MM )) 
                 #year=Blog.date[6:10] #starting at space 6 and until space 10
@@ -868,26 +884,36 @@ def listing_chats():
                 dict_chats_and_their_comments[chat.id].append([])                                                
                 for comment in this_chat_comments:
                     print (comment.comment)
-                    dict_chats_and_their_comments[chat.id][1].append(comment)
+                    dict_chats_and_their_comments[chat.id][1].append(comment)                
 
             #Example: return render_template('allhomeblogposts.html', title="Blogging Hobbies", postshtml=posts_python, posts_and_answers=dict_posts_python_and_its_answers)
             return render_template('allchats.html', title="Messages", chats=my_chats, chat_comments=dict_chats_and_their_comments)
         
         elif (conditional == "see_this_chat"):
             database_id = int(request.args.get("chat_id"))            
-            current_chat = Chat.query.filter_by(id=database_id).first()   
-            
+            current_chat = Chat.query.filter_by(id=database_id).first()                        
+              
             name_to_process = current_chat.name.split(",") 
             for name in name_to_process:
                 if name != logged_in_hobbyist().nickname:
                     chat_name = name 
+
+            current_chat_hobbyists = Hobbyist.query.filter(Hobbyist.chats.any(id=database_id)).all()   
+                                 
+            #To help me store names of people in this chat group: [person1, person2, person3]
+            other_participants = []
+            for hobbyist in current_chat_hobbyists:
+                if (hobbyist.nickname!=logged_in_hobbyist().nickname):
+                    other_participants.append(hobbyist.nickname)
+            
+            other_participants_to_text = ",".join(other_participants)
                 
             all_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).all()
             my_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).filter_by(hobbyist_id=logged_in_hobbyist().id).all()
     
             # dictionary_of_chats_and_their_seen_for_this_user_names
             # dict: {chat1: name_I_should_see, chat2: name_I_should_see}       
-            return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name,comments=all_comments, my_comments=my_comments) 
+            return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name,comments=all_comments, my_comments=my_comments, other_participants=other_participants_to_text) 
 
 
         elif (conditional == "just_created_chat"):              
@@ -899,12 +925,22 @@ def listing_chats():
                 if name != logged_in_hobbyist().nickname:
                     chat_name = name 
 
+            current_chat_hobbyists = Hobbyist.query.filter(Hobbyist.chats.any(id=database_id)).all()   
+                                 
+            #To help me store names of people in this chat group: [person1, person2, person3]
+            other_participants = []
+            for hobbyist in current_chat_hobbyists:
+                if (hobbyist.nickname!=logged_in_hobbyist().nickname):
+                    other_participants.append(hobbyist.nickname)
+            
+            other_participants_to_text = ",".join(other_participants)
+
             all_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).all()
             my_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).filter_by(hobbyist_id=logged_in_hobbyist().id).all()
     
             # dictionary_of_chats_and_their_seen_for_this_user_names
             # dict: {chat1: name_I_should_see, chat2: name_I_should_see}              
-            return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name, comments=all_comments, my_comments=my_comments) 
+            return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name, comments=all_comments, my_comments=my_comments, other_participants=other_participants_to_text) 
         
         '''#if conditional_get_request_hobbyist is not "None", then we are bringing the attribute "hobbyist" from the view to the controller
         elif ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist != "None")):
@@ -1085,12 +1121,22 @@ def creating_chat():
                     if name != logged_in_hobbyist().nickname:
                         chat_name = name 
                     
+                current_chat_hobbyists = Hobbyist.query.filter(Hobbyist.chats.any(id=database_id)).all()   
+                                 
+                #To help me store names of people in this chat group: [person1, person2, person3]
+                other_participants = []
+                for hobbyist in current_chat_hobbyists:
+                    if (hobbyist.nickname!=logged_in_hobbyist().nickname):
+                        other_participants.append(hobbyist.nickname)
+                
+                other_participants_to_text = ",".join(other_participants)
+
                 all_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).all()
                 my_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).filter_by(hobbyist_id=logged_in_hobbyist().id).all()
         
                 # dictionary_of_chats_and_their_seen_for_this_user_names
                 # dict: {chat1: name_I_should_see, chat2: name_I_should_see}       
-                return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name,comments=all_comments, my_comments=my_comments) 
+                return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name,comments=all_comments, my_comments=my_comments, other_participants=other_participants_to_text) 
             
             else:
                 database_id = int(request.form["chat_id"])            
