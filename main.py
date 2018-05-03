@@ -801,10 +801,10 @@ def listing_chats():
             
             #This one shows all the posts of everyone in the blog order by year, by month, by day, by hour, by minute
             # Example: posts_python = Blog.query.all()               
-            my_chats = Chat.query.filter(Chat.participants.any(nickname=logged_in_hobbyist().nickname)).all()
+            #my_chats = Chat.query.filter(Chat.participants.any(nickname=logged_in_hobbyist().nickname)).all()
 
-            '''Finally. Join of two tables and ordering depending on a value of a table
-            my_chats = Chat.query.filter(Chat.participants.any(nickname=logged_in_hobbyist().nickname)).join(Chat_comment).order_by(Chat_comment.time).order_by(Chat_comment.date).all()'''
+            #Finally. Join of two tables and ordering depending on a value of a table. It doesnt work at the moment to order
+            my_chats = Chat.query.filter(Chat.participants.any(nickname=logged_in_hobbyist().nickname)).join(Chat_comment).order_by(desc(Chat_comment.id)).all()
 
             #This will have all the posts with their answers: {Post1: [answer1, answer2, answer3], Post2: [answer1]}
             '''dict_posts_python_and_its_answers = {}
@@ -1151,12 +1151,22 @@ def creating_chat():
                 db.session.add(new_comment)
                 db.session.commit()
                 
+                current_chat_hobbyists = Hobbyist.query.filter(Hobbyist.chats.any(id=database_id)).all()   
+                                 
+                #To help me store names of people in this chat group: [person1, person2, person3]
+                other_participants = []
+                for hobbyist in current_chat_hobbyists:
+                    if (hobbyist.nickname!=logged_in_hobbyist().nickname):
+                        other_participants.append(hobbyist.nickname)
+                
+                other_participants_to_text = ",".join(other_participants)
+
                 all_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).all()
                 my_comments = Chat_comment.query.filter_by(chat_id=current_chat.id).filter_by(hobbyist_id=logged_in_hobbyist().id).all()
         
                 # dictionary_of_chats_and_their_seen_for_this_user_names
                 # dict: {chat1: name_I_should_see, chat2: name_I_should_see}       
-                return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name,comments=all_comments, my_comments=my_comments) 
+                return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name,comments=all_comments, my_comments=my_comments, other_participants=other_participants_to_text) 
             
 
 

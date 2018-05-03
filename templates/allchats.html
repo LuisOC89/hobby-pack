@@ -11,7 +11,7 @@
                 <p><span class="paradf">{{chat_comments[chat.id][0][1].comment}}</span> BY {{chat_comments[chat.id][0][1].chat_comment.nickname}}</p> 
                 <hr />
             {% elif chat.is_a_group == True %}
-                <a href="/chat?chat_id={{chat.id}}&condition=see_this_chat" class="titlepost">{{chat_comments[chat.id][0][0]}} (<span class="orange">{{chat_comments[chat.id][0][3]}})</a> <span class="toright">{{chat_comments[chat.id][0][2]}}</span>
+                <a href="/chat?chat_id={{chat.id}}&condition=see_this_chat" class="titlepost">{{chat_comments[chat.id][0][0]}} (<span class="orange">{{chat_comments[chat.id][0][3]}}</span>)</a> <span class="toright">{{chat_comments[chat.id][0][2]}}</span>
                 <p><span class="paradf">{{chat_comments[chat.id][0][1].comment}}</span> BY {{chat_comments[chat.id][0][1].chat_comment.nickname}}</p> 
                 <hr />
             {% endif %}
