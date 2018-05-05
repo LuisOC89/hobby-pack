@@ -21,6 +21,12 @@ encountershobbyists = db.Table('encountershobbyists',
     db.Column('hobbyist_id', db.Integer, db.ForeignKey('hobbyist.id'))
 )
 
+#Table to help handling many-to-many-relationships between hobbyists and encounters. Two columns, one for hobbyist id and other for encounter id.
+encountershobbyistsattendance = db.Table('encountershobbyistsattendance', 
+    db.Column('encounter_id', db.Integer, db.ForeignKey('encounter.id')),
+    db.Column('hobbyist_id', db.Integer, db.ForeignKey('hobbyist.id'))
+)
+
 #Table to help handling many-to-many-relationships between hobbies and places. Two columns, one for place id and other for hobbie id.
 hobbiesplaces = db.Table('hobbiesplaces',
     db.Column('hobby_id', db.Integer, db.ForeignKey('hobby.id')),
@@ -82,9 +88,12 @@ class Hobbyist(db.Model):
     # "hobbyists" indirectly in class-table "Hobby", thats why we dont declare field "hobbyists" in table "Hobby"
     hobbies = db.relationship('Hobby', secondary=hobbieshobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
     places = db.relationship('Place', secondary=placeshobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
-    encounters = db.relationship('Encounter', secondary=encountershobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
     blogsanswers = db.relationship("Bloganswer", backref="blogsanswer")
     chats = db.relationship('Chat', secondary=chatshobbyists, backref=db.backref('participants', lazy='dynamic'))
+    encounters = db.relationship('Encounter', secondary=encountershobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
+    encounters_attendance = db.relationship('Encounter', secondary=encountershobbyistsattendance, backref=db.backref('hobbyists', lazy='dynamic'))
+    event_comments = db.relationship("Event_comment", backref="event_comment_user")    
+    encounters_created = db.relationship('Encounter', backref="created_encounter")
 
     def __init__(self, nickname, email, city, state, zipcode, password_to_be_hashed):
         self.nickname = nickname
@@ -122,74 +131,6 @@ class Place(db.Model):
         self.state = state
         self.zipcode = zipcode
         self.unique_key_address = name+staddress+city+state+zipcode
-    
-class Encounter(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(60), unique=True)    
-    date = db.Column(db.String(10))
-    start_time = db.Column(db.String(5))   
-    duration_hours = db.Column(db.Integer)
-    duration_minutes = db.Column(db.Integer)
-    place_id = db.Column(db.Integer, db.ForeignKey('place.id'))
-    hobby_id = db.Column(db.Integer, db.ForeignKey('hobby.id'))
-
-    def __init__(self, name, date, time, duration_hours, duration_minutes, holding_place, hobby_taking_place):
-        self.name = name
-        self.date = date
-        self.time = time
-        self.duration_hours = duration_hours
-        self.duration_minutes = duration_minutes
-        self.place = holding_place
-
-#TODO#1: Make sure that the classes are declared correctly
-'''
-
-
-#An encounter can have a hobby, a place and different hobbyists (one-to-many-relationship)
-class Encounter(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(60), unique=True)    
-    date = db.Column(db.String(10))
-    start_time = db.Column(db.String(5))   
-    duration_time = db.Column(db.String(5))
-    creator_hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
-    place_id = db.Column(db.Integer, db.ForeignKey('place.id'))
-    hobby_id = db.Column(db.Integer, db.ForeignKey('hobby.id'))
-    attendance_taken_status = db.Column(db.Boolean)
-    supposed_participants = db.relationship("Hobbyist", backref="hobbyist") 
-    
-    comments_before_event = db.relationship("Event_comment", backref="event_comment")
-
-    attendance_participants = db.relationship("Hobbyist", backref="hobbyist")
-    recap = db.relationship("Event_comment", backref="event_comment")
-    
-    comments_after_event = db.relationship("Event_comment", backref="event_comment")
-
-    def __init__(self, name, date, time, duration, holding_place, hobby_taking_place, owner):
-        self.name = name
-        self.date = date
-        self.start_time = time
-        self.duration_time = duration        
-        self.creator_id = owner
-        self.place = holding_place
-        self.encounter = hobby_taking_place
-
-class Event_comment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100))
-    
-    #type can be just "comment_before", "recap", "comment_after"
-    type = db.Column(db.String(14))
-
-    user_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id')) 
-    event_id = db.Column(db.Integer, db.ForeignKey('encounter.id')) 
-
-    def __init__(self, title, type):
-        self.title = title
-        self.type = type
-        
-'''
-    
 
 #For chat feature
 class Chat(db.Model):
@@ -216,3 +157,90 @@ class Chat_comment(db.Model):
         self.time = time
         self.chat_comment = comment_owner
         self.chat_comments = chat_belonging
+
+class Encounter(db.Model):
+    id = db.Column(db.Integer, primary_key=True)    
+    name = db.Column(db.String(60), unique=True)       
+    date = db.Column(db.String(10))
+    start_time = db.Column(db.String(5)) 
+    #201805131321 > 201705131321 > 201704131321 - YYYYMMDDHHMM 
+    date_and_time_to_order = db.Column(db.String(12))  
+    #HH:MM
+    duration = db.Column(db.String(5))
+    attendance_taken_status = db.Column(db.Boolean)
+    attendance_taken_date_time = db.Column(db.String(12))
+
+    hobby_id = db.Column(db.Integer, db.ForeignKey('hobby.id'))
+    place_id = db.Column(db.Integer, db.ForeignKey('place.id'))
+    creator_hobbyist_id = db.Column(db.Integer, dbForeignKey('hobbyist.id'))
+    #Table encountershobbyists - People invited by creator and people that wanted to assist even if they were not invited 
+    # - This is declared in the class Hobbyist and is many-to-many
+    #Table encountershobbyistsattendance - People verified attendance by creator the day of the event
+    # - This is declared in the class Hobbyist and is many-to-many    
+    encounter_comments = db.relationship("Event_comment", backref="event_comment")
+
+    def __init__(self, name, date, time, datetime_ordered, duration, holding_place, hobby_taking_place, attendance_taken_status, hobby, hobbyist_creator):
+        self.name = name
+        self.date = date
+        self.start_time = time
+        self.date_and_time_to_order = datetime_ordered
+        self.duration = duration
+        self.attendance_taken_status = attendance_taken_status
+        
+        self.encounter = hobby        
+        self.event = holding_place
+        self.created_encounter = hobbyist_creator     
+
+    def taking_attendance(self, attendance_taken_status, attendance_taken_date_time):
+        self.attendance_taken_status = attendance_taken_status   
+        self.attendance_taken_date_time = attendance_taken_date_time
+
+    '''
+    class Cat:
+        def __init__(self):
+        # every Cat comes into this world tired and hungry
+            self.tired = True
+            self.hungry = True
+        def sleep(self):
+            self.tired = False
+            # a Cat always wakes up hungry
+            self.hungry = True
+        def eat(self):
+            if self.hungry:
+                self.hungry = False
+            else:
+                # eating when already full makes a Cat sleepy
+                self.tired = True
+        def noise(self):
+            # sleepy cats say prrrr, energized cats say meow!
+            if self.tired:
+                return "prrrr"
+            else:
+                return "meow!"
+    def main():
+        tom = Cat()
+        print("tom says:", tom.noise())
+        tom.sleep()
+        print("After sleeping, tom says:", tom.noise())
+
+        OUTPUT
+        tom says: prrrr
+        After sleeping, tom says: meow!
+        After eating, tom still says: meow!
+        After eating again, tom says: prrrr
+    '''
+
+class Event_comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    #Kind of comment will have three possible values: "recap", "before_event", "after_event"
+    content = db.Column(db.String(1000))
+    kind_of_comment = db.Column(db.String(12))
+    event_id = db.Column(db.Integer, ForeignKey('encounter.id'))
+    hobbyist_id = db.Column(db.Integer, ForeignKey('hobbyist.id'))
+
+    def __init__(self, content, kind, event, user):
+        self.content = content 
+        self.kind_of_comment = kind
+        self.event_comment = event
+        self.event_comment_user = user
+        

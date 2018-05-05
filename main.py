@@ -1218,13 +1218,6 @@ def creating_chat():
 #TODO adding encounters (add encounter, add attendance later, add recap, add comment)
 
 # Views allevents.html, eachevent.html, newevent.html
-# Missing view - we are not going to do a new view, just a text bar for new comment (consider recap, after and before)
-
-# Chat views missing: All my_chats, each chat, newchat  
-
-
-
-
 
 
 if __name__ == '__main__':
