@@ -1,0 +1,42 @@
+{% extends "zbase.html" %}
+
+{% block content %}
+<h1 class="titlemain">Let's have events!</h1>
+    {% if events|length == 0 %}
+    <p>No events yet</p>    
+    {% else %}
+        {% if event in coming_up_events|length == 0 %}
+            <p>No new events coming up. Create a new event <a href="/event?condition=create_new_event" class="titlepost">here</a></p> 
+        {% else %}
+            {% for event in coming_up_events %}
+            <a href="/event?condition=see_particular_event&id=event_id" class="titlepost">Name_of_event_1</a> (theme_hobby, place, day, time, duration)
+            People assisting to this event: person1, person2, person3 
+            last comment of this event 
+            {% endfor %}
+            Create a new event <a href="/event?condition=create_new_event" class="titlepost">here</a> or 
+            <form action="/event" method="post" class="alignedform">                        
+                <input type="hidden" name="condition" value="create_new_event" />
+                <input type="submit" value="here" class="alignedformbutton"/>
+            </form><br>
+        {% endif %}
+        {% if event in events_going|length == 0 %}
+        <p>No events going on at the moment.<p> 
+        {% else %}
+            {% for event in events_going_on %}
+            Name_of_event_1 (theme_hobby, place, day, time, duration)
+            People assisting to this event: person1, person2, person3 
+            last comment of this event 
+            {% endfor %}
+        {% endif %}
+        {% if event in past_events|length == 0 %}
+        <p>No past events at the moment.<p> 
+        {% else %}
+            {% for event in past_events %}
+            Name_of_event_1 (theme_hobby, place, day, time, duration)
+            People attendance to this event: person1, person2, person3  
+            recap of this event
+            {% endfor %}
+        {% endif %}
+    {% endif %}       
+    
+{% endblock %}

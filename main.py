@@ -1167,58 +1167,30 @@ def creating_chat():
                 # dictionary_of_chats_and_their_seen_for_this_user_names
                 # dict: {chat1: name_I_should_see, chat2: name_I_should_see}       
                 return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name,comments=all_comments, my_comments=my_comments, other_participants=other_participants_to_text) 
-            
 
+@app.route('/event', methods=['POST', 'GET'])
+def acting_on_events():
+    #Same function than below post request, just watching behavior 
+    if request.method == "GET":
+        condition = request.args.get('condition')
 
-
-
-        """elif condition == "from_answer_to_post":
-            post_that_you_will_answer_id = request.form['post_id']
-            post_that_you_will_answer = Blog.query.filter_by(id=post_that_you_will_answer_id).first()
-
-            post_that_you_will_answer_existing_answers = Bloganswer.query.filter_by(blog_id=post_that_you_will_answer.id).all()    
-                       
-            return render_template("newpostanswer.html", post_to_answer=post_that_you_will_answer, answers=post_that_you_will_answer_existing_answers)
-
-        elif condition=="from_new_answer_to_post":
-            post_that_you_will_answer_id = request.form['post2answer_id']
-            post_that_you_will_answer = Blog.query.filter_by(id=post_that_you_will_answer_id).first()
-
-            post_title = request.form['posttitle']
-            post_body = request.form['postbody']
-            post_already_exists = Blog.query.filter_by(title=post_title).count()              
-
-            #Validation to make sure that the new post has title. 
-            if ((post_title =="") and (post_body!="")):
-                error = "notitle"                       
-            #Validation to make sure that the new post has body. 
-            elif ((post_title !="") and (post_body=="")):
-                error = "nobody"                   
-            #Validation to make sure that the new post has both title and body. 
-            elif ((post_title =="") and (post_body=="")):
-                error = "bothempty"
-            #Validation to make sure there are no other posts with the same title
-            elif (post_already_exists == 1):
-                error = "titleexists"
-            else:
-                error = ""
-
-            if (error!=""):    
-                return render_template('newpostanswer.html',title="Posting an idea", newtitle=post_title, newbody=post_body, errorhtml = error, post_to_answer=post_that_you_will_answer)
-            else:
-                post_body = request.form['postbody']                
-                new_post_answer = Bloganswer(post_title, post_body, filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year), filling(now1().hour)+":"+filling(now1().minute), post_that_you_will_answer ,logged_in_hobbyist())
-                db.session.add(new_post_answer)
-                db.session.commit()
-                #print(new_post_answer.id)
-                return redirect('''/blog?id='''+str(new_post_answer.id)+'''&answer_id='''+str(new_post_answer.id))"""
-
+        if condition == "None":
+            return render_template('allchats.html')                
+    
+        if condition == "from_allchats_view":      
+            return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage="", errorpeople="", dict_user_hobbies=dict_user_hobbies)
+        
+    if request.method == 'POST':
+        condition = request.form['condition']
+        
+        if condition == "from_allchats_view":      
+            return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage="", errorpeople="", dict_user_hobbies=dict_user_hobbies)
+        
 
 #TODO encounters (show all, show each)
 #TODO adding encounters (add encounter, add attendance later, add recap, add comment)
 
 # Views allevents.html, eachevent.html, newevent.html
-
 
 if __name__ == '__main__':
     app.run()

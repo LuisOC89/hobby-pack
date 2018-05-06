@@ -91,7 +91,7 @@ class Hobbyist(db.Model):
     blogsanswers = db.relationship("Bloganswer", backref="blogsanswer")
     chats = db.relationship('Chat', secondary=chatshobbyists, backref=db.backref('participants', lazy='dynamic'))
     encounters = db.relationship('Encounter', secondary=encountershobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
-    encounters_attendance = db.relationship('Encounter', secondary=encountershobbyistsattendance, backref=db.backref('hobbyists', lazy='dynamic'))
+    encounters_attendance = db.relationship('Encounter', secondary=encountershobbyistsattendance, backref=db.backref('hobbyists_attendance', lazy='dynamic'))
     event_comments = db.relationship("Event_comment", backref="event_comment_user")    
     encounters_created = db.relationship('Encounter', backref="created_encounter")
 
@@ -172,7 +172,7 @@ class Encounter(db.Model):
 
     hobby_id = db.Column(db.Integer, db.ForeignKey('hobby.id'))
     place_id = db.Column(db.Integer, db.ForeignKey('place.id'))
-    creator_hobbyist_id = db.Column(db.Integer, dbForeignKey('hobbyist.id'))
+    creator_hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
     #Table encountershobbyists - People invited by creator and people that wanted to assist even if they were not invited 
     # - This is declared in the class Hobbyist and is many-to-many
     #Table encountershobbyistsattendance - People verified attendance by creator the day of the event
@@ -235,8 +235,8 @@ class Event_comment(db.Model):
     #Kind of comment will have three possible values: "recap", "before_event", "after_event"
     content = db.Column(db.String(1000))
     kind_of_comment = db.Column(db.String(12))
-    event_id = db.Column(db.Integer, ForeignKey('encounter.id'))
-    hobbyist_id = db.Column(db.Integer, ForeignKey('hobbyist.id'))
+    event_id = db.Column(db.Integer, db.ForeignKey('encounter.id'))
+    hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
 
     def __init__(self, content, kind, event, user):
         self.content = content 
