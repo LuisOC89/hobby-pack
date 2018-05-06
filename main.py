@@ -1168,15 +1168,15 @@ def creating_chat():
                 # dict: {chat1: name_I_should_see, chat2: name_I_should_see}       
                 return render_template('eachchat.html', title="Messages", chat=current_chat, chat_name=chat_name,comments=all_comments, my_comments=my_comments, other_participants=other_participants_to_text) 
 
-@app.route('/event', methods=['POST', 'GET'])
+@app.route('/events', methods=['POST', 'GET'])
 def acting_on_events():
     #Same function than below post request, just watching behavior 
     if request.method == "GET":
         condition = request.args.get('condition')
-
-        if condition == "None":
-            return render_template('allchats.html')                
-    
+        print(condition)
+        if (condition == "show_all_events"):
+            return render_template('allevents.html')                
+    '''
         if condition == "from_allchats_view":      
             return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage="", errorpeople="", dict_user_hobbies=dict_user_hobbies)
         
@@ -1185,7 +1185,7 @@ def acting_on_events():
         
         if condition == "from_allchats_view":      
             return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage="", errorpeople="", dict_user_hobbies=dict_user_hobbies)
-        
+    '''    
 
 #TODO encounters (show all, show each)
 #TODO adding encounters (add encounter, add attendance later, add recap, add comment)
