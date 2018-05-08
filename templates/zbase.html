@@ -103,7 +103,7 @@
 <body>
     <div style='float: right'>
         {% if 'hobbyist' in session %}            
-            <a href="/">Home</a> | <a href="/blog">Blog</a> | <a href="/chat">Chat</a> | <a href="/people">Hobbyists</a> | <a href="/hobbies">Hobbies</a> | <a href="/places">Places</a> | <a href="/events?condition=show_all_events">Encounters</a><br>   
+            <a href="/">Home</a> | <a href="/blog">Blog</a> | <a href="/chat">Chat</a> | <a href="/people">Hobbyists</a> | <a href="/hobbies">Hobbies</a> | <a href="/places">Places</a> | <a href="/events">Encounters</a><br>   
             <div class="toright"><a href="/myinfo?condition=show_all_info_user">{{ session['hobbyist'] }}</a> | <a href="/logout"> logout </a></div>
         {% else %}
             <a href="/">Home</a> | <a href="/newhobbyist">Sign up</a> | <a href="/login">Login</a> 

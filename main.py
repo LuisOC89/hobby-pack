@@ -1172,9 +1172,9 @@ def creating_chat():
 def acting_on_events():
     #Same function than below post request, just watching behavior 
     if request.method == "GET":
-        condition = request.args.get('condition')
+        condition = str(request.args.get('condition'))
         print(condition)
-        if (condition == "show_all_events"):
+        if (condition == "None"):
             return render_template('allevents.html')                
     '''
         if condition == "from_allchats_view":      
