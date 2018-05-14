@@ -1,4 +1,4 @@
-### hobby-pack
+# hobby-pack
 An app that allows people with the same hobbies that live close by to create events in public places where they will meet.
 
 ## Overview
