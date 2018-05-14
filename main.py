@@ -761,8 +761,9 @@ def adding_place():
                 if current_place not in my_places:
                     current_place.hobbyists.append(logged_in_hobbyist())    
                     db.session.commit()
-                                         
-                existing_hobbie = Hobby.query.filter_by(name=this_hobby).first()                        
+
+                #print("\n\n"+this_hobby+"\n\n")                         
+                existing_hobbie = Hobby.query.filter_by(name=this_hobby).first()                                        
                 existing_hobbie.places.append(current_place) 
                 db.session.commit()   
 

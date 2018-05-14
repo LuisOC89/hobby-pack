@@ -16,7 +16,8 @@
         {% for publicplace in missing_placeshtml_for_me_for_this_hobby %}
             <input type="radio" name="radioplace" value={{publicplace.id}}> {{publicplace.name}} | {{publicplace.streetaddress}} {{publicplace.city}} {{publicplace.state}}, {{publicplace.zipcode}} <br>
         {% endfor %} 
-        <input type="hidden" value={{hobby}} name="hobby" />
+        <input type="hidden" value="{{hobby}}" name="hobby" />
+        <!--<span>{{hobby}}</span>-->
         <input type="hidden" value="picking_missing_place" name="conditional" /><br>
         <input type="submit" value='Add it' />
     </form>
