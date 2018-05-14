@@ -24,5 +24,5 @@ This project was motivated by the need of a person that moves to a new city and 
 * Javascript
 * JSON & APIs (oh yeah! :))
 
-## What I'll Have to Learn
+## What I had to Learn
 I had to learn many-to-many relationship in flask-SQLAlchemy. To improve the UI and UX I needed to learn more about CSS and Bootstrap, besides I wanted to include some APIs in my project (youtube, google, wikipedia). Related to APIs I was at 0, so I had to learn Javascript and APIs :) (still work in progress).  
