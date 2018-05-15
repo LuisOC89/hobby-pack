@@ -1175,9 +1175,8 @@ def acting_on_events():
     if request.method == "GET":
         condition = str(request.args.get('condition'))
         print(condition)
-        if (condition == "None"):
-            return render_template('allevents.html')                
-    '''
+        if (condition == "None"):                        
+            '''
         if condition == "from_allchats_view":      
             return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage="", errorpeople="", dict_user_hobbies=dict_user_hobbies)
         
@@ -1186,8 +1185,14 @@ def acting_on_events():
         
         if condition == "from_allchats_view":      
             return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage="", errorpeople="", dict_user_hobbies=dict_user_hobbies)
-    '''    
+            ''' 
+            
+            return render_template('allevents.html')       
+    
 
+
+
+    
 #TODO encounters (show all, show each)
 #TODO adding encounters (add encounter, add attendance later, add recap, add comment)
 
