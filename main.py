@@ -1201,7 +1201,7 @@ def acting_on_events():
     elif request.method == 'POST':
         condition = str(request.form['condition'])
         if condition == "new_event_info_submission":
-            jaja = jaja
+            jaja = "jaja"
     
 
 

@@ -31,16 +31,27 @@
 
         <p><label> People you would like to invite to this event: </p>
             <input type="checkbox" name="people_same_hobby" id="peopleSameHobby" > 
-            <label for="people_same_hobby">Every other user with the same theme hobby.</label><br>  
+            <label for="people_same_hobby">Every other user who likes the theme hobby of the event.</label><br>  
             
-            <input type="checkbox" name="specific_people" id="specificPeople" > 
-            <label for="specific_people">Specific users I select.</label><br><br> 
-   
-          
+            <input type="checkbox" id="specificPeople" onclick="showPeople()"> 
+            <!--<input type="checkbox" name="specific_people" id="specific_people" onclick="showpeople('specific_people')">--> 
+            <label for="specificPeople">Specific users I select.</label><br>
+            
+            <div id="test2" style="display:none" >
+                {% for person in others %}    
+                <input type="checkbox" name="peoplechecked" id="{{person.id}}" value="{{person.id}}" > 
+                <label for="{{person.id}}">{{person.nickname}}</label>        
+                {% endfor %}
+            </div><br>      
   
         <input type="hidden" name="condition" value="new_event_info_submission" />
         <input type="submit" value='Create' />  
 
+        <p>Display some text when the checkbox is checked:</p>
+
+        Checkbox: <input type="checkbox" id="myCheck"  onclick="myFunction()">
+
+        <p id="text" style="display:none">Checkbox is CHECKED!</p>
         <!--<textarea name="initial_message"></textarea><br>
         {% if errormessage == "nomessage" %}
         <span class="error10">You can not send an empty message. No cool. Please enter a valid message (something)</span><br>
