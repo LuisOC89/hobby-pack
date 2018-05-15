@@ -1,0 +1,76 @@
+{% extends "zbase.html" %}
+
+{% block content %}
+    <h1 class="titlemain">Creating an exciting event!!!</h1>
+        
+    {% if others | length == 0 %}
+        Nobody else on the website yet. Invite your friends to sign up.
+    {% else %}
+        <form method='post' action="/newchat">
+             
+        <p><label>Name of this event: <input type="text" name="name_of_event" maxlength="60" ></label></p>    
+        <p><label>Theme Hobby for this event:  
+            <select name="hobbies" >
+                    <option value="no selection" disabled selected value></option>
+                {% for hobby in hobbies %}
+                    <option value="{{hobby.id}}">{{hobby.name}}</option>                                                      
+                {% endfor %}                     
+            </select></label></p> 
+
+        <p><label>Public Place where this event will take place:  
+                <select name="places" >
+                        <option value="no selection" style="display:none" ></option>
+                    {% for place in places %}
+                        <option value="{{place.id}}">{{place.name}} | {{place.streetaddress}} {{place.city}} {{place.state}}, {{place.zipcode}} </option>                                                      
+                    {% endfor %}                     
+                </select></label></p> 	
+        
+        <p><label>Date of event: <input type="text" name="date_of_event" placeholder='MM/DD/YYYY' size="10" maxlength="10" ></label></p>
+        <p><label>Time of event (military time): <input type="text" name="time_of_event" placeholder='HH:MM' size="5" maxlength="5" ></label></p>
+        <p><label>Duration of event (military time): <input type="text" name="time_of_event" placeholder='HH:MM' size="5" maxlength="5" ></label></p>
+
+        <p><label> People you would like to invite to this event: </p>
+            <input type="checkbox" name="people_same_hobby" id="peopleSameHobby" > 
+            <label for="people_same_hobby">Every other user with the same theme hobby.</label><br>  
+            
+            <input type="checkbox" name="specific_people" id="specificPeople" > 
+            <label for="specific_people">Specific users I select.</label><br><br> 
+   
+          
+  
+        <input type="hidden" name="condition" value="new_event_info_submission" />
+        <input type="submit" value='Create' />  
+
+        <!--<textarea name="initial_message"></textarea><br>
+        {% if errormessage == "nomessage" %}
+        <span class="error10">You can not send an empty message. No cool. Please enter a valid message (something)</span><br>
+        {% endif %}
+        
+            Who would you like to send this message?
+            <br>
+            {% for person in other_people %}
+                <input type="checkbox" name="peoplechecked" id="{{person.id}}" value="{{person.nickname}}"> 
+                <label for="{{person.nickname}}">{{person.nickname}} {{person.city}} {{person.state}} {{person.zipcode}}  
+                {% if dict_user_hobbies[person.nickname] | length == 0 %}
+                    ( No hobbies yet )
+                {% else %}      
+                    (
+                        {% for hobby in dict_user_hobbies[person.nickname] %}
+                            {{hobby.name}}
+                            {{"," if not loop.last }} 
+                        {% endfor %}
+                    )
+                {% endif %}                
+            </label><br>                 
+            {% endfor %}  
+            {% if errorpeople == "nopeople" %}   
+            <span class="error10">Don't forget to select at least a receiver for your message.</span><br>    
+            {% elif errorpeople == "chat_exists" %}
+            <span class="error10">You have already a chat with {{other_person}}. Please check it out <a href="/chat">here!</a></span><br>        
+            {% endif %}
+            <input type="hidden" name="condition" value="from_newchat_view_validation" />
+            <input type="submit" value='Send' />  -->          
+        </form>
+    {% endif %}
+
+{% endblock %}

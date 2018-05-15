@@ -1,0 +1,96 @@
+.titlemain{
+  text-align: center;
+  color: blueviolet;
+  font-size: 30px;
+  font-weight: bold;
+}
+.list2{
+  text-align: left;
+  font-weight: bold;
+  color: peru;
+}
+.error10{
+  color: red;
+  font-style: italic;
+}
+.allgood{
+  color: green;
+  font-weight: bold;
+  font-style: italic;
+}
+p{
+  font-family: 'Times New Roman';
+  font-size: 20px;
+  font-style: italic;
+}
+#specialb{
+  color: rgb(128, 15, 0);
+  font-weight: bold;
+  font-size: 20px;
+  font-style: italic; 
+}
+.alignedform{display:inline;
+  vertical-align:top;
+  text-align:center;
+}
+.alignedformbutton input[type="submit"]{
+  margin: 0;
+}
+.plaintext{
+  color: rgba(247, 7, 167, 0.897);
+}
+.plaintext2{
+  color: rgba(4, 121, 39, 0.897);
+}
+.poster{
+  color:forestgreen
+}
+.paradf{
+  color:tomato
+}
+.titlepost{
+  color: rgb(26, 1, 114);
+}
+.toright{
+  text-align:right;
+}
+.centered{
+  text-align:center;
+}
+.toleft{
+  text-align:left;
+}
+.red{
+  color: red;
+}
+.orange{
+  color: orange;
+}
+.different{
+  color: black;
+}    
+.marginleft{
+  margin-left: 100px;                
+  background-color: lightblue;
+}
+.mycomment{
+  text-align:left;
+  margin-left:0;
+  background-color: lightblue;
+}
+.otherscomment{
+  text-align:right;
+  margin-right:0;
+  background-color: lightgreen;
+}
+.mini{
+  font-size: 10px;
+  font-style: italic; 
+}
+.screenright{
+  text-align:right;
+  margin-right:0;
+}
+#principal {
+  float: right;  
+}

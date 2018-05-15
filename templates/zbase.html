@@ -1,107 +1,13 @@
 <!doctype html>
 <html>
     <head>
-        <title>{{title}}</title>
-        <style>            
-            .titlemain{
-                text-align: center;
-                color: blueviolet;
-                font-size: 30px;
-                font-weight: bold;
-            }
-            .list2{
-                text-align: left;
-                font-weight: bold;
-                color: peru;
-            }
-            .error10{
-                color: red;
-                font-style: italic;
-            }
-            .allgood{
-                color: green;
-                font-weight: bold;
-                font-style: italic;
-            }
-            p{
-                font-family: 'Times New Roman';
-                font-size: 20px;
-                font-style: italic;
-            }
-            #specialb{
-                color: rgb(128, 15, 0);
-                font-weight: bold;
-                font-size: 20px;
-                font-style: italic; 
-            }
-            .alignedform{display:inline;
-                vertical-align:top;
-                text-align:center;
-            }
-            .alignedformbutton input[type="submit"]{
-                margin: 0;
-            }
-            .plaintext{
-                color: rgba(247, 7, 167, 0.897);
-            }
-            .plaintext2{
-                color: rgba(4, 121, 39, 0.897);
-            }
-            .poster{
-                color:forestgreen
-            }
-            .paradf{
-                color:tomato
-            }
-            .titlepost{
-                color: rgb(26, 1, 114);
-            }
-            .toright{
-                text-align:right;
-            }
-            .centered{
-                text-align:center;
-            }
-            .toleft{
-                text-align:left;
-            }
-            .red{
-                color: red;
-            }
-            .orange{
-                color: orange;
-            }
-            .different{
-                color: black;
-            }    
-            .marginleft{
-                margin-left: 100px;                
-                background-color: lightblue;
-            }
-            .mycomment{
-                text-align:left;
-                margin-left:0;
-                background-color: lightblue;
-            }
-            .otherscomment{
-                text-align:right;
-                margin-right:0;
-                background-color: lightgreen;
-            }
-            .mini{
-                font-size: 10px;
-                font-style: italic; 
-            }
-            .screenright{
-                text-align:right;
-                margin-right:0;
-            }
-
-
-        </style>
+        <link rel="stylesheet" href="static/css/bootstrap.min.css">
+        <link type="text/css" rel="stylesheet" href="static/stylesheet.css"/>
+        <meta charset='UTF-8'/>
+        <title>{{title}}</title>        
     </head>
 <body>
-    <div style='float: right'>
+    <div id="principal">
         {% if 'hobbyist' in session %}            
             <a href="/">Home</a> | <a href="/blog">Blog</a> | <a href="/chat">Chat</a> | <a href="/people">Hobbyists</a> | <a href="/hobbies">Hobbies</a> | <a href="/places">Places</a> | <a href="/events">Encounters</a><br>   
             <div class="toright"><a href="/myinfo?condition=show_all_info_user">{{ session['hobbyist'] }}</a> | <a href="/logout"> logout </a></div>
@@ -118,7 +24,7 @@
             &nbsp&nbsp
             <a href="/newplace">Add new place</a>
             &nbsp&nbsp
-            <a href="/newevent">Create encounter</a>
+            <a href="/events?condition=create_new_event">Create encounter</a>
             
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
@@ -133,5 +39,8 @@
     {% block content %}
     {% endblock %}
 
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    
 </body>
 </html>

@@ -1187,7 +1187,21 @@ def acting_on_events():
             return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage="", errorpeople="", dict_user_hobbies=dict_user_hobbies)
             ''' 
             
-            return render_template('allevents.html')       
+            return render_template('allevents.html')  
+
+        elif (condition == "create_new_event"):
+            other_hobbyists = Hobbyist.query.filter(Hobbyist.id!=logged_in_hobbyist().id).order_by(Hobbyist.nickname).all()
+            #Somebody could want to give a new hobby a chance before adding it to their hobbies
+            hobbies = Hobby.query.all()
+
+            #Somebody could want to give a new place a chance before adding it or not to their places
+            places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
+            return render_template('newevent.html',title="Creating an event", others=other_hobbyists, hobbies=hobbies, places=places)
+
+    elif request.method == 'POST':
+        condition = str(request.form['condition'])
+        if condition == "new_event_info_submission":
+            jaja = jaja
     
 
 
