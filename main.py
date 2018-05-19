@@ -1222,14 +1222,175 @@ def acting_on_events():
             else:
                 error_event_name = ""
 
-            #Validation for name:
+            #Validation for hobby:
             if (theme_hobby == "no selection"):
                 error_theme_hobby = "You have to pick a hobby from the list for this event."
             else:
                 error_theme_hobby = ""
 
-            if (error_event_name != "") or (error_theme_hobby != ""):
-                return render_template('newevent.html', title="Creating an event", others=other_hobbyists, hobbies=hobbies, places=places, error_event_name=error_event_name, error_theme_hobby=error_theme_hobby)
+            #Validation for place:
+            if (event_place == "no selection"):
+                error_event_place = "You have to pick a place from the list for this event."
+            else:
+                error_event_place = ""
+
+            #Validation for date:
+            #Validate empty or missing character
+            numbers = "0123456789"           
+            if (event_date == ""):
+                error_date = "You have to enter a date."
+            elif (len(event_date) < 10):
+                error_date = "Did you miss a '/' or a number? This field has to be 10 characters long. Ex: 05/19/2018."    
+            else:
+                #Validate just format MM/DD/YYYY
+                format_date_ok = 0
+                for i in range(0, len(event_date), 1):
+                    if (i == 2) or (i == 5):
+                        if (event_date[i] == "/"):
+                            format_date_ok = format_date_ok
+                        else:
+                            format_date_ok =format_date_ok + 1
+                    else:
+                        if (event_date[i] in numbers):
+                            format_date_ok = format_date_ok
+                        else:
+                            format_date_ok = format_date_ok + 1 
+                if (format_date_ok != 0):     
+                    error_date = "Please follow the format shown. Insert just numbers with the slashes. Ex: 05/19/2018."
+                else:
+                    #Validate maximum values of year, month, day
+                    month_max_days = {1:31, 2:28, 3:31, 4:30, 5:31, 6:30, 7:31, 8:31, 9:30, 10:31, 11:30, 12:31}
+                    event_month = int(event_date[0:2]) 
+                    event_day = int(event_date[3:5]) 
+                    event_year = int(event_date[6:11])
+
+                    if (event_year > (now1().year + 2)):
+                        error_date = "The event you create have to take place within the next two years."
+                    else:
+                        if (int(event_month) > 12):
+                            error_date = "There is no a 13th month. Please enter a valid month."
+                        else:
+                            #Validate February 29
+                            if ((event_month == 2) and (event_day == 29)):
+                                error_date = "On February 29 the world ends. Please select another day."
+                            #Validate maximum number of days per month
+                            elif (int(event_day) > month_max_days[event_month]):
+                                error_date = "Please select a valid day for month "+ str(event_month)
+                            else:
+                                #Validate past dates for future events:
+                                if (event_year < now1().year):
+                                    error_date = "Past years are invalid. Please select a valid year for a future event." 
+                                elif (event_year == now1().year):
+                                    if (event_month < now1().month):
+                                        error_date = "Past months in the same year are invalids. Please enter a valid month."
+                                    elif (event_month == now1().month):
+                                        if (event_day < now1().day):
+                                            error_date = "Past days in the same month and year are invalids. Please enter a valid day."
+                                        else:                           
+                                            error_date = ""  
+                                    else: 
+                                        error_date = ""
+                                else:
+                                    error_date = ""  
+            #Validation for start_time                             
+            #Validate empty or missing character                     
+            if (event_start_time == ""):
+                error_start = "You have to enter a start time for the event."
+            elif (len(event_start_time) < 5):
+                error_start = "Did you miss a ':' or a number? This field has to be 5 characters long. Ex: 08:30"    
+            else:
+                #Validate just format HH:MM
+                format_start_ok = 0
+                for j in range(0, len(event_start_time), 1):
+                    if (j == 2):
+                        if (event_start_time[j] == ":"):
+                            format_start_ok = format_start_ok
+                        else:
+                            format_start_ok =format_start_ok + 1
+                    else:
+                        if (event_start_time[j] in numbers):
+                            format_start_ok = format_start_ok
+                        else:
+                            format_start_ok = format_start_ok + 1 
+                if (format_start_ok != 0):     
+                    error_start = "Please follow the format shown. Insert just numbers with the two points. Ex: 08:30."
+                else:
+                    #Validate maximum values of hours and minutes                    
+                    event_start_hour = int(event_start_time[0:2]) 
+                    event_start_minute = int(event_start_time[3:5])                     
+                    if ((event_start_hour > 23) or (event_start_minute > 59)):
+                        error_start = "Please insert a valid time. The maximum valid time would be 23:59"
+                    else:
+                        #Validate not past time on the same day:
+                        if (event_date == filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year)):
+                            if (event_start_hour < now1().hour):
+                                error_start = "Invalid past time. You have to create the event in the future, even if it is 1 minute in the future though."
+                            elif (event_start_hour == now1().hour):
+                                if (event_start_minute < now1().minute):
+                                    error_start = "Invalid past time. You have to create the event in the future, even if it is 1 minute in the future though."
+                                else:
+                                    error_start = ""
+                            else:
+                                error_start = ""
+                        else:
+                            error_start = ""
+                                                   
+            #Validation for duration_time                             
+            #Validate empty or missing character                     
+            if (event_duration == ""):
+                error_duration = "You have to enter a duration time for the event."
+            elif (len(event_duration) < 5):
+                error_duration = "Did you miss a ':' or a number? This field has to be 5 characters long. Ex: 02:30"    
+            else:
+                #Validate just format HH:MM
+                format_duration_ok = 0
+                for k in range(0, len(event_duration), 1):
+                    if (k == 2):
+                        if (event_duration[k] == ":"):
+                            format_duration_ok = format_duration_ok
+                        else:
+                            format_duration_ok =format_duration_ok + 1
+                    else:
+                        if (event_duration[k] in numbers):
+                            format_duration_ok = format_duration_ok
+                        else:
+                            format_duration_ok = format_duration_ok + 1 
+                if (format_duration_ok != 0):     
+                    error_duration = "Please follow the format shown. Insert just numbers with the two points. Ex: 02:30."
+                else:
+                    #Validate maximum values of hours and minutes                    
+                    event_duration_hour = int(event_duration[0:2]) 
+                    event_duration_minute = int(event_duration[3:5])                     
+                    if ((event_duration_hour > 5) or (event_duration_minute > 59)):
+                        error_duration = "Please insert a valid time. The maximum valid time would be 05:59"
+                    else:
+                        error_duration = ""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            if (error_event_name != "") or (error_theme_hobby != "") or (error_event_place != "") or (error_date != "") or (error_start != "") or (error_duration != ""):
+                return render_template('newevent.html', title="Creating an event", others=other_hobbyists, hobbies=hobbies, places=places, error_event_name=error_event_name, event_name=event_name, error_theme_hobby=error_theme_hobby, error_event_place=error_event_place, error_date=error_date, event_date=event_date, error_start=error_start, event_time=event_start_time, error_duration=error_duration, event_duration=event_duration)
 
 
 

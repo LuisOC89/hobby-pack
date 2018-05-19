@@ -8,7 +8,7 @@
     {% else %}
         <form method='post' id="event-creation" action="/events">
              
-        <p><label>Name of this event: <input type="text" name="name_of_event" maxlength="60"></label>
+        <p><label>Name of this event: <input type="text" value="{{event_name}}" name="name_of_event" maxlength="60"></label>
             <span name="error_event_name" class="error10">{{error_event_name}}</span></p>    
         <p><label>Theme Hobby for this event:  
             <select name="hobbies" >
@@ -24,11 +24,11 @@
                     {% for place in places %}
                         <option value="{{place.id}}">{{place.name}} | {{place.streetaddress}} {{place.city}} {{place.state}}, {{place.zipcode}} </option>                                                      
                     {% endfor %}                     
-                </select></label><span class="error10" name="error_event_select_place">{{error_place}}</span></p> 	
+                </select></label><span class="error10" name="error_event_place">{{error_event_place}}</span></p> 	
         
-        <p><label>Date of event: <input type="text" name="date_of_event" placeholder='MM/DD/YYYY' size="12" maxlength="10" ></label><span class="error10" name="error_date_event">{{error_date}}</span></p>
-        <p><label>Time of event (military time): <input type="text" name="time_of_event" placeholder='HH:MM' size="5" maxlength="5" ></label><span class="error10" name="error_start">{{error_start}}</span></p>
-        <p><label>Duration of event (military time): <input type="text" name="duration_of_event" placeholder='HH:MM' size="5" maxlength="5" ></label><span class="error10" name="error_duration">{{error_duration}}</span></p>
+        <p><label>Date of event: <input type="text" value="{{event_date}}" name="date_of_event" placeholder='MM/DD/YYYY' size="12" maxlength="10" ></label><span class="error10" name="error_date_event">{{error_date}}</span></p>
+        <p><label>Time of event (military time): <input type="text" value="{{event_time}}" name="time_of_event" placeholder='HH:MM' size="5" maxlength="5" ></label><span class="error10" name="error_start">{{error_start}}</span></p>
+        <p><label>Duration of event (military time): <input type="text" value="{{event_duration}}" name="duration_of_event" placeholder='HH:MM' size="5" maxlength="5" ></label><span class="error10" name="error_duration">{{error_duration}}</span></p>
 
         <p><label> People you would like to invite to this event: </p>
             <input type="checkbox" name="people_same_hobby" id="peopleSameHobby" > 

@@ -195,7 +195,21 @@ class Encounter(db.Model):
         self.attendance_taken_status = attendance_taken_status   
         self.attendance_taken_date_time = attendance_taken_date_time
 
-    '''
+class Event_comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    #Kind of comment will have three possible values: "invitation", "recap", "before_event", "after_event"
+    content = db.Column(db.String(1000))
+    kind_of_comment = db.Column(db.String(12))
+    event_id = db.Column(db.Integer, db.ForeignKey('encounter.id'))
+    hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
+
+    def __init__(self, content, kind, event, user):
+        self.content = content 
+        self.kind_of_comment = kind
+        self.event_comment = event
+        self.event_comment_user = user
+        
+'''
     class Cat:
         def __init__(self):
         # every Cat comes into this world tired and hungry
@@ -229,18 +243,3 @@ class Encounter(db.Model):
         After eating, tom still says: meow!
         After eating again, tom says: prrrr
     '''
-
-class Event_comment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    #Kind of comment will have three possible values: "recap", "before_event", "after_event"
-    content = db.Column(db.String(1000))
-    kind_of_comment = db.Column(db.String(12))
-    event_id = db.Column(db.Integer, db.ForeignKey('encounter.id'))
-    hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
-
-    def __init__(self, content, kind, event, user):
-        self.content = content 
-        self.kind_of_comment = kind
-        self.event_comment = event
-        self.event_comment_user = user
-        
