@@ -1200,9 +1200,114 @@ def acting_on_events():
 
     elif request.method == 'POST':
         condition = str(request.form['condition'])
-        if condition == "new_event_info_submission":
-            jaja = "jaja"
-    
+        if condition == "new_event_info_submission":    
+            other_hobbyists = Hobbyist.query.filter(Hobbyist.id!=logged_in_hobbyist().id).order_by(Hobbyist.nickname).all()
+            hobbies = Hobby.query.all()
+            places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
+
+            event_name = str(request.form['name_of_event'])
+            theme_hobby = str(request.form['hobbies'])            
+            event_place = str(request.form['places'])
+            event_date = str(request.form['date_of_event'])
+            event_start_time = str(request.form['time_of_event'])
+            event_duration = str(request.form['duration_of_event'])
+            people_same_hobby_indicator = request.form.getlist('people_same_hobby') #Length of list 1. Indicated selected or not.
+            specific_people_invited_indicator = request.form.getlist('specific_peps') #Length of list 1. Indicated selected or not.
+            specific_people_invited = request.form.getlist('people_invited')
+            initial_invitation_message = request.form['initial_invitation_message']
+
+            #Validation for name:
+            if (event_name == ""):
+                error_event_name = "You have to assign a name to your event."
+            else:
+                error_event_name = ""
+
+            #Validation for name:
+            if (theme_hobby == "no selection"):
+                error_theme_hobby = "You have to pick a hobby from the list for this event."
+            else:
+                error_theme_hobby = ""
+
+            if (error_event_name != "") or (error_theme_hobby != ""):
+                return render_template('newevent.html', title="Creating an event", others=other_hobbyists, hobbies=hobbies, places=places, error_event_name=error_event_name, error_theme_hobby=error_theme_hobby)
+
+
+
+
+
+
+
+            '''initial_message = request.form['initial_message']
+            people_invited = request.form.getlist('peoplechecked')
+            
+            #Validation to make sure that there is a message. 
+            if (initial_message ==""):
+                error_message = "nomessage"  
+            else: 
+                error_message = "" 
+
+            #Validation to checked that the user selected at least one of his hobbies.
+            if (len(people_invited) == 0):
+                error_people = "nopeople"
+            else:
+                error_people = ""
+                
+            if (error_people != "") or (error_message != ""):                
+                return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage=error_message, errorpeople=error_people, dict_user_hobbies=dict_user_hobbies)
+            else:
+                if (len(people_invited) == 1):   '''
+
+
+            """initial_message = request.form['initial_message']
+            people_invited_as_text = request.form['people_invited']
+            people_invited_back_to_list = people_invited_as_text.split(",")
+
+            chat_name = request.form['group_name'] 
+            
+            '''for person in people_invited_back_to_list:
+                print("\n"+person+"\n")'''
+
+            #Validation to make sure that the user wrote a name.
+            if (chat_name == ""):
+                error_name = "empty"
+            else:
+                #To check if this chat already exists
+                chat_exists = Chat.query.filter_by(name=chat_name).count()
+                if (chat_exists == 1):   
+                    error_name = "chat_exists"  
+                else:
+                    error_name = ""    
+
+            if (error_name != ""):                
+                return render_template('newgroup.html',title="Creating a chat", initial_message=initial_message, people_invited=people_invited_as_text, errorname=error_name, name_of_group=chat_name)
+            else:                
+                is_a_group = True
+                            
+                new_chat = Chat(is_a_group, chat_name)
+                db.session.add(new_chat)
+                db.session.commit()
+
+                #To add chat to users in chat   
+                # Self creator                       
+                new_chat.participants.append(logged_in_hobbyist()) 
+                
+                # Other people
+                for other_person in people_invited_back_to_list:
+                    other_person_to_add = Hobbyist.query.filter_by(nickname=other_person).first()                         
+                    new_chat.participants.append(other_person_to_add)
+                    db.session.commit() 
+
+                #To add comment to database and relate to chat
+                this_chat = Chat.query.filter_by(name=chat_name).first()   
+                new_comment = Chat_comment(initial_message, filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year), filling(now1().hour)+":"+filling(now1().minute), logged_in_hobbyist(), this_chat)
+                db.session.add(new_comment)
+                db.session.commit()
+
+                #print(new_post.id)
+                return redirect('''/chat?condition=just_created_chat&chat_id='''+str(new_chat.id))"""
+
+
+
 
 
 
