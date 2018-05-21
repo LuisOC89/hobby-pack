@@ -1366,31 +1366,30 @@ def acting_on_events():
                     else:
                         error_duration = ""
 
+            #Validation for people invited
+            #people_same_hobby_indicator = request.form.getlist('people_same_hobby') #Length of list 1. Indicated selected or not.
+            #specific_people_invited_indicator = request.form.getlist('specific_peps') #Length of list 1. Indicated selected or not.
+            #specific_people_invited = request.form.getlist('people_invited')
 
+            if ((len(people_same_hobby_indicator)==0) and (len(specific_people_invited_indicator)==0)):
+                error_people = "You have to select either one or both options below in order to invite somebody to your event."
+            elif ((len(people_same_hobby_indicator)!=0) and (len(specific_people_invited_indicator)==0)):
+                error_people = ""
+            elif ((len(people_same_hobby_indicator)==0) and (len(specific_people_invited_indicator)!=0)):
+                if (len(specific_people_invited) == 0):
+                    error_people = "If you chosen the 'specific users' option, then you have to select at least one person from the list."
+                else:
+                    error_people = ""
+            elif ((len(people_same_hobby_indicator)!=0) and (len(specific_people_invited_indicator)!=0)):
+                error_people = ""
 
+            if (initial_invitation_message == ""):
+                error_invitation_message = "You have to send an initial friendly and impactant message to the people you would like to invite."
+            else:
+                 error_invitation_message = ""
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            if (error_event_name != "") or (error_theme_hobby != "") or (error_event_place != "") or (error_date != "") or (error_start != "") or (error_duration != ""):
-                return render_template('newevent.html', title="Creating an event", others=other_hobbyists, hobbies=hobbies, places=places, error_event_name=error_event_name, event_name=event_name, error_theme_hobby=error_theme_hobby, error_event_place=error_event_place, error_date=error_date, event_date=event_date, error_start=error_start, event_time=event_start_time, error_duration=error_duration, event_duration=event_duration)
+            if (error_event_name != "") or (error_theme_hobby != "") or (error_event_place != "") or (error_date != "") or (error_start != "") or (error_duration != "") or (error_people != "") or (error_invitation_message != ""):
+                return render_template('newevent.html', title="Creating an event", others=other_hobbyists, hobbies=hobbies, places=places, error_event_name=error_event_name, event_name=event_name, error_theme_hobby=error_theme_hobby, error_event_place=error_event_place, error_date=error_date, event_date=event_date, error_start=error_start, event_time=event_start_time, error_duration=error_duration, event_duration=event_duration, error_people=error_people, error_invitation_message=error_invitation_message, invitation = initial_invitation_message)
 
 
 

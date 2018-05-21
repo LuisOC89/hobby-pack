@@ -30,9 +30,10 @@
         <p><label>Time of event (military time): <input type="text" value="{{event_time}}" name="time_of_event" placeholder='HH:MM' size="5" maxlength="5" ></label><span class="error10" name="error_start">{{error_start}}</span></p>
         <p><label>Duration of event (military time): <input type="text" value="{{event_duration}}" name="duration_of_event" placeholder='HH:MM' size="5" maxlength="5" ></label><span class="error10" name="error_duration">{{error_duration}}</span></p>
 
-        <p><label> People you would like to invite to this event: </p>
+        <p><label> People you would like to invite to this event: <br>
+            <span class="error10">{{error_people}}</span></p>
             <input type="checkbox" name="people_same_hobby" id="peopleSameHobby" > 
-            <label for="people_same_hobby">Every other user who likes the theme hobby of the event.</label><span name="error_people_theme_hobby">{{error_people_theme_hobby}}</span><br>  
+            <label for="people_same_hobby">Every other user who likes the theme hobby of the event.</label><br>  
             
             <input type="checkbox" name="specific_peps" id="specificPeople"> 
             <!--<input type="checkbox" name="specific_people" id="specific_people">--> 
@@ -46,7 +47,7 @@
             </div><br>      
             
             Invitation message:<br>
-            <textarea name="initial_invitation_message"></textarea><br><span name="error_invitation_message">{{error_invitation_message}}</span><br>
+            <textarea name="initial_invitation_message">{{invitation}}</textarea><br><span class="error10" name="error_invitation_message">{{error_invitation_message}}</span><br>
 
         <input type="hidden" name="condition" value="new_event_info_submission" />
         <input type="submit" value='Create' /> 
