@@ -160,7 +160,7 @@ class Chat_comment(db.Model):
 
 class Encounter(db.Model):
     id = db.Column(db.Integer, primary_key=True)    
-    name = db.Column(db.String(60), unique=True)       
+    name = db.Column(db.String(60))       
     date = db.Column(db.String(10))
     start_time = db.Column(db.String(5)) 
     #201805131321 > 201705131321 > 201704131321 - YYYYMMDDHHMM 
@@ -169,6 +169,7 @@ class Encounter(db.Model):
     duration = db.Column(db.String(5))
     attendance_taken_status = db.Column(db.Boolean)
     attendance_taken_date_time = db.Column(db.String(12))
+    event_key = db.Column(db.String(500))
 
     hobby_id = db.Column(db.Integer, db.ForeignKey('hobby.id'))
     place_id = db.Column(db.Integer, db.ForeignKey('place.id'))
@@ -179,13 +180,14 @@ class Encounter(db.Model):
     # - This is declared in the class Hobbyist and is many-to-many    
     encounter_comments = db.relationship("Event_comment", backref="event_comment")
 
-    def __init__(self, name, date, time, datetime_ordered, duration, holding_place, hobby_taking_place, attendance_taken_status, hobby, hobbyist_creator):
+    def __init__(self, name, date, time, datetime_ordered, duration, attendance_taken_status, event_key, hobby, holding_place, hobbyist_creator):
         self.name = name
         self.date = date
         self.start_time = time
         self.date_and_time_to_order = datetime_ordered
         self.duration = duration
         self.attendance_taken_status = attendance_taken_status
+        self.event_key = event_key 
         
         self.encounter = hobby        
         self.event = holding_place

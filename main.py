@@ -1,9 +1,9 @@
 from flask import request, redirect, render_template, session, flash, url_for
 from sqlalchemy import desc
 from app import db, app
-from models import Hobbyist, Hobby, Place, Blog, Bloganswer, Encounter, Chat, Chat_comment
+from models import Hobbyist, Hobby, Place, Blog, Bloganswer, Encounter, Chat, Chat_comment, Event_comment
 from hashingtools import checking_password_hash
-from utils import filling, now1, checking_existing_address_in_db
+from utils import filling, now1, checking_existing_address_in_db, checking_existing_event_in_db
 import cgi
 
 app.secret_key = 'super-secret-close-your-eyes'
@@ -1260,31 +1260,35 @@ def acting_on_events():
                 else:
                     #Validate maximum values of year, month, day
                     month_max_days = {1:31, 2:28, 3:31, 4:30, 5:31, 6:30, 7:31, 8:31, 9:30, 10:31, 11:30, 12:31}
-                    event_month = int(event_date[0:2]) 
-                    event_day = int(event_date[3:5]) 
-                    event_year = int(event_date[6:11])
+                    event_month_str = str(event_date[0:2]) 
+                    event_day_str = str(event_date[3:5]) 
+                    event_year_str = str(event_date[6:11])
 
-                    if (event_year > (now1().year + 2)):
+                    event_month_int = int(event_month_str) 
+                    event_day_int = int(event_day_str) 
+                    event_year_int = int(event_year_str)
+
+                    if (event_year_int > (now1().year + 2)):
                         error_date = "The event you create have to take place within the next two years."
                     else:
-                        if (int(event_month) > 12):
+                        if (event_month_int > 12):
                             error_date = "There is no a 13th month. Please enter a valid month."
                         else:
                             #Validate February 29
-                            if ((event_month == 2) and (event_day == 29)):
-                                error_date = "On February 29 the world ends. Please select another day."
+                            if ((event_month_int == 2) and (event_day_int == 29)):
+                                error_date = "On February 29 the website will be under maintenance. Please select another day."
                             #Validate maximum number of days per month
-                            elif (int(event_day) > month_max_days[event_month]):
-                                error_date = "Please select a valid day for month "+ str(event_month)
+                            elif (event_day_int > month_max_days[event_month_int]):
+                                error_date = "Please select a valid day for month "+ event_month_str
                             else:
                                 #Validate past dates for future events:
-                                if (event_year < now1().year):
+                                if (event_year_int < now1().year):
                                     error_date = "Past years are invalid. Please select a valid year for a future event." 
-                                elif (event_year == now1().year):
-                                    if (event_month < now1().month):
+                                elif (event_year_int == now1().year):
+                                    if (event_month_int < now1().month):
                                         error_date = "Past months in the same year are invalids. Please enter a valid month."
-                                    elif (event_month == now1().month):
-                                        if (event_day < now1().day):
+                                    elif (event_month_int == now1().month):
+                                        if (event_day_int < now1().day):
                                             error_date = "Past days in the same month and year are invalids. Please enter a valid day."
                                         else:                           
                                             error_date = ""  
@@ -1315,18 +1319,21 @@ def acting_on_events():
                 if (format_start_ok != 0):     
                     error_start = "Please follow the format shown. Insert just numbers with the two points. Ex: 08:30."
                 else:
-                    #Validate maximum values of hours and minutes                    
-                    event_start_hour = int(event_start_time[0:2]) 
-                    event_start_minute = int(event_start_time[3:5])                     
-                    if ((event_start_hour > 23) or (event_start_minute > 59)):
+                    #Validate maximum values of hours and minutes   
+                    event_start_hour_str = str(event_start_time[0:2]) 
+                    event_start_minute_str = str(event_start_time[3:5])                      
+                                     
+                    event_start_hour_int = int(event_start_hour_str) 
+                    event_start_minute_int = int(event_start_minute_str)                     
+                    if ((event_start_hour_int > 23) or (event_start_minute_int > 59)):
                         error_start = "Please insert a valid time. The maximum valid time would be 23:59"
                     else:
                         #Validate not past time on the same day:
                         if (event_date == filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year)):
-                            if (event_start_hour < now1().hour):
+                            if (event_start_hour_int < now1().hour):
                                 error_start = "Invalid past time. You have to create the event in the future, even if it is 1 minute in the future though."
-                            elif (event_start_hour == now1().hour):
-                                if (event_start_minute < now1().minute):
+                            elif (event_start_hour_int == now1().hour):
+                                if (event_start_minute_int < now1().minute):
                                     error_start = "Invalid past time. You have to create the event in the future, even if it is 1 minute in the future though."
                                 else:
                                     error_start = ""
@@ -1336,7 +1343,7 @@ def acting_on_events():
                             error_start = ""
                                                    
             #Validation for duration_time                             
-            #Validate empty or missing character                     
+            #Validate empty or missing character                   
             if (event_duration == ""):
                 error_duration = "You have to enter a duration time for the event."
             elif (len(event_duration) < 5):
@@ -1366,6 +1373,15 @@ def acting_on_events():
                     else:
                         error_duration = ""
 
+            #Validation of february 29 if event starts previous day and ends on february 29.
+            if (error_start == "") and (error_date == ""):              
+                if ((event_month_int == 2) and (event_day_int == 28) and ((event_start_hour_int + event_duration_hour) > 23)):
+                    error_duration = "On February 29 the website will be under maintenance. Please select another day or modify the duration of the event."  
+                elif ((event_month_int == 2) and (event_day_int == 28) and ((event_start_hour_int + event_duration_hour) == 23) and ((event_start_minute_int + event_duration_minute) > 59)):
+                    error_duration = "On February 29 the website will be under maintenance. Please select another day or modify the duration of the event."  
+            else:
+                error_duration = ""  
+
             #Validation for people invited
             #people_same_hobby_indicator = request.form.getlist('people_same_hobby') #Length of list 1. Indicated selected or not.
             #specific_people_invited_indicator = request.form.getlist('specific_peps') #Length of list 1. Indicated selected or not.
@@ -1373,15 +1389,41 @@ def acting_on_events():
 
             if ((len(people_same_hobby_indicator)==0) and (len(specific_people_invited_indicator)==0)):
                 error_people = "You have to select either one or both options below in order to invite somebody to your event."
-            elif ((len(people_same_hobby_indicator)!=0) and (len(specific_people_invited_indicator)==0)):
-                error_people = ""
+            elif ((len(people_same_hobby_indicator)!=0) and (len(specific_people_invited_indicator)==0)):                
+                
+                #hobbies_this_user = Hobby.query.filter(Hobby.hobbyists.any(nickname=user.nickname)).all()    
+                print("\n\n" + theme_hobby + "\n\n")
+                                    
+                same_hobby_people = Hobbyist.query.filter(Hobbyist.hobbies.any(id=theme_hobby)).all()
+
+                if (len(same_hobby_people) == 0):
+                    error_people = "There are no other hobbyists that practice this hobby. You will have to pick ther people with by selecting the 'specific people' option."
+                else:
+                    error_people = ""
+                    participant_list = Hobbyist.query.filter(Hobbyist.hobbies.any(id=theme_hobby)).all()
+                    #not_my_hobbies = [x for x in all_hobbies if x not in my_hobbies]
             elif ((len(people_same_hobby_indicator)==0) and (len(specific_people_invited_indicator)!=0)):
                 if (len(specific_people_invited) == 0):
                     error_people = "If you chosen the 'specific users' option, then you have to select at least one person from the list."
                 else:
                     error_people = ""
+                    participant_list = []
+                    for participant in specific_people_invited:                        
+                        participant_list.append(Hobbyist.query.filter_by(id=participant).first())
             elif ((len(people_same_hobby_indicator)!=0) and (len(specific_people_invited_indicator)!=0)):
                 error_people = ""
+                
+                all_hobbyists_same_hobby = Hobbyist.query.filter(Hobbyist.hobbies.any(id=theme_hobby)).all()                
+                participant_list_same_hobby = []
+                for participant in all_hobbyists_same_hobby:
+                    participant_list_same_hobby.append(participant)
+
+                participant_list_specific_people = []
+                for participant in specific_people_invited:                        
+                    participant_list_specific_people.append(Hobbyist.query.filter_by(id=participant).first()) 
+                
+                #All_participants_invited_not_duplicates
+                participant_list = participant_list_same_hobby + [participant for participant in participant_list_specific_people if participant not in participant_list_same_hobby]
 
             if (initial_invitation_message == ""):
                 error_invitation_message = "You have to send an initial friendly and impactant message to the people you would like to invite."
@@ -1390,84 +1432,108 @@ def acting_on_events():
 
             if (error_event_name != "") or (error_theme_hobby != "") or (error_event_place != "") or (error_date != "") or (error_start != "") or (error_duration != "") or (error_people != "") or (error_invitation_message != ""):
                 return render_template('newevent.html', title="Creating an event", others=other_hobbyists, hobbies=hobbies, places=places, error_event_name=error_event_name, event_name=event_name, error_theme_hobby=error_theme_hobby, error_event_place=error_event_place, error_date=error_date, event_date=event_date, error_start=error_start, event_time=event_start_time, error_duration=error_duration, event_duration=event_duration, error_people=error_people, error_invitation_message=error_invitation_message, invitation = initial_invitation_message)
-
-
-
-
-
-
-
-            '''initial_message = request.form['initial_message']
-            people_invited = request.form.getlist('peoplechecked')
-            
-            #Validation to make sure that there is a message. 
-            if (initial_message ==""):
-                error_message = "nomessage"  
-            else: 
-                error_message = "" 
-
-            #Validation to checked that the user selected at least one of his hobbies.
-            if (len(people_invited) == 0):
-                error_people = "nopeople"
             else:
-                error_people = ""
+                #Validation of same event in database
+                existing_events_same_name = Encounter.query.filter_by(name=event_name)
                 
-            if (error_people != "") or (error_message != ""):                
-                return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage=error_message, errorpeople=error_people, dict_user_hobbies=dict_user_hobbies)
-            else:
-                if (len(people_invited) == 1):   '''
+                hobby_event = Hobby.query.filter_by(id=theme_hobby).first() 
+                place_event = Place.query.filter_by(id=event_place).first()
+
+                #event_name+hobby_event.name+place_event.unique_key_address+event_date+event_start_time
+                #Done checking if existing in db
+                if checking_existing_event_in_db(event_name, hobby_event, place_event, event_date, event_start_time, existing_events_same_name) == True:
+                    error_event_name = "This event is already registered on this web. Are you trying to create the same event?"
+                    return render_template('newevent.html', title="Creating an event", others=other_hobbyists, hobbies=hobbies, places=places, error_event_name=error_event_name, event_name=event_name, error_theme_hobby=error_theme_hobby, error_event_place=error_event_place, error_date=error_date, event_date=event_date, error_start=error_start, event_time=event_start_time, error_duration=error_duration, event_duration=event_duration, error_people=error_people, error_invitation_message=error_invitation_message, invitation = initial_invitation_message)
+                else: 
+                    error_event_name = ""                                       
+
+                    #Creating event with initial attributes. Missing: Initial tempting participants, attendance_participants, attendance_taken_time, attendance_taken_status
+                    new_encounter = Encounter(event_name, event_date, event_start_time, event_year_str+event_month_str+event_day_str+event_start_hour_str+event_start_minute_str, event_duration, False, event_name+hobby_event.name+place_event.unique_key_address+event_date+event_start_time, hobby_event, place_event, logged_in_hobbyist())
+                    db.session.add(new_encounter)
+                    db.session.commit()
+
+                    #To add participants:
+                    #Self_creator
+                    new_encounter.hobbyists.append(logged_in_hobbyist()) 
+                    #Other_people
+                    for person in participant_list:
+                        new_encounter.hobbyists.append(person) 
+                    db.session.commit()
+
+                    this_event = Encounter.query.filter_by(event_key=event_name+hobby_event.name+place_event.unique_key_address+event_date+event_start_time).first()
+                    new_comment = Event_comment(initial_invitation_message, "invitation", this_event, logged_in_hobbyist())
+                    db.session.add(new_comment)
+                    db.session.commit()
+
+                    '''return redirect('/blog?id='+str(new_post_answer.id)+'&answer_id='+str(new_post_answer.id))'''
+                    return redirect("/events")
+                    '''<a href="/myinfo?condition=show_all_info_user">                           
+                    return redirect(url_for("index", title="Hobby Pack - Sharing our hobbies"))'''
 
 
-            """initial_message = request.form['initial_message']
-            people_invited_as_text = request.form['people_invited']
-            people_invited_back_to_list = people_invited_as_text.split(",")
+                    """         
+                    new_chat = Chat(is_a_group, name_chat)
+                    db.session.add(new_chat)
+                    db.session.commit()
 
-            chat_name = request.form['group_name'] 
-            
-            '''for person in people_invited_back_to_list:
-                print("\n"+person+"\n")'''
-
-            #Validation to make sure that the user wrote a name.
-            if (chat_name == ""):
-                error_name = "empty"
-            else:
-                #To check if this chat already exists
-                chat_exists = Chat.query.filter_by(name=chat_name).count()
-                if (chat_exists == 1):   
-                    error_name = "chat_exists"  
-                else:
-                    error_name = ""    
-
-            if (error_name != ""):                
-                return render_template('newgroup.html',title="Creating a chat", initial_message=initial_message, people_invited=people_invited_as_text, errorname=error_name, name_of_group=chat_name)
-            else:                
-                is_a_group = True
-                            
-                new_chat = Chat(is_a_group, chat_name)
-                db.session.add(new_chat)
-                db.session.commit()
-
-                #To add chat to users in chat   
-                # Self creator                       
-                new_chat.participants.append(logged_in_hobbyist()) 
-                
-                # Other people
-                for other_person in people_invited_back_to_list:
-                    other_person_to_add = Hobbyist.query.filter_by(nickname=other_person).first()                         
-                    new_chat.participants.append(other_person_to_add)
+                    #To add chat to users in chat   
+                    # Self creator                       
+                    new_chat.participants.append(logged_in_hobbyist()) 
+                    # Other person
+                    other_person = Hobbyist.query.filter_by(nickname=people_invited[0]).first()                         
+                    new_chat.participants.append(other_person)
                     db.session.commit() 
 
-                #To add comment to database and relate to chat
-                this_chat = Chat.query.filter_by(name=chat_name).first()   
-                new_comment = Chat_comment(initial_message, filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year), filling(now1().hour)+":"+filling(now1().minute), logged_in_hobbyist(), this_chat)
-                db.session.add(new_comment)
-                db.session.commit()
+                    #To add comment to database and relate to chat
+                    this_chat = Chat.query.filter_by(name=name_chat).first()   
+                    new_comment = Chat_comment(initial_message, filling(now1().month)+"/"+filling(now1().day)+"/"+filling(now1().year), filling(now1().hour)+":"+filling(now1().minute), logged_in_hobbyist(), this_chat)
+                    db.session.add(new_comment)
+                    db.session.commit()
 
-                #print(new_post.id)
-                return redirect('''/chat?condition=just_created_chat&chat_id='''+str(new_chat.id))"""
+                    #print(new_post.id)
+                    return redirect("/chat?condition=just_created_chat&chat_id="+str(new_chat.id))
 
 
 
+
+                    new_place = Place(placehtml, streethtml, cityhtml, statehtml, zipcodehtml)
+                    db.session.add(new_place)
+                    db.session.commit()           
+
+                    #To find Place by key_address_validation and avoid duplicating values in database or assigning wrong values to data        
+                    place = Place.query.filter_by(unique_key_address=placehtml+streethtml+cityhtml+statehtml+zipcodehtml).first()
+                    
+                    #To add place to user                          
+                    new_place.hobbyists.append(logged_in_hobbyist()) 
+                    db.session.commit() 
+
+                    #To add place to hobbies
+                    #print(type(request.form.getlist('hobbieschecked')))
+                    #print(type(hobbies_practiced))
+                    #print(hobbies_practiced)
+                    #for hobby in hobbies_practiced:
+                        #print(hobby)
+                    for hobby in hobbies_practiced:               
+                        existing_hobbie = Hobby.query.filter_by(name=hobby).first()                        
+                        existing_hobbie.places.append(place) 
+                        db.session.commit()    
+
+                    '''return redirect('/blog?id='+str(new_post_answer.id)+'&answer_id='+str(new_post_answer.id))'''
+                    return redirect("/myinfo?condition=show_all_info_user&answer_id=Hobby Pack - Sharing our hobbies")
+                    '''<a href="/myinfo?condition=show_all_info_user">                           
+                    return redirect(url_for("index", title="Hobby Pack - Sharing our hobbies"))'''"""
+
+
+
+
+
+
+
+
+
+
+
+            
 
 
 

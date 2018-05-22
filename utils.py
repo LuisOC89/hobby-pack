@@ -30,3 +30,19 @@ def checking_existing_address_in_db(street, city, state, zipcode, places_in_data
             else:
                 existing_place = False
     return existing_place
+
+#To create and compare a super KEY to check if a new event exists or not in a database  
+def checking_existing_event_in_db(name, hobby, place, date, time, events_in_database):   
+    key_event_form = name+hobby.name+place.unique_key_address+date+time  
+    print(key_event_form)
+    #Validating if there is an event in the database with the same name
+    if (events_in_database.count() == 0):
+        existing_event = False
+    else:
+        existing_event = False
+        for event in events_in_database:
+            key_event_database = event.event_key 
+            print(key_event_database)        
+            if key_event_database == key_event_form:
+                existing_event = True            
+    return existing_event

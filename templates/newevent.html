@@ -7,7 +7,7 @@
         Nobody else on the website yet. Invite your friends to sign up.
     {% else %}
         <form method='post' id="event-creation" action="/events">
-             
+          
         <p><label>Name of this event: <input type="text" value="{{event_name}}" name="name_of_event" maxlength="60"></label>
             <span name="error_event_name" class="error10">{{error_event_name}}</span></p>    
         <p><label>Theme Hobby for this event:  
