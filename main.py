@@ -3,7 +3,7 @@ from sqlalchemy import desc
 from app import db, app
 from models import Hobbyist, Hobby, Place, Blog, Bloganswer, Encounter, Chat, Chat_comment, Event_comment
 from hashingtools import checking_password_hash
-from utils import filling, now1, checking_existing_address_in_db, checking_existing_event_in_db
+from utils import filling, now1, checking_existing_address_in_db, checking_existing_event_in_db, dto, dte
 import cgi
 
 app.secret_key = 'super-secret-close-your-eyes'
@@ -1187,7 +1187,57 @@ def acting_on_events():
             return render_template('newchat.html',title="Creating a chat", other_people=other_hobbyists, errormessage="", errorpeople="", dict_user_hobbies=dict_user_hobbies)
             ''' 
             
-            return render_template('allevents.html')  
+            
+            '''#dict in the form: {user1: [hobby1, hobby2, hobby3], user2: [hobby3]}
+            dict_user_hobbies = {}
+            for user in other_hobbyists:
+                dict_user_hobbies[user.nickname] = []
+                hobbies_this_user = Hobby.query.filter(Hobby.hobbyists.any(nickname=user.nickname)).all() 
+                for hobby in hobbies_this_user:                    
+                    dict_user_hobbies[user.nickname].append(hobby)'''
+
+            encounters = Encounter.query.all()
+            encounters_me_participant = Encounter.query.filter(Encounter.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                
+            encounters_me_attended = Encounter.query.filter(Encounter.hobbyists_attendance.any(nickname=logged_in_hobbyist().nickname)).filter_by(attendance_taken_status=True).all() 
+
+            #this_post_answers = Bloganswer.query.filter_by(blog_id=post.id).all()     
+
+
+
+            #dict in the form: {future_events: {events_i_participate:[event1, event2, event3], other_events: [event4, event5]}, present_events: {events_i_participate:[event6, event7, event8], other_events: [event9, event10]}, past_events: {events_i_participate:[event11, event12, event13], events_i_attended: [event14], other_events: [event15]}}
+            #dto: date_time_order
+            events_when_who = {"future_events": {"events_i_participate": [], "other_events": []}, "present_events": {"events_i_participate": [], "other_events": []}, "past_events": {"events_i_participate": [], "events_i_attended": [], "other_events": []}}
+
+            for encounter in encounters:
+                #Future encounters:
+                if (int(encounter.date_and_time_to_order) > int(dto(now1()))):
+                    #My future encounters
+                    if encounter in encounters_me_participant:
+                        events_when_who["future_events"]["events_i_participate"].append(encounter)
+                    #Future not my encounters
+                    else:
+                        events_when_who["future_events"]["other_events"].append(encounter)
+                #Present encounters (going on while you read this)
+                elif ((int(encounter.date_and_time_to_order) <= int(dto(now1()))) and ((int(encounter.date_and_time_to_order) + dte(encounter.duration))> int(dto(now1())))):
+                    #My present encounters
+                    if encounter in encounters_me_participant:
+                        events_when_who["present_events"]["events_i_participate"].append(encounter)
+                    #Present not my encounters
+                    else:
+                        events_when_who["present_events"]["other_events"].append(encounter)
+                #Past encounters
+                elif ((int(encounter.date_and_time_to_order) < int(dto(now1()))) and ((int(encounter.date_and_time_to_order) + dte(encounter.duration)) <= int(dto(now1())))):
+                    #My past encounters
+                    if encounter in encounters_me_participant:
+                        events_when_who["past_events"]["events_i_participate"].append(encounter)
+                        #Past encounters I attended
+                        if encounter in encounters_me_attended:
+                            events_when_who["past_events"]["events_i_attended"].append(encounter)   
+                    #Past not my encounters
+                    else:
+                        events_when_who["past_events"]["other_events"].append(encounter)
+
+            return render_template('allevents.html', events=encounters, events_when_who=events_when_who)  
 
         elif (condition == "create_new_event"):
             other_hobbyists = Hobbyist.query.filter(Hobbyist.id!=logged_in_hobbyist().id).order_by(Hobbyist.nickname).all()

@@ -46,3 +46,12 @@ def checking_existing_event_in_db(name, hobby, place, date, time, events_in_data
             if key_event_database == key_event_form:
                 existing_event = True            
     return existing_event
+
+#To help organizing events in future, present and past. date_time_order (dto)
+def dto(date_time_present):   
+    return filling(date_time_present.year)+filling(date_time_present.month)+filling(date_time_present.day)+filling(date_time_present.hour)+filling(date_time_present.minute)
+
+#To help organizing events in future, present and past. date_time_order (dto)
+def dte(duration_event):  
+    return int(str(duration_event[0:2])+str(duration_event[3:5])) 
+    
