@@ -1250,7 +1250,16 @@ def acting_on_events():
 
     elif request.method == 'POST':
         condition = str(request.form['condition'])
-        if condition == "new_event_info_submission":    
+        if (condition == "create_new_event"):
+            other_hobbyists = Hobbyist.query.filter(Hobbyist.id!=logged_in_hobbyist().id).order_by(Hobbyist.nickname).all()
+            #Somebody could want to give a new hobby a chance before adding it to their hobbies
+            hobbies = Hobby.query.all()
+
+            #Somebody could want to give a new place a chance before adding it or not to their places
+            places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
+            return render_template('newevent.html',title="Creating an event", others=other_hobbyists, hobbies=hobbies, places=places)
+
+        elif condition == "new_event_info_submission":    
             other_hobbyists = Hobbyist.query.filter(Hobbyist.id!=logged_in_hobbyist().id).order_by(Hobbyist.nickname).all()
             hobbies = Hobby.query.all()
             places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()

@@ -3,14 +3,22 @@
 {% block content %}
 <h1 class="titlemain">Let's have events!</h1>
     {% if events|length == 0 %}
-    <p>No events yet</p>     
+    <p>No events yet. Create a new event <a href="/events?condition=create_new_event" class="poster">here</a> or 
+    <form action="/events" method="post" class="alignedform">                        
+        <input type="hidden" name="condition" value="create_new_event" />
+        <input type="submit" value="here" class="alignedformbutton"/>
+    </form>
+    </p>     
     {% else %}
         <!--events_when_who = {"future_events": {"events_i_participate": [], "other_events": []}, "present_events": {"events_i_participate": [], "other_events": []}, "past_events": {"events_i_participate": [], "events_i_attended": [], "other_events": []}}-->
 
         {% if ((events_when_who["future_events"]["events_i_participate"]|length == 0) and (events_when_who["future_events"]["other_events"]|length == 0)) %}
-            <p>No new events coming up. Create a new event <a href="/event?condition=create_new_event" class="titlepost">here</a></p> 
-        
-        
+            <p>No new events coming up. Create a new event <a href="/events?condition=create_new_event" class="poster">here</a> or 
+                <form action="/events" method="post" class="alignedform">                        
+                    <input type="hidden" name="condition" value="create_new_event" />
+                    <input type="submit" value="here" class="alignedformbutton"/>
+                </form></p> 
+              
         
         
         {% else %}
@@ -19,8 +27,8 @@
             People assisting to this event: person1, person2, person3 
             last comment of this event 
             {% endfor %}
-            Create a new event <a href="/event?condition=create_new_event" class="poster">here</a> or 
-            <form action="/event" method="post" class="alignedform">                        
+            Create a new event <a href="/events?condition=create_new_event" class="poster">here</a> or 
+            <form action="/events" method="post" class="alignedform">                        
                 <input type="hidden" name="condition" value="create_new_event" />
                 <input type="submit" value="here" class="alignedformbutton"/>
             </form><br>
