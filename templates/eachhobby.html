@@ -14,19 +14,17 @@
 </h2>  
 {% endif %}
 
+<p><span class="titlemain">Hobbyists that practice this hobby:</span><br>
+{% for hobbyist in hobby_hobbyists %}
+    {% if hobbyist.nickname == session['hobbyist'] %}
+    <a href="/myinfo?condition=show_all_info_user" class="poster">{{hobbyist.nickname}} </a> 
+    {% else %}
+    <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a> 
+    {% endif %}    
+    {{ "," if not loop.last }}                              
+{% endfor %}</p>
 
-{% if places|length == 0 %}
-    <span class="maintitle">Hobbyist that practice this hobby:</span>
-    {% for hobbyist in hobby_hobbyists %}
-        {% if hobbyist.nickname == session['hobbyist'] %}
-        <a href="/myinfo?condition=show_all_info_user" class="poster">{{hobbyist.nickname}} </a> 
-        {% else %}
-        <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a> 
-        {% endif %}    
-        {{ "," if not loop.last }}                              
-    {% endfor %}
-    <p>This hobby is not practiced in a public place yet</p>
-{% else %}
+{% if places|length != 0 %}
     <span class="titlemain">Places where this hobby is practiced and people who practices it:</span>
     {% for publicplace in places %}
     <li class="list2">
@@ -49,6 +47,8 @@
             {% endfor %}
 
         <br><br>
-    {% endfor %}    
+    {% endfor %}  
+{% else %}
+<p>This hobby is not practiced in a public place yet</p>  
 {% endif %}
 {% endblock %}

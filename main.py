@@ -1196,7 +1196,7 @@ def acting_on_events():
                 for hobby in hobbies_this_user:                    
                     dict_user_hobbies[user.nickname].append(hobby)'''
 
-            encounters = Encounter.query.all()
+            encounters = Encounter.query.order_by(Encounter.date_and_time_to_order).all()
             encounters_me_participant = Encounter.query.filter(Encounter.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                
             encounters_me_attended = Encounter.query.filter(Encounter.hobbyists_attendance.any(nickname=logged_in_hobbyist().nickname)).filter_by(attendance_taken_status=True).all() 
 
@@ -1237,7 +1237,28 @@ def acting_on_events():
                     else:
                         events_when_who["past_events"]["other_events"].append(encounter)
 
-            return render_template('allevents.html', events=encounters, events_when_who=events_when_who)  
+            all_messages = Event_comment.query.all()
+            
+            #events_comments: {Event1:{"recap":{message_recap}, "invitation":{message_invitation}, 
+            #"before_event": [{message1_before_event}, {message2_before_event}], "after_event": [{message1_after_event}, {message2_after_event}]},
+            #{Event2:{"recap":{message_recap}, "invitation":{message_invitation}, 
+            #"before_event": [{message1_before_event}, {message2_before_event}], "after_event": [{message1_after_event}, {message2_after_event}]}}
+
+            events_comments = {}
+            for comment in all_messages:
+                if (comment.kind_of_comment == "invitation"):
+                    events_comments[comment.event_id]={}
+                    events_comments[comment.event_id]["invitation"]=comment
+                elif (comment.kind_of_comment == "recap"):
+                    events_comments[comment.event_id]["recap"]=comment
+                elif (comment.kind_of_comment == "before_event"):
+                    events_comments[comment.event_id]["before_event"] = []
+                    events_comments[comment.event_id]["before_event"].append(comment) 
+                elif (comment.kind_of_comment == "after_event"):
+                    events_comments[comment.event_id]["after_event"] = []
+                    events_comments[comment.event_id]["after_event"].append(comment)
+
+            return render_template('allevents.html', events=encounters, events_when_who=events_when_who, events_comments=events_comments)  
 
         elif (condition == "create_new_event"):
             other_hobbyists = Hobbyist.query.filter(Hobbyist.id!=logged_in_hobbyist().id).order_by(Hobbyist.nickname).all()
@@ -1528,6 +1549,15 @@ def acting_on_events():
                     return redirect("/events")
                     '''<a href="/myinfo?condition=show_all_info_user">                           
                     return redirect(url_for("index", title="Hobby Pack - Sharing our hobbies"))'''
+        elif condition == "add_user_to_event": 
+            
+            encounter = int(request.form['event_idn'])
+            #To add logged-in user:
+            this_event = Encounter.query.filter_by(id=encounter).first()                   
+            this_event.hobbyists.append(logged_in_hobbyist())             
+            db.session.commit()
+
+            return redirect("/events")
 
 #TODO encounters (show all, show each)
 #TODO adding encounters (add encounter, add attendance later, add recap, add comment)

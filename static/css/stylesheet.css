@@ -29,7 +29,8 @@ p{
   font-size: 20px;
   font-style: italic; 
 }
-.alignedform{display:inline;
+.alignedform{
+  display:inline;
   vertical-align:top;
   text-align:center;
 }
@@ -93,4 +94,7 @@ p{
 }
 #principal{
   float: right;  
+}
+.aligned_in_p {
+  display: inline-block;
 }
