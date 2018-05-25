@@ -98,3 +98,6 @@ p{
 .aligned_in_p {
   display: inline-block;
 }
+.black {
+  color: black;
+}

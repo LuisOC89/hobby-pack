@@ -1258,7 +1258,7 @@ def acting_on_events():
                     events_comments[comment.event_id]["after_event"] = []
                     events_comments[comment.event_id]["after_event"].append(comment)
 
-            return render_template('allevents.html', events=encounters, events_when_who=events_when_who, events_comments=events_comments)  
+            return render_template('allevents.html', events=encounters, events_when_who=events_when_who, events_comments=events_comments, user=logged_in_hobbyist())  
 
         elif (condition == "create_new_event"):
             other_hobbyists = Hobbyist.query.filter(Hobbyist.id!=logged_in_hobbyist().id).order_by(Hobbyist.nickname).all()
