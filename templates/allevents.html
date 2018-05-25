@@ -139,8 +139,8 @@
                         | <span class="orange"> What hobby: <a href="/hobbies?id={{my_event.encounter.id}}">{{my_event.encounter.name}} </a></span> 
                         | <span class="paradf"> When: {{my_event.date}} </span> 
                         | <span class="plaintext"> What time: {{my_event.start_time}} </span> 
-                        | <span class="titlepost"> Where: <a href="/places?id={{my_event.event.id}}"> {{my_event.event.name}} | {{my_event.event.streetaddress}} | {{my_event.event.city}} {{my_event.event.state}} {{my_event.event.zipcode}}</a> </span>            
-                        | <span class="orange">Attendance Status: 
+                        | <span class="titlepost"> Where: <a href="/places?id={{my_event.event.id}}"> {{my_event.event.name}} | {{my_event.event.streetaddress}} | {{my_event.event.city}} {{my_event.event.state}} {{my_event.event.zipcode}}</a> </span><br>            
+                        <div class="orange" style="display:inline-block" >Attendance Status: 
                         {% if my_event.attendance_taken_status == False %}   
                             {{my_event.created_encounter.nickname}} hasn't taken attendance yet. 
                             {% if my_event.creator_hobbyist_id == user.id %} 
@@ -152,9 +152,9 @@
                             {% endif %}
                         {% elif my_event.attendance_taken_status == True %}  
                             {{my_event.created_encounter.nickname}} took attendance already. | 
-                            <span class="black">Recap: "{{events_comments[my_event.id]["recap"].content}}" </span>
+                            <span style="color:red">Recap: "{{events_comments[my_event.id]["recap"].content}}" </span>
                         {% endif %}            
-                        </span>                        
+                        </div>                        
                     </li>        
                 {% endfor %}
             {% else %}

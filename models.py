@@ -168,7 +168,7 @@ class Encounter(db.Model):
     #HH:MM
     duration = db.Column(db.String(5))
     attendance_taken_status = db.Column(db.Boolean)
-    attendance_taken_date_time = db.Column(db.String(12))
+    attendance_taken_date_time = db.Column(db.String(16))
     event_key = db.Column(db.String(500))
 
     hobby_id = db.Column(db.Integer, db.ForeignKey('hobby.id'))

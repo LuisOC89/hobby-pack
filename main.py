@@ -1549,15 +1549,54 @@ def acting_on_events():
                     return redirect("/events")
                     '''<a href="/myinfo?condition=show_all_info_user">                           
                     return redirect(url_for("index", title="Hobby Pack - Sharing our hobbies"))'''
-        elif condition == "add_user_to_event": 
-            
+        elif condition == "add_user_to_event":             
             encounter = int(request.form['event_idn'])
             #To add logged-in user:
             this_event = Encounter.query.filter_by(id=encounter).first()                   
             this_event.hobbyists.append(logged_in_hobbyist())             
             db.session.commit()
-
             return redirect("/events")
+
+        elif condition == "take_attendance": 
+            encounter = int(request.form['event_idn'])  
+            this_event = Encounter.query.filter_by(id=encounter).first() 
+            return render_template('each_event_attendance.html', title="Taking attendance", event=this_event, user=logged_in_hobbyist())
+
+        elif condition == "attendance_submission": 
+            encounter = int(request.form['event_idn'])  
+            this_event = Encounter.query.filter_by(id=encounter).first() 
+            attendees = request.form.getlist('people_attended') + [logged_in_hobbyist().id]
+            recap = str(request.form['recap'])
+            
+            attendees_ok = []
+            for participant in attendees:                        
+                attendees_ok.append(Hobbyist.query.filter_by(id=participant).first()) 
+
+            if (recap==""):
+                return render_template('each_event_attendance.html', title="Taking attendance", event=this_event, user=logged_in_hobbyist(), error_recap="You have to write a recap for this event. Sorry")
+            else:
+                this_event.taking_attendance(True, filling(now1().year)+"/"+filling(now1().month)+"/"+filling(now1().day)+"-"+filling(now1().hour)+":"+filling(now1().minute))
+                                                
+                for person in attendees_ok:
+                    this_event.hobbyists_attendance.append(person)
+                db.session.commit()
+                
+                new_comment = Event_comment(recap, "recap", this_event, logged_in_hobbyist())
+                db.session.add(new_comment)
+                db.session.commit()
+
+                return redirect("/events")
+          
+
+            '''if (len(attendees)==0):
+                error_attendance = "You have to select at least one person from the list."
+                else:
+                    error_people = ""
+                    participant_list = []
+                    for participant in specific_people_invited:                        
+                        participant_list.append(Hobbyist.query.filter_by(id=participant).first())
+                return render_template('each_event_attendance.html', title="Taking attendance", event=this_event)'''
+        
 
 #TODO encounters (show all, show each)
 #TODO adding encounters (add encounter, add attendance later, add recap, add comment)
