@@ -1,0 +1,53 @@
+{% extends "zbase.html" %}
+
+{% block content %}
+<h1 class="titlemain">{{event.name}}</h1> 
+
+    <div class="centered">
+        {% if event_time != "past" %}    
+            {% if user not in event.hobbyists %}
+            <form action="/events" method="post" class="alignedform">                        
+                <input type="hidden" name="condition" value="add_user_to_event" />
+                <input type="hidden" name="event_idn" value="{{event.id}}" />
+                <input type="submit" value="GO" class="alignedformbutton"/>
+            </form> to this event. 
+            {% endif %} 
+        {% elif event_time == "past" %}
+            {% if event.attendance_taken_status == False %}
+                {% if user.id == event.creator_hobbyist_id %}
+                <form action="/events" method="post" class="alignedform">                        
+                    <input type="hidden" name="condition" value="take_attendance" />
+                    <input type="hidden" name="event_idn" value="{{event.id}}" />
+                    <input type="submit" value="TAKE ATTENDANCE" class="alignedformbutton"/>
+                </form> 
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <h2>This is a {{event_time}} event created by <span class="orange">{{event.created_encounter.nickname}}</span></h2>
+    <div>            
+        <ul> 
+            <span class="orange"> Hobby: <a href="/hobbies?id={{event.encounter.id}}">{{event.encounter.name}} </a></span> <br>
+            <span class="paradf"> Date: {{event.date}} </span> <br>
+            <span class="plaintext"> Start Time: {{event.start_time}} </span> <br>
+            <span class="plaintext"> Duration: {{event.duration}} </span> <br>
+            <span class="titlepost"> Holding Public Place: <a href="/places?id={{event.event.id}}"> {{event.event.name}} | {{event.event.streetaddress}} | {{event.event.city}} {{event.event.state}} {{event.event.zipcode}}</a></span><br>   
+            People invited or added to this event: 
+            {% for hobbyist in event.hobbyists %}                            
+                <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a>                             
+                {{ "," if not loop.last }}                              
+            {% endfor %}<br>   
+            {% if event.attendance_taken_status == True %}
+                People that attended this event: 
+                {% for hobbyist in event.hobbyists_attendance %}                            
+                    <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a>                             
+                    {{ "," if not loop.last }}                              
+                {% endfor %}<br>  
+                Date attendance was submitted: {{event.attendance_taken_date_time[0:10]}}<br>    
+                Time attendance was submitted: {{event.attendance_taken_date_time[11:16]}}              
+            {% endif %}                                
+        </ul>        
+    </div>       
+
+{% endblock %}

@@ -1200,10 +1200,6 @@ def acting_on_events():
             encounters_me_participant = Encounter.query.filter(Encounter.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                
             encounters_me_attended = Encounter.query.filter(Encounter.hobbyists_attendance.any(nickname=logged_in_hobbyist().nickname)).filter_by(attendance_taken_status=True).all() 
 
-            #this_post_answers = Bloganswer.query.filter_by(blog_id=post.id).all()     
-
-
-
             #dict in the form: {future_events: {events_i_participate:[event1, event2, event3], other_events: [event4, event5]}, present_events: {events_i_participate:[event6, event7, event8], other_events: [event9, event10]}, past_events: {events_i_participate:[event11, event12, event13], events_i_attended: [event14], other_events: [event15]}}
             #dto: date_time_order
             events_when_who = {"future_events": {"events_i_participate": [], "other_events": []}, "present_events": {"events_i_participate": [], "other_events": []}, "past_events": {"events_i_participate": [], "events_i_attended": [], "other_events": []}}
@@ -1267,7 +1263,102 @@ def acting_on_events():
 
             #Somebody could want to give a new place a chance before adding it or not to their places
             places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
-            return render_template('newevent.html',title="Creating an event", others=other_hobbyists, hobbies=hobbies, places=places)
+            return render_template('newevent.html', title="Creating an event", others=other_hobbyists, hobbies=hobbies, places=places)
+
+        elif (condition == "see_specific_event"):
+            specific_event_id = int(request.args.get('id'))
+            specific_event = Encounter.query.filter_by(id=specific_event_id).first()
+
+            encounters = Encounter.query.order_by(Encounter.date_and_time_to_order).all()
+            encounters_me_participant = Encounter.query.filter(Encounter.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                
+            encounters_me_attended = Encounter.query.filter(Encounter.hobbyists_attendance.any(nickname=logged_in_hobbyist().nickname)).filter_by(attendance_taken_status=True).all() 
+
+
+            #dict in the form: {future_events: {events_i_participate:[event1, event2, event3], other_events: [event4, event5]}, present_events: {events_i_participate:[event6, event7, event8], other_events: [event9, event10]}, past_events: {events_i_participate:[event11, event12, event13], events_i_attended: [event14], other_events: [event15]}}
+            
+            events_when_who = {"future_events": {"events_i_participate": [], "other_events": []}, "present_events": {"events_i_participate": [], "other_events": []}, "past_events": {"events_i_participate": [], "events_i_attended": [], "other_events": []}}
+
+            #this_event_time = "future" OR "present" OR "past"
+            #dto: date_time_order
+            
+            if (int(specific_event.date_and_time_to_order) > int(dto(now1()))):
+                #Future encounter
+                this_encounter_time = "future"                  
+            #Present encounters (going on while you read this)
+            elif ((int(specific_event.date_and_time_to_order) <= int(dto(now1()))) and ((int(specific_event.date_and_time_to_order) + dte(specific_event.duration))> int(dto(now1())))):
+                #Present encounters
+                this_encounter_time = "present"                 
+            #Past encounters
+            elif ((int(specific_event.date_and_time_to_order) < int(dto(now1()))) and ((int(specific_event.date_and_time_to_order) + dte(specific_event.duration)) <= int(dto(now1())))):
+                #Past encounters
+                this_encounter_time = "past"
+
+            #this_event_time_myself_relation: {Event: ["future" OR "present" OR "past"], "my_event" OR "other_events", "attended" OR "not_attended"]} 
+            '''#for encounter in encounters:
+                #Future encounters:
+                if (int(specific_event.date_and_time_to_order) > int(dto(now1()))):
+                    #Future encounter
+                    this_encounter[specific_event] = ["future"]
+                    #My encounter
+                    if specific_event in encounters_me_participant:                    
+                        this_encounter[specific_event].append("my_event")                    
+                    #Not my encounter
+                    else:
+                        this_encounter[specific_event].append("other_event")
+                #Present encounters (going on while you read this)
+                elif ((int(specific_event.date_and_time_to_order) <= int(dto(now1()))) and ((int(specific_event.date_and_time_to_order) + dte(encounter.duration))> int(dto(now1())))):
+                    #Present encounters
+                    this_encounter[specific_event] = ["present"]
+                    #My encounter  
+                    if specific_event in encounters_me_participant:
+                        this_encounter[specific_event].append("my_event") 
+                    #Not my encounters
+                    else:
+                        this_encounter[specific_event].append("my_event") 
+                #Past encounters
+                elif ((int(specific_event.date_and_time_to_order) < int(dto(now1()))) and ((int(specific_event.date_and_time_to_order) + dte(encounter.duration)) <= int(dto(now1())))):
+                    #Past encounters
+                    this_encounter[specific_event] = ["past"]
+                    #My encounters
+                    if specific_event in encounters_me_participant:
+                        this_encounter[specific_event].append("my_event") 
+                        if specific_event.attendance_taken_status == True:
+                            #Encounters I attended
+                            if specific_event in encounters_me_attended:
+                                this_encounter[specific_event].append("attended") 
+                            else:
+                                this_encounter[specific_event].append("did_not_attend") 
+                        else:
+                            this_encounter[specific_event].append("not_attendance_yet")                         
+                    #Not my encounters
+                    else:
+                        this_encounter[specific_event].append("other_event")''' 
+                               
+            #events_comments: {Event1:{"recap":{message_recap}, "invitation":{message_invitation}, 
+            #"before_event": [{message1_before_event}, {message2_before_event}], "after_event": [{message1_after_event}, {message2_after_event}]},
+            #{Event2:{"recap":{message_recap}, "invitation":{message_invitation}, 
+            #"before_event": [{message1_before_event}, {message2_before_event}], "after_event": [{message1_after_event}, {message2_after_event}]}}
+            '''all_messages = Event_comment.query.all()
+            events_comments = {}
+            for comment in all_messages:
+                if (comment.kind_of_comment == "invitation"):
+                    events_comments[comment.event_id]={}
+                    events_comments[comment.event_id]["invitation"]=comment
+                elif (comment.kind_of_comment == "recap"):
+                    events_comments[comment.event_id]["recap"]=comment
+                elif (comment.kind_of_comment == "before_event"):
+                    events_comments[comment.event_id]["before_event"] = []
+                    events_comments[comment.event_id]["before_event"].append(comment) 
+                elif (comment.kind_of_comment == "after_event"):
+                    events_comments[comment.event_id]["after_event"] = []
+                    events_comments[comment.event_id]["after_event"].append(comment)'''
+  
+            #return render_template('allevents.html', events=encounters, events_when_who=events_when_who, events_comments=events_comments, user=logged_in_hobbyist())  
+            return render_template('eachevent.html', title="Watching an event", event=specific_event, event_time=this_encounter_time, user=logged_in_hobbyist())
+
+
+
+
 
     elif request.method == 'POST':
         condition = str(request.form['condition'])

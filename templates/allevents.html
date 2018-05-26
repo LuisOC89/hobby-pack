@@ -19,7 +19,7 @@
             {% if (events_when_who["future_events"]["events_i_participate"]|length != 0) %}                
                 {% for my_event in events_when_who["future_events"]["events_i_participate"] %}             
                     <li class="list2">
-                        <a href="/events?id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
+                        <a href="/events?condition=see_specific_event&id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
                         {% if my_event.created_encounter.nickname == session['hobbyist'] %}
                         <a href="/myinfo?condition=show_all_info_user" class="poster">{{my_event.created_encounter.nickname}} </a> 
                         {% else %}
@@ -38,7 +38,7 @@
             {% if (events_when_who["future_events"]["other_events"]|length != 0) %}                          
                 {% for other_event in events_when_who["future_events"]["other_events"] %}             
                     <li class="list2">
-                        <a href="/events?id={{other_event.id}}" class="poster">{{other_event.name}} </a> by                        
+                        <a href="/events?condition=see_specific_event&id={{other_event.id}}" class="poster">{{other_event.name}} </a> by                        
                         <a href="/myinfo?condition=show_other_info_user&hobbyist={{other_event.created_encounter.nickname}}" class="poster">{{other_event.created_encounter.nickname}} </a> 
                         <br>
                         <span class="orange"> What hobby: <a href="/hobbies?id={{other_event.encounter.id}}">{{other_event.encounter.name}} </a></span> 
@@ -74,7 +74,7 @@
             {% if (events_when_who["present_events"]["events_i_participate"]|length != 0) %}                
                 {% for my_event in events_when_who["present_events"]["events_i_participate"] %}             
                     <li class="list2">
-                        <a href="/events?id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
+                        <a href="/events?condition=see_specific_event&id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
                         {% if my_event.created_encounter.nickname == session['hobbyist'] %}
                         <a href="/myinfo?condition=show_all_info_user" class="poster">{{my_event.created_encounter.nickname}} </a> 
                         {% else %}
@@ -93,7 +93,7 @@
             {% if (events_when_who["present_events"]["other_events"]|length != 0) %}                          
                 {% for other_event in events_when_who["present_events"]["other_events"] %}             
                     <li class="list2">
-                        <a href="/events?id={{other_event.id}}" class="poster">{{other_event.name}} </a> by            
+                        <a href="/events?condition=see_specific_event&id={{other_event.id}}" class="poster">{{other_event.name}} </a> by            
                         <a href="/myinfo?condition=show_other_info_user&hobbyist={{other_event.created_encounter.nickname}}" class="poster">{{other_event.created_encounter.nickname}} </a> 
                         <br>
                         <span class="orange"> What hobby: <a href="/hobbies?id={{other_event.encounter.id}}">{{other_event.encounter.name}} </a></span> 
@@ -130,7 +130,7 @@
             {% if (events_when_who["past_events"]["events_i_participate"]|length != 0) %}                
                 {% for my_event in events_when_who["past_events"]["events_i_participate"] %}             
                     <li class="list2">
-                        <a href="/events?id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
+                        <a href="/events?condition=see_specific_event&id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
                         {% if my_event.created_encounter.nickname == session['hobbyist'] %}
                         <a href="/myinfo?condition=show_all_info_user" class="poster">{{my_event.created_encounter.nickname}} </a> 
                         {% else %}
@@ -165,7 +165,7 @@
             {% if (events_when_who["past_events"]["events_i_attended"]|length != 0) %}                
                 {% for my_event in events_when_who["past_events"]["events_i_attended"] %}             
                     <li class="list2">
-                        <a href="/events?id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
+                        <a href="/events?condition=see_specific_event&id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
                         {% if my_event.created_encounter.nickname == session['hobbyist'] %}
                         <a href="/myinfo?condition=show_all_info_user" class="poster">{{my_event.created_encounter.nickname}} </a> 
                         {% else %}
@@ -185,7 +185,7 @@
             {% if (events_when_who["past_events"]["other_events"]|length != 0) %}                          
                 {% for other_event in events_when_who["past_events"]["other_events"] %}             
                     <li class="list2">
-                        <a href="/events?id={{other_event.id}}" class="poster">{{other_event.name}} </a> by                        
+                        <a href="/events?condition=see_specific_event&id={{other_event.id}}" class="poster">{{other_event.name}} </a> by                        
                         <a href="/myinfo?condition=show_other_info_user&hobbyist={{other_event.created_encounter.nickname}}" class="poster">{{other_event.created_encounter.nickname}} </a>                         
                         <span class="orange"> What hobby: <a href="/hobbies?id={{other_event.encounter.id}}">{{other_event.encounter.name}} </a></span> 
                         | <span class="paradf"> When: {{other_event.date}} </span> 
