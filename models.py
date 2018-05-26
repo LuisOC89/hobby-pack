@@ -4,35 +4,35 @@ from hashingtools import make_password_hashing
 #Table to help handling many-to-many-relationships between hobbies and hobbyists. Two columns, one for hobbyist id and other for hobbie id.
 #hobbieshobbyists will be a table called "hobbieshobbyists" with two columns, one for the hobbies' ids and called "hobby_id" and the other
 # called "hobbyist_id" for the hobbyists' ids.
-hobbieshobbyists = db.Table('hobbieshobbyists',
+hobbiesHobbyists = db.Table('hobbiesHobbyists',
     db.Column('hobby_id', db.Integer, db.ForeignKey('hobby.id')),
     db.Column('hobbyist_id', db.Integer, db.ForeignKey('hobbyist.id'))
 )  
 
 #Table to help handling many-to-many-relationships between places and hobbyists. Two columns, one for hobbyist id and other for place id.
-placeshobbyists = db.Table('placeshobbyists',
+placesHobbyists = db.Table('placesHobbyists',
     db.Column('place_id', db.Integer, db.ForeignKey('place.id')),
     db.Column('hobbyist_id', db.Integer, db.ForeignKey('hobbyist.id'))
 )
 
 #Table to help handling many-to-many-relationships between hobbyists and encounters. Two columns, one for hobbyist id and other for encounter id.
-encountershobbyists = db.Table('encountershobbyists', 
+encountersHobbyists = db.Table('encountersHobbyists', 
     db.Column('encounter_id', db.Integer, db.ForeignKey('encounter.id')),
     db.Column('hobbyist_id', db.Integer, db.ForeignKey('hobbyist.id'))
 )
 
 #Table to help handling many-to-many-relationships between hobbyists and encounters. Two columns, one for hobbyist id and other for encounter id.
-encountershobbyistsattendance = db.Table('encountershobbyistsattendance', 
+encountersHobbyistsAttendance = db.Table('encountersHobbyistsAttendance', 
     db.Column('encounter_id', db.Integer, db.ForeignKey('encounter.id')),
     db.Column('hobbyist_id', db.Integer, db.ForeignKey('hobbyist.id'))
 )
 
 #Table to help handling many-to-many-relationships between hobbies and places. Two columns, one for place id and other for hobbie id.
-hobbiesplaces = db.Table('hobbiesplaces',
+hobbiesPlaces = db.Table('hobbiesPlaces',
     db.Column('hobby_id', db.Integer, db.ForeignKey('hobby.id')),
     db.Column('place_id', db.Integer, db.ForeignKey("place.id"))
 )
-chatshobbyists = db.Table('chatshobbyists',
+chatsHobbyists = db.Table('chatsHobbyists',
     db.Column('chat_id', db.Integer, db.ForeignKey('chat.id')),
     db.Column('participant_id', db.Integer, db.ForeignKey("hobbyist.id"))
 )
@@ -86,12 +86,12 @@ class Hobbyist(db.Model):
     comments = db.relationship("Chat_comment", backref="chat_comment")
     # "hobbies" will be an attribute in this class to relate class-table "Hobbyist" to class-table "Hobby" using helper table "hobbieshobbyists" and creating the attribute 
     # "hobbyists" indirectly in class-table "Hobby", thats why we dont declare field "hobbyists" in table "Hobby"
-    hobbies = db.relationship('Hobby', secondary=hobbieshobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
-    places = db.relationship('Place', secondary=placeshobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
+    hobbies = db.relationship('Hobby', secondary=hobbiesHobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
+    places = db.relationship('Place', secondary=placesHobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
     blogsanswers = db.relationship("Bloganswer", backref="blogsanswer")
-    chats = db.relationship('Chat', secondary=chatshobbyists, backref=db.backref('participants', lazy='dynamic'))
-    encounters = db.relationship('Encounter', secondary=encountershobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
-    encounters_attendance = db.relationship('Encounter', secondary=encountershobbyistsattendance, backref=db.backref('hobbyists_attendance', lazy='dynamic'))
+    chats = db.relationship('Chat', secondary=chatsHobbyists, backref=db.backref('participants', lazy='dynamic'))
+    encounters = db.relationship('Encounter', secondary=encountersHobbyists, backref=db.backref('hobbyists', lazy='dynamic'))
+    encounters_attendance = db.relationship('Encounter', secondary=encountersHobbyistsAttendance, backref=db.backref('hobbyists_attendance', lazy='dynamic'))
     event_comments = db.relationship("Event_comment", backref="event_comment_user")    
     encounters_created = db.relationship('Encounter', backref="created_encounter")
 
@@ -107,7 +107,7 @@ class Hobbyist(db.Model):
 class Hobby(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True)
-    places = db.relationship('Place', secondary=hobbiesplaces, backref=db.backref('hobbies', lazy='dynamic'))
+    places = db.relationship('Place', secondary=hobbiesPlaces, backref=db.backref('hobbies', lazy='dynamic'))
     encounters = db.relationship("Encounter", backref="encounter")
 
     def __init__(self, name):
@@ -199,15 +199,19 @@ class Encounter(db.Model):
 
 class Event_comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    #Kind of comment will have three possible values: "invitation", "recap", "before_event", "after_event"
+    #Kind of comment will have three possible values: "invitation", "recap", "other"
     content = db.Column(db.String(1000))
     kind_of_comment = db.Column(db.String(12))
+    date = db.Column(db.String(10))
+    time = db.Column(db.String(5))
     event_id = db.Column(db.Integer, db.ForeignKey('encounter.id'))
     hobbyist_id = db.Column(db.Integer, db.ForeignKey('hobbyist.id'))
 
-    def __init__(self, content, kind, event, user):
+    def __init__(self, content, kind, date, time, event, user):
         self.content = content 
         self.kind_of_comment = kind
+        self.date = date
+        self.time = time
         self.event_comment = event
         self.event_comment_user = user
         

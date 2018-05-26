@@ -1268,15 +1268,15 @@ def acting_on_events():
         elif (condition == "see_specific_event"):
             specific_event_id = int(request.args.get('id'))
             specific_event = Encounter.query.filter_by(id=specific_event_id).first()
+            error_empty = str(request.args.get('error_empty'))
+            if (error_empty == "None"):
+                error_empty = ""
+            else:
+                error_empty=error_empty
 
             encounters = Encounter.query.order_by(Encounter.date_and_time_to_order).all()
             encounters_me_participant = Encounter.query.filter(Encounter.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                
             encounters_me_attended = Encounter.query.filter(Encounter.hobbyists_attendance.any(nickname=logged_in_hobbyist().nickname)).filter_by(attendance_taken_status=True).all() 
-
-
-            #dict in the form: {future_events: {events_i_participate:[event1, event2, event3], other_events: [event4, event5]}, present_events: {events_i_participate:[event6, event7, event8], other_events: [event9, event10]}, past_events: {events_i_participate:[event11, event12, event13], events_i_attended: [event14], other_events: [event15]}}
-            
-            events_when_who = {"future_events": {"events_i_participate": [], "other_events": []}, "present_events": {"events_i_participate": [], "other_events": []}, "past_events": {"events_i_participate": [], "events_i_attended": [], "other_events": []}}
 
             #this_event_time = "future" OR "present" OR "past"
             #dto: date_time_order
@@ -1292,6 +1292,20 @@ def acting_on_events():
             elif ((int(specific_event.date_and_time_to_order) < int(dto(now1()))) and ((int(specific_event.date_and_time_to_order) + dte(specific_event.duration)) <= int(dto(now1())))):
                 #Past encounters
                 this_encounter_time = "past"
+
+            #events_comments: {"recap":{message_recap}, "invitation":{message_invitation}, 
+            #"before_event": [{message1_before_event}, {message2_before_event}], "after_event": [{message1_after_event}, {message2_after_event}]},
+            
+            messages_this_event = Event_comment.query.filter_by(event_id=specific_event.id).all()
+            events_comments = {}
+            for comment in messages_this_event:
+                events_comments["other"] = []                
+                if (comment.kind_of_comment == "invitation"):                    
+                    events_comments["invitation"] = comment
+                elif (comment.kind_of_comment == "recap"):
+                    events_comments["recap"] = comment
+                elif (comment.kind_of_comment == "other"):                    
+                    events_comments["other"].append(comment)                 
 
             #this_event_time_myself_relation: {Event: ["future" OR "present" OR "past"], "my_event" OR "other_events", "attended" OR "not_attended"]} 
             '''#for encounter in encounters:
@@ -1333,32 +1347,9 @@ def acting_on_events():
                     #Not my encounters
                     else:
                         this_encounter[specific_event].append("other_event")''' 
-                               
-            #events_comments: {Event1:{"recap":{message_recap}, "invitation":{message_invitation}, 
-            #"before_event": [{message1_before_event}, {message2_before_event}], "after_event": [{message1_after_event}, {message2_after_event}]},
-            #{Event2:{"recap":{message_recap}, "invitation":{message_invitation}, 
-            #"before_event": [{message1_before_event}, {message2_before_event}], "after_event": [{message1_after_event}, {message2_after_event}]}}
-            '''all_messages = Event_comment.query.all()
-            events_comments = {}
-            for comment in all_messages:
-                if (comment.kind_of_comment == "invitation"):
-                    events_comments[comment.event_id]={}
-                    events_comments[comment.event_id]["invitation"]=comment
-                elif (comment.kind_of_comment == "recap"):
-                    events_comments[comment.event_id]["recap"]=comment
-                elif (comment.kind_of_comment == "before_event"):
-                    events_comments[comment.event_id]["before_event"] = []
-                    events_comments[comment.event_id]["before_event"].append(comment) 
-                elif (comment.kind_of_comment == "after_event"):
-                    events_comments[comment.event_id]["after_event"] = []
-                    events_comments[comment.event_id]["after_event"].append(comment)'''
-  
+                                           
             #return render_template('allevents.html', events=encounters, events_when_who=events_when_who, events_comments=events_comments, user=logged_in_hobbyist())  
-            return render_template('eachevent.html', title="Watching an event", event=specific_event, event_time=this_encounter_time, user=logged_in_hobbyist())
-
-
-
-
+            return render_template('eachevent.html', title="Watching an event", event=specific_event, event_time=this_encounter_time, user=logged_in_hobbyist(), comments_this_event = events_comments, error_empty=error_empty)
 
     elif request.method == 'POST':
         condition = str(request.form['condition'])
@@ -1632,7 +1623,7 @@ def acting_on_events():
                     db.session.commit()
 
                     this_event = Encounter.query.filter_by(event_key=event_name+hobby_event.name+place_event.unique_key_address+event_date+event_start_time).first()
-                    new_comment = Event_comment(initial_invitation_message, "invitation", this_event, logged_in_hobbyist())
+                    new_comment = Event_comment(initial_invitation_message, "invitation", filling(now1().year)+"/"+filling(now1().month)+"/"+filling(now1().day), filling(now1().hour)+":"+filling(now1().minute), this_event, logged_in_hobbyist())
                     db.session.add(new_comment)
                     db.session.commit()
 
@@ -1672,27 +1663,22 @@ def acting_on_events():
                     this_event.hobbyists_attendance.append(person)
                 db.session.commit()
                 
-                new_comment = Event_comment(recap, "recap", this_event, logged_in_hobbyist())
+                new_comment = Event_comment(recap, "recap", filling(now1().year)+"/"+filling(now1().month)+"/"+filling(now1().day), filling(now1().hour)+":"+filling(now1().minute), this_event, logged_in_hobbyist())
                 db.session.add(new_comment)
                 db.session.commit()
 
                 return redirect("/events")
-          
 
-            '''if (len(attendees)==0):
-                error_attendance = "You have to select at least one person from the list."
-                else:
-                    error_people = ""
-                    participant_list = []
-                    for participant in specific_people_invited:                        
-                        participant_list.append(Hobbyist.query.filter_by(id=participant).first())
-                return render_template('each_event_attendance.html', title="Taking attendance", event=this_event)'''
-        
+        elif condition == "new_other_comment":     
+            encounter_id = int(request.form['event_id'])  
+            comment = str(request.form['other_comment'])  
 
-#TODO encounters (show all, show each)
-#TODO adding encounters (add encounter, add attendance later, add recap, add comment)
+            if (comment == ""):
+                return redirect("/events?condition=see_specific_event&id="+str(encounter_id)+"&error_empty=You have to write a message in order to send a message. :)")
+            else:
+                return render_template('eachevent.html', title="Watching an event", event=specific_event, event_time=this_encounter_time, user=logged_in_hobbyist(), comments_this_event = events_comments)
 
-# Views allevents.html, eachevent.html, newevent.html
 
+            
 if __name__ == '__main__':
     app.run()

@@ -48,6 +48,33 @@
                 Time attendance was submitted: {{event.attendance_taken_date_time[11:16]}}              
             {% endif %}                                
         </ul>        
-    </div>       
+    </div>     
+    
+    <h3>Comments</h3>
+    <div>
+        <ul>
+            {% if event.attendance_taken_status == True %}
+                Recap: <span class="red"> "{{comments_this_event['recap'].content}}"</span> by 
+                <span class="orange">{{comments_this_event['recap'].event_comment_user.nickname}}</span> on
+                <span class="orange">{{comments_this_event['recap'].date}}</span> at
+                <span class="orange">{{comments_this_event['recap'].time}}</span>
+                <br>     
+            {% else %}                        
+            {% endif %}       
+            Original Invitation: <span class="red"> "{{comments_this_event['invitation'].content}}" </span> by 
+            <span class="orange">{{comments_this_event['invitation'].event_comment_user.nickname}}</span> on
+            <span class="orange">{{comments_this_event['invitation'].date}}</span> at
+            <span class="orange">{{comments_this_event['invitation'].time}}</span>
+            <br>  
+            <form method='post' action="/events">
+                Leave a comment:<br>
+                <textarea name="other_comment"></textarea><br><span class="error10" name="error_empty">{{error_empty}}</span><br>
+                <input type="hidden" name="event_id" value="{{event.id}}" />
+                <input type="hidden" name="condition" value="new_other_comment" />
+                <input type="submit" value='Create' /> 
+            </form>
+        <br><br>                            
+        </ul>
+    </div>
 
 {% endblock %}
