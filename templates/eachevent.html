@@ -61,11 +61,24 @@
                 <br>     
             {% else %}                        
             {% endif %}       
+            
             Original Invitation: <span class="red"> "{{comments_this_event['invitation'].content}}" </span> by 
             <span class="orange">{{comments_this_event['invitation'].event_comment_user.nickname}}</span> on
             <span class="orange">{{comments_this_event['invitation'].date}}</span> at
             <span class="orange">{{comments_this_event['invitation'].time}}</span>
             <br>  
+
+            {% if comments_this_event['other']|length > 0 %}
+                {% for single_comment in comments_this_event['other'] %}           
+                    <span class="orange">{{single_comment.event_comment_user.nickname}}</span> said: 
+                    <span class="red"> "{{single_comment.content}}"</span> on
+                    <span class="orange">{{single_comment.date}}</span> at
+                    <span class="orange">{{single_comment.time}}</span>
+                    <br>  
+                {% endfor %}
+            {% else %}                        
+            {% endif %}   
+
             <form method='post' action="/events">
                 Leave a comment:<br>
                 <textarea name="other_comment"></textarea><br><span class="error10" name="error_empty">{{error_empty}}</span><br>

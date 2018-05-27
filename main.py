@@ -1298,8 +1298,8 @@ def acting_on_events():
             
             messages_this_event = Event_comment.query.filter_by(event_id=specific_event.id).all()
             events_comments = {}
-            for comment in messages_this_event:
-                events_comments["other"] = []                
+            events_comments["other"] = [] 
+            for comment in messages_this_event:                               
                 if (comment.kind_of_comment == "invitation"):                    
                     events_comments["invitation"] = comment
                 elif (comment.kind_of_comment == "recap"):
@@ -1672,13 +1672,14 @@ def acting_on_events():
         elif condition == "new_other_comment":     
             encounter_id = int(request.form['event_id'])  
             comment = str(request.form['other_comment'])  
-
+            this_event = Encounter.query.filter_by(id=encounter_id).first() 
             if (comment == ""):
                 return redirect("/events?condition=see_specific_event&id="+str(encounter_id)+"&error_empty=You have to write a message in order to send a message. :)")
             else:
-                return render_template('eachevent.html', title="Watching an event", event=specific_event, event_time=this_encounter_time, user=logged_in_hobbyist(), comments_this_event = events_comments)
-
-
+                new_comment = Event_comment(comment, "other", filling(now1().year)+"/"+filling(now1().month)+"/"+filling(now1().day), filling(now1().hour)+":"+filling(now1().minute), this_event, logged_in_hobbyist())
+                db.session.add(new_comment)
+                db.session.commit()
+                return redirect("/events?condition=see_specific_event&id="+str(encounter_id))
             
 if __name__ == '__main__':
     app.run()
