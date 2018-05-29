@@ -6,3 +6,8 @@ $(document).ready(function() {
     });
 });
 
+$(document).ready(function() {
+	// get current URL path and assign 'active' class
+	var pathname = window.location.pathname;
+	$('#navBar > li > a[href="'+pathname+'"]').parent().addClass('active');
+})

@@ -3,11 +3,12 @@
     <head>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet.css') }}" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <meta charset='UTF-8'/>
-        <title>{{title}}</title>        
+        <title>{{title}}</title>                
     </head>
 <body>
-    <div class="container-fluid">
+    <div id="my-custom-container-fluid" class="container-fluid">
             
         <!--<div id="principal">
             {% if 'hobbyist' in session %}            
@@ -27,31 +28,40 @@
             <a href="/newplace">Add new place</a>
             &nbsp&nbsp
             <a href="/events?condition=create_new_event">Create encounter</a>-->
-
+        <h1 class="centered">Welcome to the pack, the HobbyPack.</h1>
         <ul id=navBar>
             {% if 'hobbyist' in session %}            
-                <li class="navOptionRight"><a class="navOption" href="/">Home</a></li>
-                <li class="navOptionRight"><a class="navOption" href="/blog">Blog</a></li> 
-                <li class="navOptionRight"><a class="navOption" href="/chat">Chat</a></li> 
-                <li class="navOptionRight"><a class="navOption" href="/people">Hobbyists</a></li>
-                <li class="navOptionRight"><a class="navOption" href="/hobbies">Hobbies</a></li>
-                <li class="navOptionRight"><a class="navOption" href="/places">Places</a></li>
-                <li class="navOptionRight"><a class="navOption" href="/events">Encounters</a></li><br>
-                <li class="toright navOptionRight"><a class="navOption" href="/myinfo?condition=show_all_info_user">{{ session['hobbyist'] }}</a></li>
-                <li class="toright navOptionRight"><a class="navOption" href="/logout"> logout </a></li>
-                <li class="navOptionRight"><a class="navOption" href="#">dropdown</a></li>   
-                
+            <li class="navOptionRight"><a class="navOption" href="#"><i class="material-icons" style="font-size:22px;">account_box</i></a></li>
+            
+            <li class="navOptionRight dropdownNavBar">
+                <a href="#" class="dropbtn">Dropdown</a>
+                    <div class="dropdown-content">
+                        <a href="/logout"> logout </a>
+                        <a class="navOption" href="/myinfo?condition=show_all_info_user">{{ session['hobbyist'] }}</a>                        
+                    </div>
+            </li> 
+            
+            <li class="toright navOptionRight"><a class="navOption" href="/logout"> logout </a></li>
+            <li class="toright navOptionRight"><a class="navOption" href="/myinfo?condition=show_all_info_user">{{ session['hobbyist'] }}</a></li>
+            <li class="navOptionRight"><a class="navOption" href="/chat">Chat</a></li> 
+            <li class="navOptionRight"><a class="navOption" href="/events">Events</a></li>
+            <li class="navOptionRight"><a class="navOption" href="/blog">Blog</a></li> 
+            <li class="navOptionRight"><a class="navOption" href="/people">People</a></li>
+            <li class="navOptionRight"><a class="navOption" href="/places">Places</a></li>
+            <li class="navOptionRight"><a class="navOption" href="/hobbies">Hobbies</a></li>
+            <!--<li class="navOptionRight"><a class="navOption" href="/">Home</a></li>-->          
+            <li class="navOptionRight"><a class="navOption" href="/"><i class="material-icons" style="font-size:20px;">home</i></a></li>          
+            
             {% else %}
-            <li class="navOptionRight"><a class="navOption" href="/">Home</a></li>
-            <li class="navOptionRight"><a class="navOption" href="/newhobbyist">Sign up</a></li>
             <li class="navOptionRight"><a class="navOption" href="/login">Login</a></li> 
-            {% endif %}
-                        
-            <li class="navOptionLeft"><a class="navOption" href="/newpost">Add new post</a></li>            
-            <li class="navOptionLeft"><a class="navOption" href="/newchat?condition=from_allchats_view">Start messaging</a></li>
-            <li class="navOptionLeft"><a class="navOption" href="/newhobbie">Add new hobby</a></li>
-            <li class="navOptionLeft"><a class="navOption" href="/newplace">Add new place</a></li>
-            <li class="navOptionLeft"><a class="navOption" href="/events?condition=create_new_event">Create encounter</a></li>
+            <li class="navOptionRight"><a class="navOption" href="/newhobbyist">Sign up</a></li>
+            <li class="navOptionRight"><a class="navOption" href="/">Home</a></li>            
+            {% endif %}                        
+            <li class="navOptionLeft"><a class="navOption" href="/newhobbie">New hobby</a></li>
+            <li class="navOptionLeft"><a class="navOption" href="/newplace">New place</a></li>
+            <li class="navOptionLeft"><a class="navOption" href="/newpost">New post</a></li> 
+            <li class="navOptionLeft"><a class="navOption" href="/events?condition=create_new_event">New event</a></li>                       
+            <li class="navOptionLeft"><a class="navOption" href="/newchat?condition=from_allchats_view">Start chat</a></li>                    
         </ul>
             
     {% with messages = get_flashed_messages(with_categories=True) %}
@@ -71,9 +81,9 @@
 
     </div>
 
-    <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
-    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
-    <script src="{{url_for('static', filename='js/app.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/app.js')}}"></script>
     
 </body>
 </html>
