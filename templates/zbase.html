@@ -30,28 +30,18 @@
             <a href="/events?condition=create_new_event">Create encounter</a>-->
         <h1 class="centered">Welcome to the pack, the HobbyPack.</h1>
         <ul id=navBar>
-            {% if 'hobbyist' in session %}            
-            <li class="navOptionRight"><a class="navOption" href="#"><i class="material-icons" style="font-size:22px;">account_box</i></a></li>
-            
-            <li class="navOptionRight dropdownNavBar">
-                <a href="#" class="dropbtn">Dropdown</a>
-                    <div class="dropdown-content">
-                        <a href="/logout"> logout </a>
-                        <a class="navOption" href="/myinfo?condition=show_all_info_user">{{ session['hobbyist'] }}</a>                        
-                    </div>
-            </li> 
-            
-            <li class="toright navOptionRight"><a class="navOption" href="/logout"> logout </a></li>
-            <li class="toright navOptionRight"><a class="navOption" href="/myinfo?condition=show_all_info_user">{{ session['hobbyist'] }}</a></li>
-            <li class="navOptionRight"><a class="navOption" href="/chat">Chat</a></li> 
+            {% if 'hobbyist' in session %}               
+            <li class="navOptionRight"><a style="color: darkcyan;" class="navOption" href="/logout"> logout </a></li>
+            <li class="navOptionRight"><a class="navOption" href="/chat">Chats</a></li> 
             <li class="navOptionRight"><a class="navOption" href="/events">Events</a></li>
             <li class="navOptionRight"><a class="navOption" href="/blog">Blog</a></li> 
             <li class="navOptionRight"><a class="navOption" href="/people">People</a></li>
             <li class="navOptionRight"><a class="navOption" href="/places">Places</a></li>
             <li class="navOptionRight"><a class="navOption" href="/hobbies">Hobbies</a></li>
             <!--<li class="navOptionRight"><a class="navOption" href="/">Home</a></li>-->          
-            <li class="navOptionRight"><a class="navOption" href="/"><i class="material-icons" style="font-size:20px;">home</i></a></li>          
-            
+            <li class="navOptionRight"><a class="navOption" href="/"><i style="font-size: 20px;" class="material-icons">home</i></a></li>    
+            <li class="navOptionRight"><a id="the-user" class="navOption" href="/myinfo?condition=show_all_info_user"><i style="font-size: 20px;" class="material-icons">account_box</i> {{ session['hobbyist'] }}</a> </li>
+                       
             {% else %}
             <li class="navOptionRight"><a class="navOption" href="/login">Login</a></li> 
             <li class="navOptionRight"><a class="navOption" href="/newhobbyist">Sign up</a></li>

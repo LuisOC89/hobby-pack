@@ -127,34 +127,29 @@ p{
   border-left: 1px dotted gray;
 }
 
-.navOptionLeft.dropdown {
-  display: inline-block;  
-}
-
-.navOption, .dropbtn {
-  display: block;
+.navOption {
+  display: inline-block;
   color: rgb(240, 54, 54);
   text-align: center;
-  padding: 8px 10px;
+  padding: 12px 10px;
   text-decoration: none;
 }
 
-.navOption:hover, .dropdown:hover .dropbtn {
+.navOption:hover  {
   background-color: black;
   color: rgb(240, 54, 54);
   text-decoration: none;
   font-weight: bold;
-  border: 1px solid black;
+  border-color: black;
   text-align: center;
-  display: block;
+  display: inline-block;
   border-radius: 2px;
 }
 
-.active {
+.active, .active:hover {
   font-weight: bold;
   background-color: lightgray; 
-  border-bottom: 2px solid lightgray;
-  border-top: 2px solid lightgray;
+  border: none;
 }
 
 body {
@@ -171,29 +166,12 @@ body {
   ul#navBar li {float: none;}
 }
 
-.dropdownNavBar {
-  display: inline-block;
+#the-user, #the-user:hover{
+  color: rgb(9, 167, 30);
+  /*color: rgb(226, 226, 9);*/
 }
 
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  text-align: left;
-}
-
-.dropdown-content a:hover {background-color: #f1f1f1}
-
-.dropdown:hover .dropdown-content {
-  display: block;
+.material-icons{
+  position: relative;  
+  vertical-align: middle;  
 }
