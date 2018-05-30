@@ -98,3 +98,80 @@ p{
 .aligned_in_p {
   display: inline-block;
 }
+
+
+
+
+
+
+
+#navBar {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+  width: 100%;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.navOptionLeft {
+  float: left;
+  border-right: 1px dotted gray;
+}
+
+.navOptionRight {
+  float:right;
+  border-left: 1px dotted gray;
+}
+
+.navOption {
+  display: inline-block;
+  color: rgb(240, 54, 54);
+  text-align: center;
+  padding: 12px 10px;
+  text-decoration: none;
+}
+
+.navOption:hover  {
+  background-color: black;
+  color: rgb(240, 54, 54);
+  text-decoration: none;
+  font-weight: bold;
+  border-color: black;
+  text-align: center;
+  display: inline-block;
+  border-radius: 2px;
+}
+
+.active, .active:hover {
+  font-weight: bold;
+  background-color: lightgray; 
+  border: none;
+}
+
+body {
+  background-color: lightgray;
+}
+
+#my-custom-container-fluid{
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+@media screen and (max-width: 600px){
+  ul#navBar li.right, 
+  ul#navBar li {float: none;}
+}
+
+#the-user, #the-user:hover{
+  color: rgb(9, 167, 30);
+  /*color: rgb(226, 226, 9);*/
+}
+
+.material-icons{
+  position: relative;  
+  vertical-align: middle;  
+}
