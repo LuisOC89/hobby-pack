@@ -128,7 +128,7 @@ p{
 }
 
 .navOption {
-  display: inline-block;
+  display: block;
   color: rgb(240, 54, 54);
   text-align: center;
   padding: 12px 10px;
@@ -142,7 +142,7 @@ p{
   font-weight: bold;
   border-color: black;
   text-align: center;
-  display: inline-block;
+  display: block;
   border-radius: 2px;
 }
 
