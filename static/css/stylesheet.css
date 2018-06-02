@@ -99,12 +99,7 @@ p{
   display: inline-block;
 }
 
-
-
-
-
-
-
+/*Beginning for navBar*/
 #navBar {
   position: -webkit-sticky; /* Safari */
   position: sticky;
@@ -174,4 +169,23 @@ body {
 .material-icons{
   position: relative;  
   vertical-align: middle;  
+}
+/*Ending navBar*/
+
+/*Beginning submission forms*/
+.submission-form-login {
+  width: 300px;
+  border-style: solid;
+  border-color: black;
+  border-radius: 15px;  
+  background-color: yellow;
+  margin: 0 auto; 
+  padding: 20px 40px 20px 40px;
+}
+
+.submission-title-login {    
+  padding: 10px 20px 10px 40px;
+  background-color: red; 
+  margin: -20px -40px 0 -40px; 
+  border-radius: 14px 14px 0 0;
 }

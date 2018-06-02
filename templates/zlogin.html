@@ -1,12 +1,28 @@
 {% extends "zbase.html" %}
 {% block content %}
-
-<h2>Login</h2>
-<form action="/login" method="post">
-  <p><label>Hobbyist<input type="text" name="hobbyist_html" value="{{hobbyist}}"/></label></p>
-  <p><label>Password<input type="password" name="password_html"/></label></p>
-  <p><input type="submit" value="Login"/></p>
-</form>
-<p>Don't have an account? <a href="/newhobbyist">Create one!</a></p>
-
+<br>
+<br>
+<div class="submission-form-login">
+  <div class="submission-title-login">
+    <h2>Login</h2>
+  </div> 
+  
+  <table>
+    <form action="/login" method="post">   
+      <tr>
+        <td><label>Hobbyist</label></td>  
+        <td><input type="text" name="hobbyist_html" value="{{hobbyist}}"/></td>
+      </tr>   
+      <tr>
+        <td><label>Password</label></td> 
+        <td><input type="password" name="password_html"/></td> 
+      </tr> 
+      <tr>
+        <td><input type="submit" value="Login"/></td>  
+      </tr>     
+    </table> 
+      <input class="centered" type="submit" value="Login"/>                 
+    </form>     
+    <br>Don't have an account? <a href="/newhobbyist">Create one!</a>    
+</div>
 {% endblock %}
