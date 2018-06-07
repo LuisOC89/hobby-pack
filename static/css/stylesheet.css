@@ -268,7 +268,7 @@ input[type=password]:focus {
   margin-left: 3px;
 }
 
-#select-signup {  
+.select-nice {  
   border: 3px solid #ccc;
   -webkit-transition: 0.5s;
   transition: 0.5s;
@@ -299,3 +299,22 @@ input[type=password]:focus {
   border-bottom: 1px solid black;
 }
 
+/*Add new place form*/
+#submission-form-new-place {  
+  width: 500px;
+  border-style: double;
+  border-color: black;
+  border-radius: 5px;  
+  background-color: lightgray;
+  margin: 0 auto; 
+  padding: 20px 20px 20px 20px;
+}
+
+#submission-title-new-place {    
+  color: rgb(240, 54, 54);
+  padding: 10px 20px 10px 20px;
+  background-color: lightgray; 
+  margin: -20px -20px 0 -20px; 
+  border-radius: 4px 4px 0 0;
+  border-bottom: 1px solid black;
+}
