@@ -1,7 +1,12 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-    <h1 class="titlemain">Add a Blog Entry</h1>
+<br>
+<br>
+<div id="submission-form-new-post">
+    <div id="submission-title-new-post">
+        <h4>New Post</h4>       
+    </div>    
     {% if welcomemessage != None %}
         <span class="allgood">{{welcomemessage}}</span>
     {% else %}
@@ -9,34 +14,48 @@
     {% endif %}
     
     <form method='post' action="/newpost">
-        <label>
-            Title for your new blog:
-            <br>
-            <input type="text" name='posttitle' value="{{newtitle}}"/><br>
-            {% if errorhtml == "notitle" %}
-            <span class="error10">Please fill in the title</span>
-            {% elif errorhtml == "bothempty" %}
-            <span class="error10">Please fill in the title</span>
-            {% elif errorhtml == "titleexists" %}
-            <span class="error10">There is another post with the same title. Please change the name of the title. </span><br>
-            <span class="error10">If you want to repply to an original post you will have to do it <a href="/blog">here</a>.</span>
-            {% else %}
-            {% endif %}    
-        </label>
-        <br><br>
-        <label>Your new blog:<br>
-            <textarea name="postbody">{{newbody}}</textarea>
-        </label><br>
-        {% if errorhtml == "nobody" %}
-        <span class="error10">Please fill in the body</span>
-        {% elif errorhtml == "bothempty" %}
-        <span class="error10">Please fill in the body</span>
-        {% else %}
-        {% endif %}
-        <br>
-        <br>
-        <input type="hidden" value="from_new_post" name='condition' id="conditionX" /><br>
-        <input type="submit" value='Add Entry' />
+        <table style="margin-top:15px">     
+            <tr>
+                <td><span>Title:</span></td>  
+            </tr>
+            <tr>
+                <td><input class="input-field" type="text" name='posttitle' value="{{newtitle}}"/></td>   
+            </tr>
+            <tr>
+                <td>
+                    {% if errorhtml == "notitle" %}
+                    <span class="error10">Please fill in the title</span>
+                    {% elif errorhtml == "bothempty" %}
+                    <span class="error10">Please fill in the title</span>
+                    {% elif errorhtml == "titleexists" %}
+                    <span class="error10">There is another post with the same title. Please change the name of the title. If you want to repply to an original post you will have to do it <a href="/blog">here</a>.</span>
+                    {% else %}
+                    {% endif %}   
+                </td>
+            </tr>
+            <tr>
+                <td><span>Post:</span></td>  
+            </tr>
+            <tr>
+                <td><textarea class="input-field" name="postbody">{{newbody}}</textarea></td>   
+            </tr>
+            <tr>
+                <td>
+                    {% if errorhtml == "nobody" %}
+                        <span class="error10">Please fill in the body</span>
+                    {% elif errorhtml == "bothempty" %}
+                        <span class="error10">Please fill in the body</span>
+                    {% else %}
+                    {% endif %}
+                </td>   
+            </tr>        
+            <tr>
+                <td>
+                    <input type="hidden" value="from_new_post" name='condition' id="conditionX" />
+                    <input class="button-wide button-nice" type="submit" value='Add Post' />
+                </td>
+            </tr>            
+        </table>
     </form>
-
+</div>
 {% endblock %}
