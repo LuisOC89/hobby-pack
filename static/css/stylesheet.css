@@ -174,7 +174,7 @@ body {
 
 /*Beginning submission forms*/
 /*Login*/
-.submission-form-login {
+#submission-form-login {
   width: 300px;
   border-style: double;
   border-color: black;
@@ -184,7 +184,7 @@ body {
   padding: 20px 40px 20px 20px;
 }
 
-.submission-title-login {    
+#submission-title-login {    
   color: rgb(240, 54, 54);
   padding: 10px 20px 10px 20px;
   background-color: #333; 
@@ -229,23 +229,23 @@ input[type=password]:focus {
   padding-top: 15px;
 }
 
-#button-login {
+.button-nice {
   display: inline-block; 
   width:100%;
 }
 
-#button-login:hover, #button-signup:hover {  
+.button-nice:hover {  
   background-color:rgb(240, 54, 54);
   color: #333;  
 }
 
-#button-login:active, #button-signup:active {  
+.button-nice:active {  
   background-color:#333;
   color: rgb(240, 54, 54);   
 }
 
 /*signup*/
-.submission-form-signup {
+#submission-form-signup {  
   width: 350px;
   border-style: double;
   border-color: black;
@@ -255,7 +255,7 @@ input[type=password]:focus {
   padding: 20px 40px 20px 20px;
 }
 
-.submission-title-signup {    
+#submission-title-signup {    
   color: rgb(240, 54, 54);
   padding: 10px 20px 10px 20px;
   background-color: #333; 
@@ -275,8 +275,27 @@ input[type=password]:focus {
   outline: none;
 }
 
-.input-field, #button-signup{
+.input-field, .button-wide{
   width:100%;
 }
 
-/*signup*/
+/*Add new hobby form*/
+#submission-form-new-hobby {  
+  width: 220px;
+  border-style: double;
+  border-color: black;
+  border-radius: 5px;  
+  background-color: lightgray;
+  margin: 0 auto; 
+  padding: 20px 20px 20px 20px;
+}
+
+#submission-title-new-hobby {    
+  color: rgb(240, 54, 54);
+  padding: 10px 20px 10px 20px;
+  background-color: lightgray; 
+  margin: -20px -20px 0 -20px; 
+  border-radius: 4px 4px 0 0;
+  border-bottom: 1px solid black;
+}
+

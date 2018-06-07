@@ -1,26 +1,46 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-    <h1 class="titlemain">Add a New Hobby</h1>
-        
+<br>
+<br>
+<div id="submission-form-new-hobby">
+    <div id="submission-title-new-hobby">
+        <h4>New Hobby</h4>       
+    </div> 
+   
     <form method='post' action="/newhobbie">
-        <label>
-            Name for your new hobby:
-            <br>
-            <input type="text" name='hobbyname' value="{{newhobbyname}}"/>
-            {% if errorhtml == "no_name" %}
-            <span class="error10">Please fill in the name</span>
-            {% elif errorhtml == "hobby_already_exists" %}
-            <span class="error10">This hobby is already in the database. Go to <a href="/hobbies">"Hobbies"</a> to add this hobby to your list.</span>
-            {% elif errorhtml == "hobby_already_exists_mine" %}
-            <span class="error10">You already have this hobby in your list :/ . </span>
-            {% else %}
-
-            {% endif %}    
-        </label><br>
-        <input type="hidden" name="conditional_to_redirect" value="Display_specific_hobby"/>
-        <input type="hidden" name="conditional" value="to_add_new_hobby_to_current_user"/>
-        <input type="submit" value='Add Entry' />
+        <table>     
+            <tr>
+                <td><span class="input-title">Hobby:</span></td>  
+            </tr>
+            <tr>
+                <td><input class="input-field" type="text" name='hobbyname' value="{{newhobbyname}}"/></td>
+            </tr>
+            <tr>
+                <td>
+                    <span>
+                        {% if errorhtml == "no_name" %}
+                        <span class="error10">Please fill in the name</span>
+                        {% elif errorhtml == "hobby_already_exists" %}
+                        <span class="error10">This hobby is already in the database. Go to <a href="/hobbies">"Hobbies"</a> to add this hobby to your list.</span>
+                        {% elif errorhtml == "hobby_already_exists_mine" %}
+                        <span class="error10">You already have this hobby in your list :/ . </span>
+                        {% else %}            
+                        {% endif %} 
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="centered">
+                        <input type="hidden" name="conditional_to_redirect" value="Display_specific_hobby"/>
+                        <input type="hidden" name="conditional" value="to_add_new_hobby_to_current_user"/>
+                        <input class="centered button-wide button-nice" type="submit" value='Add hobby' />
+                    </div>
+                </td>
+            </tr>    
+        </table>     
+        
     </form>
-
+</div>
 {% endblock %}
