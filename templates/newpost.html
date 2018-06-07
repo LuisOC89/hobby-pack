@@ -16,10 +16,10 @@
     <form method='post' action="/newpost">
         <table style="margin-top:15px">     
             <tr>
-                <td><span>Title:</span></td>  
+                <td><span class="input-title">Title:</span></td>  
             </tr>
             <tr>
-                <td><input class="input-field" type="text" name='posttitle' value="{{newtitle}}"/></td>   
+                <td><input style="width: 450px;"class="input-field" type="text" name='posttitle' value="{{newtitle}}"/></td>   
             </tr>
             <tr>
                 <td>
@@ -34,10 +34,10 @@
                 </td>
             </tr>
             <tr>
-                <td><span>Post:</span></td>  
+                <td><span class="input-title">Post:</span></td>  
             </tr>
             <tr>
-                <td><textarea class="input-field" name="postbody">{{newbody}}</textarea></td>   
+                <td><textarea class="input-field textarea-nice" name="postbody">{{newbody}}</textarea></td>   
             </tr>
             <tr>
                 <td>
@@ -52,7 +52,7 @@
             <tr>
                 <td>
                     <input type="hidden" value="from_new_post" name='condition' id="conditionX" />
-                    <input class="button-wide button-nice" type="submit" value='Add Post' />
+                    <input class="button-nice" type="submit" value='Add Post' />
                 </td>
             </tr>            
         </table>

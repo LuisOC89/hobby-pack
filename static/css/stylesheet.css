@@ -192,25 +192,14 @@ body {
   border-radius: 14px 14px 0 0;
 }
 
-input[type=text] {  
+input[type=text], input[type=password] {  
   border: 3px solid #ccc;
   -webkit-transition: 0.5s;
   transition: 0.5s;
   outline: none;
 }
 
-input[type=text]:focus {
-  border: 3px solid #555;
-}
-
-input[type=password] {  
-  border: 3px solid #ccc;
-  -webkit-transition: 0.5s;
-  transition: 0.5s;
-  outline: none;
-}
-
-input[type=password]:focus {
+input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
   border: 3px solid #555;
 }
 
@@ -318,9 +307,10 @@ input[type=password]:focus {
   border-radius: 4px 4px 0 0;
   border-bottom: 1px solid black;
 }
+
 /*Add new post*/
 #submission-form-new-post {  
-  width: 220px;
+  width: 500px;
   border-style: double;
   border-color: black;
   border-radius: 5px;  
@@ -336,3 +326,11 @@ input[type=password]:focus {
   margin: -20px -20px 0 -20px; 
   border-radius: 4px 4px 0 0;
   border-bottom: 1px solid black;
+}
+
+.textarea-nice {  
+  border: 3px solid #ccc;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  outline: none;
+}
