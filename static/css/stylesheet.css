@@ -173,6 +173,7 @@ body {
 /*Ending navBar*/
 
 /*Beginning submission forms*/
+/*Login*/
 .submission-form-login {
   width: 300px;
   border-style: double;
@@ -224,7 +225,7 @@ input[type=password]:focus {
   font-weight: bold;  
 }
 
-td {
+.table-login td {
   padding-top: 15px;
 }
 
@@ -233,12 +234,49 @@ td {
   width:100%;
 }
 
-#button-login:hover {  
+#button-login:hover, #button-signup:hover {  
   background-color:rgb(240, 54, 54);
   color: #333;  
 }
 
-#button-login:active {  
+#button-login:active, #button-signup:active {  
   background-color:#333;
   color: rgb(240, 54, 54);   
 }
+
+/*signup*/
+.submission-form-signup {
+  width: 350px;
+  border-style: double;
+  border-color: black;
+  border-radius: 15px;  
+  background-color: lightgray;
+  margin: 0 auto; 
+  padding: 20px 40px 20px 20px;
+}
+
+.submission-title-signup {    
+  color: rgb(240, 54, 54);
+  padding: 10px 20px 10px 20px;
+  background-color: #333; 
+  margin: -20px -40px 0 -20px; 
+  border-radius: 14px 14px 0 0;
+}
+
+.input-title {
+  vertical-align: bottom;
+  margin-left: 3px;
+}
+
+#select-signup {  
+  border: 3px solid #ccc;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  outline: none;
+}
+
+.input-field, #button-signup{
+  width:100%;
+}
+
+/*signup*/
