@@ -175,17 +175,51 @@ body {
 /*Beginning submission forms*/
 .submission-form-login {
   width: 300px;
-  border-style: solid;
+  border-style: double;
   border-color: black;
   border-radius: 15px;  
-  background-color: yellow;
+  background-color: lightgray;
   margin: 0 auto; 
-  padding: 20px 40px 20px 40px;
+  padding: 20px 40px 20px 20px;
 }
 
 .submission-title-login {    
-  padding: 10px 20px 10px 40px;
-  background-color: red; 
-  margin: -20px -40px 0 -40px; 
+  color: rgb(240, 54, 54);
+  padding: 10px 20px 10px 20px;
+  background-color: #333; 
+  margin: -20px -40px 0 -20px; 
   border-radius: 14px 14px 0 0;
+}
+
+input[type=text] {  
+  border: 3px solid #ccc;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  outline: none;
+}
+
+input[type=text]:focus {
+  border: 3px solid #555;
+}
+
+input[type=password] {  
+  border: 3px solid #ccc;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  outline: none;
+}
+
+input[type=password]:focus {
+  border: 3px solid #555;
+}
+
+#hyperlink-login{
+  text-align: center;
+  color: rgb(240, 54, 54);
+}
+
+#hyperlink-login:hover{
+  text-decoration: none;
+  color: rgb(240, 54, 54);
+  font-weight: bold;  
 }
