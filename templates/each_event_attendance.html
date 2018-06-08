@@ -1,26 +1,49 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain">Who attended the event named "{{event.name}}"? </h1>  
+<br>
+<br>
+<div class="submission-form-general submission-form-secondary-menu" id="submission-form-attendance-event">
+    <div class="submission-title-general submission-title-secondary-menu">
+        <h4 class="centered">Event: <b>"{{event.name}}"</b><br>Attendance and Recap</h4>       
+    </div>   
 
-<p><span>Select who attended (besides you):</span><br>
-
-<form method='post' action="/events">   
-    <div id="test3">       
-        {% for person in event.hobbyists %}    
-            {% if person.nickname != user.nickname %}                
-                <input type="checkbox" name="people_attended" id="{{person.id}}" value="{{person.id}}" > 
-                <label for="{{person.id}}">{{person.nickname}}</label>  
-            {% endif %}      
-        {% endfor %}                
-    </div>
-    <br>
-    Recap:<br>
-    <textarea name="recap">{{recap}}</textarea>
-    <br><span class="error10" name="error_recap">{{error_recap}}</span><br>
-
-    <input type="hidden" name="event_idn" value="{{event.id}}" />
-    <input type="hidden" name="condition" value="attendance_submission" />
-    <input type="submit" value='OK' />
+<form method='post' action="/events"> 
+    <table style="margin-top:15px">     
+        <tr>
+            <td><span class="input-title">Select attendee(s):</span><hr></td>  
+        </tr> 
+        <tr>
+            <td>
+                <div style="width:300px" id="test3">       
+                    {% for person in event.hobbyists %}    
+                        {% if person.nickname != user.nickname %}                
+                            <input type="checkbox" name="people_attended" id="{{person.id}}" value="{{person.id}}" > 
+                            <label for="{{person.id}}">{{person.nickname}}</label>  
+                        {% endif %}      
+                    {% endfor %}                
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td><hr><span class="input-title">Recap:</span></td>  
+        </tr>   
+        <tr>
+            <td><textarea class="input-field textarea-nice" name="recap">{{recap}}</textarea><hr></td>  
+        </tr>    
+        <tr>
+            <td><span class="error10" name="error_recap">{{error_recap}}</span></td>  
+        </tr>    
+        <tr>
+            <td>
+                <input type="hidden" name="event_idn" value="{{event.id}}" />
+                <input type="hidden" name="condition" value="attendance_submission" />
+                <input class="button-nice" type="submit" value='OK' />
+            </td>  
+        </tr> 
+    </table>    
 </form>
+</div>
+<br>
+<br>
 {% endblock %}
