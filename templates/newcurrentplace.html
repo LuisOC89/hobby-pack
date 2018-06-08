@@ -1,23 +1,51 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain">{{this_place.name}}</h1>
+<br>
+<br>
+<div class="submission-form-general submission-form-secondary-menu" id="submission-form-existing-place">
+    <div class="submission-title-general submission-title-secondary-menu centered">
+        <h4>Add Place to my places.</h4>
+        <h6>"<b>{{this_place.name}}</b>" 
+            <br><i>{{this_place.streetaddress}} {{this_place.city}} {{this_place.state}}, {{this_place.zipcode}}</i>      
+        </h6> 
+    </div>  
 
-
-<form method='post' action="/newplace">      
-    <label class="list2">Your Hobbies that you would like to practice in this new place:</label><br>
-    {% if errorhobbies=="" %}
-        {% for hobby in hobbieshtml %}    
-        <input type="checkbox" name="hobbieschecked" id="{{hobby.id}}" value="{{hobby.name}}"> 
-        <label for="{{hobby.name}}">{{hobby.name}}</label><br>         
-        {% endfor %}   
-        <span class="error10">{{error_selection}}<br></span>
-        <input type="hidden" name="placekey" value="{{placekey}}">
-        <input type="hidden" name="conditional" value="current_place_to_my_hobbies"> 
-        <input type="submit" value='Add Entry' />     
-    {% elif errorhobbies=="NoHobbiesYet" %}
-        <p>You dont have hobbies yet. To add a new place to one of your current hobbies, you will have to have at least one hobby.</p>
-        <p>If you want to add a new hobby click <a href="/newhobbie"> here </a>.</p>
-    {% endif %}      
+<form method='post' action="/newplace">     
+    <table style="margin-top:15px"> 
+        {% if errorhobbies=="" %}    
+            <tr>
+                <td><div style="width:400px"><span class="input-title">Select hobby(ies) you practice in this place:</span></div><hr></td>  
+            </tr> 
+            <tr>
+                <td>
+                    {% for hobby in hobbieshtml %}    
+                        <input type="checkbox" name="hobbieschecked" id="{{hobby.id}}" value="{{hobby.name}}"> 
+                        <label for="{{hobby.name}}">{{hobby.name}}</label><br>         
+                    {% endfor %}
+                </td>  
+            </tr> 
+            <tr>
+                <td><span class="error10">{{error_selection}}</span><hr></td>  
+            </tr> 
+            <tr>
+                <td>
+                    <input type="hidden" name="placekey" value="{{placekey}}">
+                    <input type="hidden" name="conditional" value="current_place_to_my_hobbies"> 
+                    <input class="button-nice" type="submit" value='Add Entry'/>
+                </td>  
+            </tr> 
+        {% elif errorhobbies=="NoHobbiesYet" %}
+            <tr>
+                <td><span class="input-title centered">You dont have hobbies yet. To add a new place to one of your current hobbies, 
+                    you will have to have at least one hobby.<br>If you want to add a new hobby click <a href="/newhobbie"> here </a>.
+                    </span>
+                </td>  
+            </tr>            
+        {% endif %} 
+    </table>        
 </form>
+</div>
+<br>
+<br>
 {% endblock %}

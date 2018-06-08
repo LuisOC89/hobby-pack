@@ -335,6 +335,10 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
 }
 
 /*Existing hobby existing place*/
-#submission-form-existing-hobby-existing-place{
+#submission-form-existing-hobby-existing-place {
   width: 660px;
+}
+
+#submission-form-existing-place{
+  width: 460px;
 }
