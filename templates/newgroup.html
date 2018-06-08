@@ -1,19 +1,36 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-    <h1 class="titlemain">Giving name to the group</h1>
-        
-    <form method='post' action="/newchat">            
-        <label>Name of group: <input type="text" name="group_name" ></label>
-        <textarea style="visibility:hidden" name="initial_message">{{initial_message}}</textarea>
-        <input type="hidden" name="people_invited" value={{people_invited}} />
-        <input type="hidden" name="condition" value="from_newgroup_view_validation" />
-        <input type="submit" value='Create' />     
-        {% if errorname == "empty" %}   
-        <span class="error10">Assign a name to your group to make it easy to identify the topic of the chat. Example: "Exercise with dumbells" </span><br>    
-        {% elif errorname == "chat_exists" %}
-        <span class="error10">You have already a chat named {{name_of_group}}. Assign another name. </span><br>        
-        {% endif %}       
+<br>
+<br>
+<div id="submission-form-new-group">
+    <div id="submission-title-new-group">
+        <h4>New group</h4>       
+    </div> 
+
+    <form method='post' action="/newchat">  
+        <table>     
+            <tr>
+                <td><input style="width:300px;" class="centered" placeholder="Add a group name here..." type="text" name="group_name" ></td>  
+            </tr>
+            <tr>
+                <td>
+                    <input type="hidden" name="initial_message" value="{{initial_message}}" />
+                    <input type="hidden" name="people_invited" value="{{people_invited}}" />
+                    <input type="hidden" name="condition" value="from_newgroup_view_validation" />
+                    <input class="centered button-wide button-nice" type="submit" value='Create' />     
+                </td>
+            </tr>          
+            <tr>
+                <td class="centered">
+                    {% if errorname == "empty" %}   
+                        <span class="error10">Assign a name to your group to make it easy to identify the topic of the chat. Example: "Exercise with dumbells" </span><br>    
+                    {% elif errorname == "chat_exists" %}
+                        <span class="error10">You have already a chat named "{{name_of_group}}". Assign another name. </span><br>        
+                    {% endif %}
+                </td>  
+            </tr>
+        </table>           
     </form>
-    
+</div>
 {% endblock %}

@@ -1,44 +1,73 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-    <h1 class="titlemain">Sending messages, sharing ideas</h1>
-        
+<br>
+<br>
+<div id="submission-form-new-chat">
+    <div id="submission-title-new-chat">
+        <h4>Start Messaging</h4>       
+    </div>       
+
     {% if other_people | length == 0 %}
-        Nobody else on the website yet. Invite your friends to sign up.
+        <span>Nobody else on the website yet. Invite your friends to sign up.</span>
     {% else %}
     <form method='post' action="/newchat">
-        <label>
-        Initial message:<br>
-        <textarea name="initial_message"></textarea><br>
-        {% if errormessage == "nomessage" %}
-        <span class="error10">You can not send an empty message. No cool. Please enter a valid message (something)</span><br>
-        {% endif %}
-        
-            Who would you like to send this message?
-            <br>
-            {% for person in other_people %}
-                <input type="checkbox" name="peoplechecked" id="{{person.id}}" value="{{person.nickname}}"> 
-                <label for="{{person.nickname}}">{{person.nickname}} {{person.city}} {{person.state}} {{person.zipcode}}  
-                {% if dict_user_hobbies[person.nickname] | length == 0 %}
-                    ( No hobbies yet )
-                {% else %}      
-                    (
-                        {% for hobby in dict_user_hobbies[person.nickname] %}
-                            {{hobby.name}}
-                            {{"," if not loop.last }} 
-                        {% endfor %}
-                    )
-                {% endif %}                
-            </label><br>                 
-            {% endfor %}  
-            {% if errorpeople == "nopeople" %}   
-            <span class="error10">Don't forget to select at least a receiver for your message.</span><br>    
-            {% elif errorpeople == "chat_exists" %}
-            <span class="error10">You have already a chat with {{other_person}}. Please check it out <a href="/chat">here!</a></span><br>        
-            {% endif %}
-            <input type="hidden" name="condition" value="from_newchat_view_validation" />
-            <input type="submit" value='Send' />            
+        <table style="margin-top:15px">     
+            <tr>
+                <td><span class="input-title">Select contact(s):</span><hr></td>  
+            </tr>
+            <tr>
+                <td>
+                    {% for person in other_people %}
+                        <input type="checkbox" name="peoplechecked" id="{{person.id}}" value="{{person.nickname}}"> 
+                        <span><b>{{person.nickname}}</b> {{person.city}} {{person.state}} {{person.zipcode}}</span> 
+                        <span>
+                        <i>{% if dict_user_hobbies[person.nickname] | length == 0 %}
+                            ( No hobbies yet )
+                        {% else %}      
+                            (
+                                {% for hobby in dict_user_hobbies[person.nickname] %}
+                                    {{hobby.name}}
+                                    {{"," if not loop.last }} 
+                                {% endfor %}
+                            )
+                        {% endif %}</i><hr>                
+                        </span>                
+                    {% endfor %}  
+                </td>   
+            </tr>
+            <tr>
+                <td>
+                    {% if errorpeople == "nopeople" %}   
+                    <span class="error10">Don't forget to select at least ONE receiver for your message.</span><br>    
+                    {% elif errorpeople == "chat_exists" %}
+                    <span class="error10">You have already a chat with {{other_person}}. Please check it out <a href="/chat">here!</a></span><br>        
+                    {% endif %}
+                </td>  
+            </tr>
+            <tr>
+                <td><span class="input-title">Type a message:</span></td>  
+            </tr>
+            <tr>
+                <td><textarea class="textarea-nice input-field" name="initial_message"></textarea></td>  
+            </tr>
+            <tr>
+                <td>
+                    {% if errormessage == "nomessage" %}
+                        <span class="error10">You can not send an empty message. No cool. Please enter a valid message (something)</span>
+                    {% endif %}
+                </td>  
+            </tr>
+            <tr>
+                <td>
+                    <input type="hidden" name="condition" value="from_newchat_view_validation" />
+                    <input class="button-nice" type="submit" value='Send' /> 
+                </td>  
+            </tr>
+        </table>                      
     </form>
     {% endif %}
-
+</div>
+<br>
+<br>
 {% endblock %}
