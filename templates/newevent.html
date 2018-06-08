@@ -1,60 +1,132 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-    <h1 class="titlemain">Creating an exciting event!!!</h1>
+<br>
+<br>
+<div id="submission-form-new-event">
+    <div id="submission-title-new-event">
+        <h4>New Event</h4>       
+    </div>     
         
     {% if others | length == 0 %}
-        Nobody else on the website yet. Invite your friends to sign up.
+        <span class"error10">Nobody else on the website yet. Invite your friends to sign up.</span>
     {% else %}
         <form method='post' id="event-creation" action="/events">
-          
-        <p><label>Name of this event: <input type="text" value="{{event_name}}" name="name_of_event" maxlength="60"></label>
-            <span name="error_event_name" class="error10">{{error_event_name}}</span></p>    
-        <p><label>Theme Hobby for this event:  
-            <select name="hobbies" >
-                    <option value="no selection" style="display:none" ></option>
-                {% for hobby in hobbies %}
-                    <option value="{{hobby.id}}">{{hobby.name}}</option>                                                      
-                {% endfor %}                     
-            </select></label><span class="error10" name="error_theme_hobby">{{error_theme_hobby}}</span></p> 
+            <table style="margin-top:15px">     
+                <tr>
+                    <td class="toright"><span>Event Title:</span></td>  
+                    <td><input id="input-exp-new-event" class="a-third-width" type="text" value="{{event_name}}" name="name_of_event" maxlength="60"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <span colspan="2" name="error_event_name" class="error10">{{error_event_name}}</span>
+                    </td>
+                </tr>
+                <tr>   
+                    <td class="toright"><span>Event Hobby Theme:</span></td>  
+                    <td>
+                        <select class="select-nice a-third-width" name="hobbies" >
+                            <option value="no selection" style="display:none" ></option>
+                            {% for hobby in hobbies %}
+                                <option value="{{hobby.id}}">{{hobby.name}}</option>                                                      
+                            {% endfor %}                     
+                        </select>
+                    </td>
+                </tr>
+                <tr>       
+                    <td></td>              
+                    <td><span class="error10" name="error_theme_hobby">{{error_theme_hobby}}</span></td>
+                </tr>                             
+                <tr>
+                    <td class="toright"><span>Event Date:</span></td>  
+                    <td><input class="centered a-third-width" type="text" value="{{event_date}}" name="date_of_event" placeholder='MM/DD/YYYY' maxlength="10" ></td>   
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <span class="error10" name="error_date_event">{{error_date}}</span>
+                    </td>
+                </tr>
+                <tr>                    
+                    <td class="toright"><span>Starting Military Time:</span></td>  
+                    <td><input class="centered a-third-width" type="text" value="{{event_time}}" name="time_of_event" placeholder='HH:MM' maxlength="5"></td> 
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <span class="error10" name="error_start">{{error_start}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="toright"><span>Event Duration:</span></td>  
+                    <td><input class="centered a-third-width" type="text" value="{{event_duration}}" name="duration_of_event" placeholder='HH:MM' maxlength="5"></td>                     
+                </tr>
+                <tr>      
+                    <td></td>                                 
+                    <td><span class="error10" name="error_duration">{{error_duration}}</span></td>
+                </tr>
+                <tr>
+                    <td class="toright"><span>Holding Public Place:</span></td>  
+                    <td>
+                        <select class="select-nice" name="places" >
+                            <option value="no selection" style="display:none" ></option>
+                            {% for place in places %}
+                                <option value="{{place.id}}">{{place.name}} | {{place.streetaddress}} {{place.city}} {{place.state}}, {{place.zipcode}} </option>                                                      
+                            {% endfor %}                     
+                        </select>
+                    </td>   
+                </tr>  
+                <tr>
+                    <td></td>
+                    <td>
+                        <span colspan="2" class="error10" name="error_event_place">{{error_event_place}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>Invitation message:</span></td>
+                    <td><textarea class="textarea-nice input-field" name="initial_invitation_message">{{invitation}}</textarea></td>
+                </tr>
+                <tr>                                      
+                    <td colspan="2"><span class="error10" name="error_invitation_message">{{error_invitation_message}}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><hr>
+                        <span>People you would like to invite to this event:</span>
+                    </td>
+                </tr>
+                <tr> 
+                    <td colspan="2">
+                        <span class="error10">{{error_people}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="checkbox" name="people_same_hobby" id="peopleSameHobby" > 
+                        <label for="people_same_hobby">Every other user who practices the theme hobby.</label><br>
 
-        <p><label>Public Place where this event will take place:  
-                <select name="places" >
-                        <option value="no selection" style="display:none" ></option>
-                    {% for place in places %}
-                        <option value="{{place.id}}">{{place.name}} | {{place.streetaddress}} {{place.city}} {{place.state}}, {{place.zipcode}} </option>                                                      
-                    {% endfor %}                     
-                </select></label><span class="error10" name="error_event_place">{{error_event_place}}</span></p> 	
-        
-        <p><label>Date of event: <input type="text" value="{{event_date}}" name="date_of_event" placeholder='MM/DD/YYYY' size="12" maxlength="10" ></label><span class="error10" name="error_date_event">{{error_date}}</span></p>
-        <p><label>Time of event (military time): <input type="text" value="{{event_time}}" name="time_of_event" placeholder='HH:MM' size="5" maxlength="5" ></label><span class="error10" name="error_start">{{error_start}}</span></p>
-        <p><label>Duration of event (military time): <input type="text" value="{{event_duration}}" name="duration_of_event" placeholder='HH:MM' size="5" maxlength="5" ></label><span class="error10" name="error_duration">{{error_duration}}</span></p>
-
-        <p><label> People you would like to invite to this event: <br>
-            <span class="error10">{{error_people}}</span></p>
-            <input type="checkbox" name="people_same_hobby" id="peopleSameHobby" > 
-            <label for="people_same_hobby">Every other user who likes the theme hobby of the event.</label><br>  
-            
-            <input type="checkbox" name="specific_peps" id="specificPeople"> 
-            <!--<input type="checkbox" name="specific_people" id="specific_people">--> 
-            <label for="specificPeople">Specific users I select.</label><span name="error_specific_people">{{error_specific_people}}</span><br>
-            
-            <div id="test2" style="display:none" >
-                {% for person in others %}    
-                <input type="checkbox" name="people_invited" id="{{person.id}}" value="{{person.id}}" > 
-                <label for="{{person.id}}">{{person.nickname}}</label>        
-                {% endfor %}
-            </div><br>      
-            
-            Invitation message:<br>
-            <textarea name="initial_invitation_message">{{invitation}}</textarea><br><span class="error10" name="error_invitation_message">{{error_invitation_message}}</span><br>
-
-        <input type="hidden" name="condition" value="new_event_info_submission" />
-        <input type="submit" value='Create' /> 
-        <br><br> 
-         
+                        <input type="checkbox" name="specific_peps" id="specificPeople"> 
+                        <!--<input type="checkbox" name="specific_people" id="specific_people">--> 
+                        <label for="specificPeople">Specific users I select.</label><span name="error_specific_people">{{error_specific_people}}</span><br>
+                        
+                        <div id="test2" style="display:none" >
+                            {% for person in others %}    
+                            <input type="checkbox" name="people_invited" id="{{person.id}}" value="{{person.id}}" > 
+                            <label for="{{person.id}}">{{person.nickname}}</label>        
+                            {% endfor %}
+                        </div><hr>
+                    </td>
+                </tr>                
+                <tr>                    
+                    <td colspan="2">
+                        <input type="hidden" name="condition" value="new_event_info_submission" />
+                        <input class="button-nice" type="submit" value='Create' /> 
+                    </td>
+                </tr>                  
+            </table>
         </form>
-
     {% endif %}
-
+</div>  
+<br>
+<br>
 {% endblock %}
