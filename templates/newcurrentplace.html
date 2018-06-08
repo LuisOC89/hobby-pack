@@ -11,11 +11,10 @@
         <input type="checkbox" name="hobbieschecked" id="{{hobby.id}}" value="{{hobby.name}}"> 
         <label for="{{hobby.name}}">{{hobby.name}}</label><br>         
         {% endfor %}   
+        <span class="error10">{{error_selection}}<br></span>
         <input type="hidden" name="placekey" value="{{placekey}}">
         <input type="hidden" name="conditional" value="current_place_to_my_hobbies"> 
         <input type="submit" value='Add Entry' />     
-    {% elif errorhobbies=="NoSelection" %}
-        <p>You have to select at least one hobby.</p>
     {% elif errorhobbies=="NoHobbiesYet" %}
         <p>You dont have hobbies yet. To add a new place to one of your current hobbies, you will have to have at least one hobby.</p>
         <p>If you want to add a new hobby click <a href="/newhobbie"> here </a>.</p>

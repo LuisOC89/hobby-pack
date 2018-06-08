@@ -714,7 +714,7 @@ def adding_place():
             my_hobbies = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()           
 
             if (len(hobbies_practiced) == 0):                
-                return render_template('newcurrentplace.html', title="Hobby Pack - Sharing our hobbies", hobbieshtml=my_hobbies, placekey=place_key_address, errorhobbies="NoSelection", this_place=place)
+                return render_template('newcurrentplace.html', title="Hobby Pack - Sharing our hobbies", hobbieshtml=my_hobbies, placekey=place_key_address, error_selection="You didnt select any hobby. You have to at least select one hobby for this place.", errorhobbies="", this_place=place)
             else:  
                 place.hobbyists.append(logged_in_hobbyist())    
                 db.session.commit()
