@@ -333,3 +333,8 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
 #submission-form-attendance-event {  
   width: 350px;  
 }
+
+/*Existing hobby existing place*/
+#submission-form-existing-hobby-existing-place{
+  width: 660px;
+}

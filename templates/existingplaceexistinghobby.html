@@ -1,26 +1,50 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="centered">{{ session['hobbyist'] }}</h1> 
-<h2 class = "centered">{{hobby}}</h2>
-      
-<h2 class="titlepost"> Existing Places to pick from: </h2>
-    {% if missing_placeshtml_for_me_for_this_hobby|length == 0 %}
-    <p>You practice this hobby in all the public places registered in this website. If you want, you could add a new place <a href="/newplace"> here </a> </p>
-    {% else %}
-    <form method='post' action="/newplace">
-        {% if errorempty != "" %}
-            <p class="error10"><span>{{errorempty}}</span> You have to select one of these existing places or create a new place <a href="/newplace"> here </a></p>      
-        {% else %}
-        {% endif %}
-        {% for publicplace in missing_placeshtml_for_me_for_this_hobby %}
-            <input type="radio" name="radioplace" value={{publicplace.id}}> {{publicplace.name}} | {{publicplace.streetaddress}} {{publicplace.city}} {{publicplace.state}}, {{publicplace.zipcode}} <br>
-        {% endfor %} 
-        <input type="hidden" value="{{hobby}}" name="hobby" />
-        <!--<span>{{hobby}}</span>-->
-        <input type="hidden" value="picking_missing_place" name="conditional" /><br>
-        <input type="submit" value='Add it' />
-    </form>
-    {% endif %}
+<br>
+<br>
+<div class="submission-form-general submission-form-secondary-menu" id="submission-form-existing-hobby-existing-place">
+    <div class="submission-title-general submission-title-secondary-menu">
+        <h4 class="centered">Add hobby: <b>"{{hobby}}"</b> to existing place.</h4>       
+    </div>          
 
+    <form method='post' action="/newplace">
+        <table style="margin-top:15px">     
+            <tr>
+                <td><div style="width:600px"><span style="color: rgb(240, 54, 54);" class="input-title"><b>Select place:<b></span></div><hr></td>  
+            </tr> 
+            {% if missing_placeshtml_for_me_for_this_hobby|length == 0 %}
+            <tr>
+                <td><span class="input-title titlepost">You practice this hobby in all the public places registered in this website. If you want, you could add a new place <a href="/newplace"> here </a></span>.<hr></td>  
+            </tr>  
+            {% else %}
+                {% if errorempty != "" %}
+                    <tr>
+                        <td><span class="error10">{{errorempty}} You have to select one of these existing places or create a new place <a href="/newplace"> here </a>.</span><hr></td>  
+                    </tr> 
+                {% else %}
+                {% endif %}            
+                <tr>
+                    <td>
+                        <span>
+                            {% for publicplace in missing_placeshtml_for_me_for_this_hobby %}
+                            <input type="radio" name="radioplace" value={{publicplace.id}}> {{publicplace.name}} | {{publicplace.streetaddress}} {{publicplace.city}} {{publicplace.state}}, {{publicplace.zipcode}} <br>
+                            {% endfor %} 
+                        </span>                        
+                    <hr></td>  
+                </tr>         
+                <tr>
+                    <td>
+                        <input type="hidden" value="{{hobby}}" name="hobby" />
+                        <!--<span>{{hobby}}</span>-->
+                        <input type="hidden" value="picking_missing_place" name="conditional" />
+                        <input class="button-nice" type="submit" value='Add place' />
+                    </td>  
+                </tr> 
+            {% endif %}
+        </table>
+    </form>
+</div>
+<br>
+<br>
 {% endblock %}
