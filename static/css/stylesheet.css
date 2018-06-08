@@ -174,22 +174,39 @@ body {
 
 /*Beginning submission forms*/
 /*Login*/
-#submission-form-login {
-  width: 300px;
+.submission-form-general {
   border-style: double;
   border-color: black;
-  border-radius: 15px;  
   background-color: lightgray;
-  margin: 0 auto; 
+  margin: 0 auto;
+}
+.submission-form-main-menu {
+  border-radius: 15px;    
   padding: 20px 40px 20px 20px;
 }
+.submission-form-secondary-menu {
+  border-radius: 5px;      
+  padding: 20px 20px 20px 20px;
+}
 
-#submission-title-login {    
+#submission-form-login {
+  width: 300px;   
+}
+
+.submission-title-general {
   color: rgb(240, 54, 54);
   padding: 10px 20px 10px 20px;
+}
+.submission-title-main-menu {
   background-color: #333; 
   margin: -20px -40px 0 -20px; 
   border-radius: 14px 14px 0 0;
+}
+.submission-title-secondary-menu {
+  background-color: lightgray; 
+  margin: -20px -20px 0 -20px; 
+  border-radius: 4px 4px 0 0;
+  border-bottom: 1px solid black;
 }
 
 input[type=text], input[type=password] {  
@@ -235,21 +252,7 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
 
 /*signup*/
 #submission-form-signup {  
-  width: 350px;
-  border-style: double;
-  border-color: black;
-  border-radius: 15px;  
-  background-color: lightgray;
-  margin: 0 auto; 
-  padding: 20px 40px 20px 20px;
-}
-
-#submission-title-signup {    
-  color: rgb(240, 54, 54);
-  padding: 10px 20px 10px 20px;
-  background-color: #333; 
-  margin: -20px -40px 0 -20px; 
-  border-radius: 14px 14px 0 0;
+  width: 350px;        
 }
 
 .input-title {
@@ -270,13 +273,7 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
 
 /*Add new hobby form*/
 #submission-form-new-hobby {  
-  width: 220px;
-  border-style: double;
-  border-color: black;
-  border-radius: 5px;  
-  background-color: lightgray;
-  margin: 0 auto; 
-  padding: 20px 20px 20px 20px;
+  width: 220px;  
 }
 
 #submission-title-new-hobby {    
@@ -290,42 +287,12 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
 
 /*Add new place form*/
 #submission-form-new-place {  
-  width: 500px;
-  border-style: double;
-  border-color: black;
-  border-radius: 5px;  
-  background-color: lightgray;
-  margin: 0 auto; 
-  padding: 20px 20px 20px 20px;
-}
-
-#submission-title-new-place {    
-  color: rgb(240, 54, 54);
-  padding: 10px 20px 10px 20px;
-  background-color: lightgray; 
-  margin: -20px -20px 0 -20px; 
-  border-radius: 4px 4px 0 0;
-  border-bottom: 1px solid black;
+  width: 500px;  
 }
 
 /*Add new post*/
 #submission-form-new-post {  
-  width: 500px;
-  border-style: double;
-  border-color: black;
-  border-radius: 5px;  
-  background-color: lightgray;
-  margin: 0 auto; 
-  padding: 20px 20px 20px 20px;
-}
-
-#submission-title-new-post {    
-  color: rgb(240, 54, 54);
-  padding: 10px 20px 10px 20px;
-  background-color: lightgray; 
-  margin: -20px -20px 0 -20px; 
-  border-radius: 4px 4px 0 0;
-  border-bottom: 1px solid black;
+  width: 500px;  
 }
 
 .textarea-nice {  
@@ -337,22 +304,7 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
 
 /*New event*/
 #submission-form-new-event {  
-  width: 800px;
-  border-style: double;
-  border-color: black;
-  border-radius: 5px;  
-  background-color: lightgray;
-  margin: 0 auto; 
-  padding: 20px 20px 20px 20px;
-}
-
-#submission-title-new-event {    
-  color: rgb(240, 54, 54);
-  padding: 10px 20px 10px 20px;
-  background-color: lightgray; 
-  margin: -20px -20px 0 -20px; 
-  border-radius: 4px 4px 0 0;
-  border-bottom: 1px solid black;
+  width: 800px;  
 }
 
 .a-third-width{
@@ -369,40 +321,10 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
 
 /*New chat*/
 #submission-form-new-chat {  
-  width: 350px;
-  border-style: double;
-  border-color: black;
-  border-radius: 5px;  
-  background-color: lightgray;
-  margin: 0 auto; 
-  padding: 20px 20px 20px 20px;
-}
-
-#submission-title-new-chat {    
-  color: rgb(240, 54, 54);
-  padding: 10px 20px 10px 20px;
-  background-color: lightgray; 
-  margin: -20px -20px 0 -20px; 
-  border-radius: 4px 4px 0 0;
-  border-bottom: 1px solid black;
+  width: 350px;  
 }
 
 /*New chat*/
 #submission-form-new-group {  
-  width: 350px;
-  border-style: double;
-  border-color: black;
-  border-radius: 5px;  
-  background-color: lightgray;
-  margin: 0 auto; 
-  padding: 20px 20px 20px 20px;
-}
-
-#submission-title-new-group {    
-  color: rgb(240, 54, 54);
-  padding: 10px 20px 10px 20px;
-  background-color: lightgray; 
-  margin: -20px -20px 0 -20px; 
-  border-radius: 4px 4px 0 0;
-  border-bottom: 1px solid black;
+  width: 350px;  
 }
