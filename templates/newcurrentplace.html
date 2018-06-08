@@ -1,22 +1,24 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain">Hobbie Pack!</h1>
+<h1 class="titlemain">{{this_place.name}}</h1>
 
-{% if errorhobbies == "" %}
+
 <form method='post' action="/newplace">      
-    <label class="list2">Your Hobbies that you would like to practice in this new place:<br></label>
-    {% for hobby in hobbieshtml %}    
-    <input type="checkbox" name="hobbieschecked" id="{{hobby.id}}" value="{{hobby.name}}"> 
-    <label for="{{hobby.name}}">{{hobby.name}}</label><br>        
-    {% endfor %}           
-    <input type="hidden" name="placekey" value="{{placekey}}">
-    <input type="hidden" name="conditional" value="current_place_to_my_hobbies"> 
-    <input type="submit" value='Add Entry' />
+    <label class="list2">Your Hobbies that you would like to practice in this new place:</label><br>
+    {% if errorhobbies=="" %}
+        {% for hobby in hobbieshtml %}    
+        <input type="checkbox" name="hobbieschecked" id="{{hobby.id}}" value="{{hobby.name}}"> 
+        <label for="{{hobby.name}}">{{hobby.name}}</label><br>         
+        {% endfor %}   
+        <input type="hidden" name="placekey" value="{{placekey}}">
+        <input type="hidden" name="conditional" value="current_place_to_my_hobbies"> 
+        <input type="submit" value='Add Entry' />     
+    {% elif errorhobbies=="NoSelection" %}
+        <p>You have to select at least one hobby.</p>
+    {% elif errorhobbies=="NoHobbiesYet" %}
+        <p>You dont have hobbies yet. To add a new place to one of your current hobbies, you will have to have at least one hobby.</p>
+        <p>If you want to add a new hobby click <a href="/newhobbie"> here </a>.</p>
+    {% endif %}      
 </form>
-{% else %}
-<p>You dont have hobbies yet. To add a new place to one of your current hobbies, you will have to have at least one hobby.</p>
-<p>If you want to add a new hobby click <a href="/newhobbie"> here </a>.</p>
-{% endif %}    
-
 {% endblock %}
