@@ -38,14 +38,18 @@
                 <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a>                             
                 {{ "," if not loop.last }}                              
             {% endfor %}<br>   
+           
             {% if event.attendance_taken_status == True %}
+                <span class="orange">Attendance Status:</span> {{event.created_encounter.nickname}} took attendance already.<br>
                 People that attended this event: 
                 {% for hobbyist in event.hobbyists_attendance %}                            
                     <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a>                             
                     {{ "," if not loop.last }}                              
                 {% endfor %}<br>  
                 Date attendance was submitted: {{event.attendance_taken_date_time[0:10]}}<br>    
-                Time attendance was submitted: {{event.attendance_taken_date_time[11:16]}}              
+                Time attendance was submitted: {{event.attendance_taken_date_time[11:16]}}     
+            {% elif event.attendance_taken_status == False %}   
+                <span class="orange">Attendance Status:</span> {{event.created_encounter.nickname}} hasn't taken attendance yet.         
             {% endif %}                                
         </ul>        
     </div>     
