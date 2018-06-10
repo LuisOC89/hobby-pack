@@ -4,13 +4,13 @@
 
 <h1 class="titlemain">Answering this post</h1>
 
-    <h2 class="titlemain"><span class="toleft">{{post_to_answer.title}}</span></h2>
-    <p class="paradf">{{post_to_answer.body}}</p>
+    <h2 class="titlemain"><span class="toleft">"{{post_to_answer.title}}"</span></h2>
+    <p class="paradf">"{{post_to_answer.body}}"</p>
     <p>Written by: <a href="/blog?hobbyist={{post_to_answer.blog.nickname}}">{{post_to_answer.blog.nickname}}</a></p>
 
     {% for answer in answers %}
-        <div class="marginleft"><a href="/blog?id={{post_to_answer.id}}&answer_id={{answer.id}}" class="titlepost"><span class="centered">{{answer.title}}</a></span> <span id="specialb">by</span> <a href="/blog?hobbyist={{answer.blogsanswer.nickname}}"><span class="poster">{{answer.blogsanswer.nickname}}</span></a>  at {{answer.time}} on {{answer.date}}
-        <span class="paradf"><p>{{answer.body}}</p></span> 
+        <div class="marginleft"><a href="/blog?id={{post_to_answer.id}}&answer_id={{answer.id}}" class="titlepost"><span class="centered">"{{answer.title}}"</a></span> <span id="specialb">by</span> <a href="/blog?hobbyist={{answer.blogsanswer.nickname}}"><span class="poster">{{answer.blogsanswer.nickname}}</span></a>  at {{answer.time}} on {{answer.date}}
+        <span class="paradf"><p>"{{answer.body}}"</p></span> 
         <br><br>
         </div>
     {% endfor %}
