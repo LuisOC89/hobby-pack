@@ -1,7 +1,22 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain">{{titlehtml}}</h1>
-    <p class="paradf">{{bodyhtml}}</p>
-    <p>Written by: <a href="/blog?hobbyist={{ownerhtml}}">{{ownerhtml}}</a></p>
+<br>
+<div class="display-info-general" id="display-info-each-post">
+    <div class="display-info-title-general main-post">
+        <h5>{{titlehtml}}</h5>       
+    </div> 
+
+    <table style="width:100%">           
+        <tr>
+            <td><span>{{bodyhtml}}</span></td>  
+        </tr>
+        <tr>
+            <td style="text-align:right"><span>Written by: <a href="/blog?hobbyist={{ownerhtml}}">{{ownerhtml}}</a></span></td>
+        </tr>
+    </table>
+</div>
+<br>
+<br>    
 {% endblock %}
+

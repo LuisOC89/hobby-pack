@@ -276,15 +276,6 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
   width: 220px;  
 }
 
-#submission-title-new-hobby {    
-  color: rgb(240, 54, 54);
-  padding: 10px 20px 10px 20px;
-  background-color: lightgray; 
-  margin: -20px -20px 0 -20px; 
-  border-radius: 4px 4px 0 0;
-  border-bottom: 1px solid black;
-}
-
 /*Add new place form*/
 #submission-form-new-place {  
   width: 500px;  
@@ -341,4 +332,26 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
 
 #submission-form-existing-place{
   width: 460px;
+}
+
+.display-info-general {  
+  background-color: white;  
+  margin: 0 auto;
+  padding: 5px 10px 5px 10px;
+  border: 1px solid #333;
+}
+
+.display-info-title-general {
+  color: rgba(27, 115, 216, 0.952);  
+  padding: 5px 10px 5px 10px;
+  margin: -5px -10px 0 -10px;  
+  border-bottom: 1px solid #333;
+}
+
+.main-post {
+  background-color: #333;
+}
+
+#display-info-each-post {
+  width: 95%;   
 }
