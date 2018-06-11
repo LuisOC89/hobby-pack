@@ -13,7 +13,7 @@
                             <input type="hidden" name="hobbyname" value="{{hobbyhtml.name}}"/>
                             <input type="hidden" name="conditional_to_redirect" value="Display_all_hobbies"/>
                             <input type="hidden" name="conditional" value="to_add_existing_hobby_to_current_user"/>
-                            <input class="button-nice" style="width:50%" type="submit" value="Add Hobby" class="alignedformbutton"/>
+                            <input class="button-nice" type="submit" value="Add Hobby" class="alignedformbutton"/>
                         </form></h5> 
                     </td>                     
                 {% endif %}   
@@ -40,7 +40,7 @@
         </tr>            
     </table>                    
     <div class="display-info-title-general main-hobby">
-        <h5><span style="color:rgba(27, 115, 216, 0.952)">Places where some people are practicing this hobby:</span></h5> 
+        <h5><span style="color:rgba(27, 115, 216, 0.952)">Places for practicing this hobby:</span></h5> 
     </div> 
     <table style="width:100%">           
         <tr>
@@ -49,7 +49,7 @@
                     {% for publicplace in places %}
                         <li style="border-bottom: 1px solid black">
                         <b><a href="/places?id={{publicplace.id}}">{{publicplace.name}}</a></b><br>
-                        Location: {{publicplace.streetaddress}} | {{publicplace.city}} | {{publicplace.state}} | {{publicplace.zipcode}} 
+                        {{publicplace.streetaddress}} | {{publicplace.city}} | {{publicplace.state}} | {{publicplace.zipcode}} 
                             <br><span class="different"> 
                             ({% if dict_place_hobbyists[publicplace.unique_key_address][0] == 1 %}
                             {{dict_place_hobbyists[publicplace.unique_key_address][0]}} person practicing here

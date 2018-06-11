@@ -1,60 +1,88 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain">{{placehtml.name}}</h1>  
-<h2 class="centered">{{placehtml.streetaddress}} | {{placehtml.city}} | {{placehtml.state}} | {{placehtml.zipcode}} |</h2>  
-
-{% if placehtml not in my_places %}
-<h2 class = centered>  
-<form action="/newplace" method="post" class="alignedform">            
-    <input type="hidden" name="placename" value="{{placehtml.unique_key_address}}"/>
-    <input type="hidden" name="conditional" value="to_add_existing_place_to_my_places"/>
-    <input type="submit" value="ADD" class="alignedformbutton"/>
-</form> to my places.   
-</h2>  
-{% endif %}
-
-    <h2>Hobbies practiced at this place ({{no_hobbies}} total) </h2>       
-    {% for myhobby in hobbies %}             
-    <li class="list2">
-        <a href="/hobbies?id={{myhobby.id}}" class="titlepost">{{myhobby.name}} </a> ( {{ hobby_no_hobbyists_no_places[myhobby.name][0] }} 
-        {% if hobby_no_hobbyists_no_places[myhobby.name][0] < 2 %}        
-        hobbyist,  
-        {% else %}
-        hobbyists, 
-        {% endif %}
-
-        {% if hobby_no_hobbyists_no_places[myhobby.name][1] == 1 %}        
-        {{hobby_no_hobbyists_no_places[myhobby.name][1]}} place ).        
-        {% else %}
-        {{hobby_no_hobbyists_no_places[myhobby.name][1]}} places ).
-        {% endif %}
-
-    </li>        
-    {% endfor %}
-
-    <h2>People that come to this place ({{no_hobbyists}} total)</h2>       
-    {% for hobbyist in hobbyists %}        
-    <li class="list2">
-        {% if hobbyist.nickname == session['hobbyist'] %}
-        <a href="/myinfo?condition=show_all_info_user" class="poster">{{hobbyist.nickname}} </a> 
-        {% else %}
-        <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a> 
-        {% endif %}
-        ( {{ hobbyist_no_hobbies_no_places[hobbyist.nickname][0] }} 
-        {% if hobbyist_no_hobbies_no_places[hobbyist.nickname][0] == 1 %}        
-        hobby,  
-        {% else %}
-        hobbies, 
-        {% endif %}
-
-        {% if hobbyist_no_hobbies_no_places[hobbyist.nickname][1] == 1 %}   
-        {{hobbyist_no_hobbies_no_places[hobbyist.nickname][1]}} place ).        
-        {% else %}
-        {{hobbyist_no_hobbies_no_places[hobbyist.nickname][1]}} places ).
-        {% endif %}
-                
-    </li>                                                                                           
-    {% endfor %}
+<br>
+    <div class="display-info-general" id="display-info-each-place">
+        <div class="display-info-title-general main-place">
+            <table style="width:100%">           
+                <tr>
+                    <td><h4 style="color:rgb(240, 54, 54)">{{placehtml.name}}</h4></td>   
+                    {% if placehtml not in my_places %}                
+                        <td style="text-align:right">
+                            <h5><form action="/newplace" method="post" class="alignedform">            
+                                <input type="hidden" name="placename" value="{{placehtml.unique_key_address}}"/>
+                                <input type="hidden" name="conditional" value="to_add_existing_place_to_my_places"/>
+                                <input class="button-nice" type="submit" value="Add Place" class="alignedformbutton"/>
+                            </form></h5> 
+                        </td>                     
+                    {% endif %}  
+                </tr>
+                <tr> 
+                    <td><h6 style="color:rgb(240, 54, 54)">{{placehtml.streetaddress}} | {{placehtml.city}} | {{placehtml.state}} | {{placehtml.zipcode}}</h6></td>               
+                </tr>  
+            </table>             
+        </div> 
+        <div class="display-info-title-general main-place">
+            <h5><span style="color:rgba(27, 115, 216, 0.952)">Hobbies practiced in this place ({{no_hobbies}} total) </span></h5>      
+        </div> 
+        <table style="width:100%">           
+            <tr>
+                <td style="padding-bottom:5px;">                    
+                    <b><span>
+                        {% for myhobby in hobbies %}  
+                            <li>
+                                <a href="/hobbies?id={{myhobby.id}}">{{myhobby.name}} </a> ( {{ hobby_no_hobbyists_no_places[myhobby.name][0] }} 
+                                {% if hobby_no_hobbyists_no_places[myhobby.name][0] < 2 %}        
+                                hobbyist,  
+                                {% else %}
+                                hobbyists, 
+                                {% endif %}
+                        
+                                {% if hobby_no_hobbyists_no_places[myhobby.name][1] == 1 %}        
+                                {{hobby_no_hobbyists_no_places[myhobby.name][1]}} place ).        
+                                {% else %}
+                                {{hobby_no_hobbyists_no_places[myhobby.name][1]}} places ).
+                                {% endif %}                            
+                            </li>   
+                        {% endfor %}                                     
+                    </span></b>                
+                </td>  
+            </tr>            
+        </table>       
+        <div class="display-info-title-general main-place">
+            <h5><span style="color:rgba(27, 115, 216, 0.952)">People that come to this place ({{no_hobbyists}} total):</span></h5> 
+        </div> 
+        <table style="width:100%">           
+            <tr>
+                <td>
+                    <b><span>
+                        {% for hobbyist in hobbyists %}        
+                        <li>
+                            {% if hobbyist.nickname == session['hobbyist'] %}
+                            <a href="/myinfo?condition=show_all_info_user">{{hobbyist.nickname}} </a>
+                            {% else %}
+                            <b><a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}">{{hobbyist.nickname}} </a></b> 
+                            {% endif %}
+                            ( {{ hobbyist_no_hobbies_no_places[hobbyist.nickname][0] }} 
+                            {% if hobbyist_no_hobbies_no_places[hobbyist.nickname][0] == 1 %}        
+                            hobby,  
+                            {% else %}
+                            hobbies, 
+                            {% endif %}
+                    
+                            {% if hobbyist_no_hobbies_no_places[hobbyist.nickname][1] == 1 %}   
+                            {{hobbyist_no_hobbies_no_places[hobbyist.nickname][1]}} place ).        
+                            {% else %}
+                            {{hobbyist_no_hobbies_no_places[hobbyist.nickname][1]}} places ).
+                            {% endif %}                                   
+                        </li>                                                                                           
+                        {% endfor %}
+                </span></b>
+                </td>  
+            </tr>                
+        </table>    
+    </div>
+<br>
+<br>
 
 {% endblock %}
