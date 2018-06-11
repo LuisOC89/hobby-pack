@@ -1,63 +1,107 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain">Places to do hobbies together</h1>
+<br>
+<div class="display-info-general" id="display-info-all-places">
+    <div class="display-info-title-general main-places">
+        <h4 style="color:rgb(240, 54, 54)">Registered Public Places</h4>                 
+    </div> 
     {% if placeshtml|length == 0 %}
-    <p>No public places yet</p>
-    <p>If you want to add a new public place click <a href="/newplace"> here </a>.</p>
+        <table style="width:100%">           
+            <tr>
+                <td style="padding-bottom:5px;">                    
+                    <b><span>
+                        <p>No public places yet</p>
+                        <p>If you want to add a new public place click <a href="/newplace"> here </a>.</p>                            
+                    </span></b>                
+                </td>  
+            </tr>            
+        </table>  
     {% else %}
-        {% if myplaces|length == 0 %}
+        {% if myplaces|length == 0 %}          
+        {% else %}  
+            <div class="display-info-title-general main-place">
+                <h5><span style="color:rgba(27, 115, 216, 0.952)">My Places</span></h5> 
+            </div> 
+            <table style="width:100%">           
+                <tr>
+                    <td class="padding-quick-fix">
+                        <b><span>
+                            {% for myplace in myplaces %}                
+                            <li>
+                                <a href="/places?id={{myplace.id}}">{{myplace.name}} </a> | {{myplace.streetaddress}} | {{myplace.city}} {{myplace.state}} {{myplace.zipcode}} 
         
-        {% else %}   
-        <h2>My Places</h2>       
-        {% for myplace in myplaces %}             
-        <li class="list2">
-            <a href="/places?id={{myplace.id}}" class="poster">{{myplace.name}} </a> | {{myplace.streetaddress}} | {{myplace.city}} {{myplace.state}} {{myplace.zipcode}} 
-            
-            {% if dict_helper[myplace.unique_key_address][0] == 1 %}                           
-            (<span class="red"> {{dict_helper[myplace.unique_key_address][0]}} person </span>, 
-            {% else %}            
-            (<span class="red"> {{dict_helper[myplace.unique_key_address][0]}} people </span>, 
-            {% endif %}
-            {% if dict_helper[myplace.unique_key_address][1] == 1 %}                 
-            <span class="orange">{{dict_helper[myplace.unique_key_address][1]}} hobby </span>).
-            {% else %}            
-            <span class="orange">{{dict_helper[myplace.unique_key_address][1]}} hobbies </span>).
-            {% endif %}               
-            
-        </li>        
-        {% endfor %}
-        {% endif %}
-
+                                {% if dict_helper[myplace.unique_key_address][0] == 1 %}                           
+                                (<span> {{dict_helper[myplace.unique_key_address][0]}} person </span>, 
+                                {% else %}            
+                                (<span> {{dict_helper[myplace.unique_key_address][0]}} people </span>, 
+                                {% endif %}
+                                {% if dict_helper[myplace.unique_key_address][1] == 1 %}                 
+                                <span>{{dict_helper[myplace.unique_key_address][1]}} hobby </span>).
+                                {% else %}            
+                                <span>{{dict_helper[myplace.unique_key_address][1]}} hobbies </span>).
+                                {% endif %}                  
+                            </li>        
+                            {% endfor %}                                                
+                            </span>
+                        </b>
+                    </td>  
+                </tr>                
+            </table>    
+        {% endif %}           
         {% if notmyplaces|length == 0 %}
-        <p>You are subscribed to all the public places of this website.</p>
-        <p>Add a new one <a href="/newplace">here</a></p>
+        <hr>
+        <p>You are subscribed to all the public places of this website. Add a new one <a href="/newplace">here</a></p>
         {% else %}
-
-        <h2>Other Places to do hobbies</h2>  
-        {% for publicplace in notmyplaces %}            
-        <li class="list2">
-        <a href="/places?id={{publicplace.id}}" class="poster">{{publicplace.name}} </a> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} 
-        
-            {% if dict_helper[publicplace.unique_key_address][0] == 1 %}                           
-            (<span class="red"> {{dict_helper[publicplace.unique_key_address][0]}} person </span>, 
-            {% else %}            
-            (<span class="red"> {{dict_helper[publicplace.unique_key_address][0]}} people </span>, 
-            {% endif %}
-            {% if dict_helper[publicplace.unique_key_address][1] == 1 %}                 
-            <span class="orange">{{dict_helper[publicplace.unique_key_address][1]}} hobby </span>).
-            {% else %}            
-            <span class="orange">{{dict_helper[publicplace.unique_key_address][1]}} hobbies </span>).
-            {% endif %} 
-
-        <form action="/newplace" method="post" class="alignedform">            
-            <input type="hidden" name="placename" value="{{publicplace.unique_key_address}}"/>
-            <input type="hidden" name="conditional" value="to_add_existing_place_to_my_places"/>
-            <input type="submit" value="ADD" class="alignedformbutton"/>
-        </form> to my places.            
-        </li>
-        <hr />
-        {% endfor %}
-        {% endif %}
-    {% endif %}    
+            <div class="display-info-title-general main-place">
+                <h5><span style="color:rgba(27, 115, 216, 0.952)">Other Places to do hobbies</span></h5> 
+            </div> 
+            <table style="width:100%">   
+                <tr>
+                    <td colspan="2">
+                        <hr>
+                    </td>  
+                </tr>   
+                {% for publicplace in notmyplaces %}       
+                <tr>
+                    <td>
+                        <b><span>  
+                            <li>                                     
+                                <a href="/places?id={{publicplace.id}}">{{publicplace.name}} </a> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} 
+    
+                                {% if dict_helper[publicplace.unique_key_address][0] == 1 %}                           
+                                    (<span> {{dict_helper[publicplace.unique_key_address][0]}} person </span>, 
+                                {% else %}            
+                                    (<span> {{dict_helper[publicplace.unique_key_address][0]}} people </span>, 
+                                {% endif %}
+                                {% if dict_helper[publicplace.unique_key_address][1] == 1 %}                 
+                                    <span>{{dict_helper[publicplace.unique_key_address][1]}} hobby </span>).
+                                {% else %}            
+                                    <span>{{dict_helper[publicplace.unique_key_address][1]}} hobbies </span>).
+                                {% endif %}    
+                            </li>   
+                        </span></b>
+                    </td> 
+                </tr>
+                <tr> 
+                    <td>
+                        <form action="/newplace" method="post" class="alignedform">            
+                            <input type="hidden" name="placename" value="{{publicplace.unique_key_address}}"/>
+                            <input type="hidden" name="conditional" value="to_add_existing_place_to_my_places"/>
+                            <input type="submit" value="Add Place" class="button-nice"/>
+                        </form>
+                    </td>                            
+                </tr>   
+                <tr>
+                    <td colspan="2">
+                        <hr>
+                    </td>  
+                </tr>             
+            {% endfor %}
+            </table>            
+    {% endif %}
+{% endif %}
+</div>
+<br>
+<br>
 {% endblock %}

@@ -328,7 +328,7 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
   border-bottom: 1px solid #333;
 }
 
-.main-post, .main-hobby, .main-place, .main-event {
+.main-post, .main-hobby, .main-place, .main-event, .main-users, .main-places {
   background-color: #333;
 }
 
@@ -346,11 +346,11 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
   width: 28%;
 }
 
-#display-info-each-place{
+#display-info-each-place, #display-info-all-users {
   width: 40%;
 }
 
-#display-info-each-event {
+#display-info-each-event, #display-info-all-places {
   width: 60%;
 }
 
