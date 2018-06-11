@@ -1,97 +1,136 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain">{{event.name}}</h1> 
-
-    <div class="centered">
-        {% if event_time != "past" %}    
-            {% if user not in event.hobbyists %}
-            <form action="/events" method="post" class="alignedform">                        
-                <input type="hidden" name="condition" value="add_user_to_event" />
-                <input type="hidden" name="event_idn" value="{{event.id}}" />
-                <input type="submit" value="GO" class="alignedformbutton"/>
-            </form> to this event. 
-            {% endif %} 
-        {% elif event_time == "past" %}
-            {% if event.attendance_taken_status == False %}
-                {% if user.id == event.creator_hobbyist_id %}
-                <form action="/events" method="post" class="alignedform">                        
-                    <input type="hidden" name="condition" value="take_attendance" />
-                    <input type="hidden" name="event_idn" value="{{event.id}}" />
-                    <input type="submit" value="TAKE ATTENDANCE" class="alignedformbutton"/>
-                </form> 
+<br>
+<div class="display-info-general" id="display-info-each-event">
+    <div class="display-info-title-general main-event">
+        <table style="width:100%">           
+            <tr>
+                <td><h4 style="color:rgb(240, 54, 54)">{{event.name}}</h4></td>   
+                {% if event_time != "past" %}    
+                    {% if user not in event.hobbyists %}               
+                    <td style="text-align:right">
+                        <h5><form action="/events" method="post" class="alignedform">                        
+                            <input type="hidden" name="condition" value="add_user_to_event" />
+                            <input type="hidden" name="event_idn" value="{{event.id}}" />
+                            <input type="submit" class="button-nice" value="Go to event" class="alignedformbutton"/>
+                        </form></h5>                        
+                    </td>                     
+                {% endif %}  
+                {% elif event_time == "past" %}
+                    {% if event.attendance_taken_status == False %}
+                        {% if user.id == event.creator_hobbyist_id %}
+                        <td style="text-align:right">
+                            <h5><form action="/events" method="post" class="alignedform">                        
+                                <input type="hidden" name="condition" value="take_attendance" />
+                                <input type="hidden" name="event_idn" value="{{event.id}}" />
+                                <input type="submit" class="button-nice" value="Take Attendance" class="alignedformbutton"/>
+                            </form></h5> 
+                        </td>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
-            {% endif %}
-        {% endif %}
-    </div>
-
-    <h2>This is a {{event_time}} event created by <span class="orange">{{event.created_encounter.nickname}}</span></h2>
-    <div>            
-        <ul> 
-            <span class="orange"> Hobby: <a href="/hobbies?id={{event.encounter.id}}">{{event.encounter.name}} </a></span> <br>
-            <span class="paradf"> Date: {{event.date}} </span> <br>
-            <span class="plaintext"> Start Time: {{event.start_time}} </span> <br>
-            <span class="plaintext"> Duration: {{event.duration}} </span> <br>
-            <span class="titlepost"> Holding Public Place: <a href="/places?id={{event.event.id}}"> {{event.event.name}} | {{event.event.streetaddress}} | {{event.event.city}} {{event.event.state}} {{event.event.zipcode}}</a></span><br>   
-            People invited or added to this event: 
-            {% for hobbyist in event.hobbyists %}                            
-                <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a>                             
-                {{ "," if not loop.last }}                              
-            {% endfor %}<br>   
-           
-            {% if event.attendance_taken_status == True %}
-                <span class="orange">Attendance Status:</span> {{event.created_encounter.nickname}} took attendance already.<br>
-                People that attended this event: 
-                {% for hobbyist in event.hobbyists_attendance %}                            
-                    <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a>                             
+            </tr>            
+            <tr> 
+                <td><h6 style="color:rgb(240, 54, 54)">Author: {{event.created_encounter.nickname}}</h6></td>                  
+            </tr>       
+        </table>             
+    </div> 
+    <div class="display-info-title-general main-place">
+        <h5><span style="color:rgba(27, 115, 216, 0.952)">Details </span></h5>      
+    </div> 
+    <table style="width:100%">           
+        <tr>
+            <td class="padding-quick-fix">                  
+                <b><span> Hobby: <a href="/hobbies?id={{event.encounter.id}}">{{event.encounter.name}} </a></span><br>
+                <span> Timeline: {{event_time}} event</span><br>    
+                <span> Date: {{event.date}} </span><br> 
+                <span> Start Time: {{event.start_time}} </span><br>
+                <span> Duration: {{event.duration}} </span><br>
+                <span> Holding Public Place: <a href="/places?id={{event.event.id}}"> {{event.event.name}} | {{event.event.streetaddress}} | {{event.event.city}} {{event.event.state}} {{event.event.zipcode}}</a></span><br>
+                People invited or added to this event: 
+                {% for hobbyist in event.hobbyists %}                            
+                    <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}">{{hobbyist.nickname}} </a>                             
                     {{ "," if not loop.last }}                              
-                {% endfor %}<br>  
-                Date attendance was submitted: {{event.attendance_taken_date_time[0:10]}}<br>    
-                Time attendance was submitted: {{event.attendance_taken_date_time[11:16]}}     
-            {% elif event.attendance_taken_status == False %}   
-                <span class="orange">Attendance Status:</span> {{event.created_encounter.nickname}} hasn't taken attendance yet.         
-            {% endif %}                                
-        </ul>        
-    </div>     
-    
-    <h3>Comments</h3>
-    <div>
-        <ul>
-            {% if event.attendance_taken_status == True %}
-                Recap: <span class="red"> "{{comments_this_event['recap'].content}}"</span> by 
-                <span class="orange">{{comments_this_event['recap'].event_comment_user.nickname}}</span> on
-                <span class="orange">{{comments_this_event['recap'].date}}</span> at
-                <span class="orange">{{comments_this_event['recap'].time}}</span>
-                <br>     
-            {% else %}                        
-            {% endif %}       
-            
-            Original Invitation: <span class="red"> "{{comments_this_event['invitation'].content}}" </span> by 
-            <span class="orange">{{comments_this_event['invitation'].event_comment_user.nickname}}</span> on
-            <span class="orange">{{comments_this_event['invitation'].date}}</span> at
-            <span class="orange">{{comments_this_event['invitation'].time}}</span>
-            <br>  
-
-            {% if comments_this_event['other']|length > 0 %}
-                {% for single_comment in comments_this_event['other'] %}           
-                    <span class="orange">{{single_comment.event_comment_user.nickname}}</span> said: 
-                    <span class="red"> "{{single_comment.content}}"</span> on
-                    <span class="orange">{{single_comment.date}}</span> at
-                    <span class="orange">{{single_comment.time}}</span>
-                    <br>  
-                {% endfor %}
-            {% else %}                        
-            {% endif %}   
-
-            <form method='post' action="/events">
-                Leave a comment:<br>
-                <textarea name="other_comment"></textarea><br><span class="error10" name="error_empty">{{error_empty}}</span><br>
-                <input type="hidden" name="event_id" value="{{event.id}}" />
-                <input type="hidden" name="condition" value="new_other_comment" />
-                <input type="submit" value='Create' /> 
-            </form>
-        <br><br>                            
-        </ul>
-    </div>
-
+                {% endfor %}<br> 
+                {% if event_time == "past" %}
+                    {% if event.attendance_taken_status == True %}
+                        <span>Attendance Status:</span> {{event.created_encounter.nickname}} took attendance already.<br>
+                        People that attended this event: 
+                        {% for hobbyist in event.hobbyists_attendance %}                            
+                            <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}">{{hobbyist.nickname}} </a>                             
+                            {{ "," if not loop.last }}                              
+                        {% endfor %}<br>  
+                        Date attendance was submitted: {{event.attendance_taken_date_time[0:10]}}<br>    
+                        Time attendance was submitted: {{event.attendance_taken_date_time[11:16]}}     
+                    {% elif event.attendance_taken_status == False %}   
+                        <span>Attendance Status:</span> {{event.created_encounter.nickname}} hasn't taken attendance yet.         
+                    {% endif %} 
+                {% endif %}           
+                </b>
+            </td>  
+        </tr>            
+    </table>                
+    <div class="display-info-title-general main-place">
+        <h5><span style="color:rgba(27, 115, 216, 0.952)">Comments:</span></h5> 
+    </div> 
+    <table style="width:100%">           
+        <tr>
+            <td>
+                <b><span>                         
+                    
+                    {% if event.attendance_taken_status == True %}
+                        On <span>{{comments_this_event['recap'].date}}</span>
+                        at <span>{{comments_this_event['recap'].time}}</span>
+                        <span class="users-color">{{comments_this_event['recap'].event_comment_user.nickname}}</span>
+                        sent the Recap for this event:<br> <span> "{{comments_this_event['recap'].content}}"</span>
+                        <hr>     
+                    {% else %}                        
+                    {% endif %}       
+                    
+                    On 
+                    <span>{{comments_this_event['invitation'].date}}</span> 
+                    at 
+                    <span>{{comments_this_event['invitation'].time}}</span> 
+                    <span class="users-color">{{comments_this_event['invitation'].event_comment_user.nickname}}</span> 
+                    sent an invitation message:<br> 
+                    <span> "{{comments_this_event['invitation'].content}}"<hr>  
+        
+                    {% if comments_this_event['other']|length > 0 %}
+                        {% for single_comment in comments_this_event['other'] %}           
+                            On <span>{{single_comment.date}}</span>
+                            at <span>{{single_comment.time}}</span>
+                            <span class="users-color">{{single_comment.event_comment_user.nickname}}</span> said:<br> 
+                            <span> "{{single_comment.content}}"</span>                
+                            <hr>  
+                        {% endfor %}
+                    {% else %}                        
+                    {% endif %}                                     
+                                
+                </span></b>
+            </td>  
+        </tr>                
+    </table>  
+    <form method='post' action="/events">
+        <table style="width:100%">  
+            <tr>
+                <td>
+                    <textarea class="textarea-nice input-field" placeholder="Comments" name="other_comment"></textarea>             
+                </td>
+            </tr>                  
+            <tr>  
+                <td ><span class="error10" name="error_empty">{{error_empty}}</span></td>                 
+            </tr>  
+            <tr>
+                <td>
+                    <input type="hidden" name="event_id" value="{{event.id}}" />
+                    <input type="hidden" name="condition" value="new_other_comment" />
+                    <input class="button-nice height-button-modified" type="submit" value='Comment' /> 
+                </td>
+            </tr>                         
+        </table>    
+    </form>  
+</div>
+<br>
+<br>
 {% endblock %}

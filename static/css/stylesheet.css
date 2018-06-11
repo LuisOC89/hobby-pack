@@ -328,7 +328,7 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
   border-bottom: 1px solid #333;
 }
 
-.main-post, .main-hobby, .main-place {
+.main-post, .main-hobby, .main-place, .main-event {
   background-color: #333;
 }
 
@@ -349,3 +349,16 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
 #display-info-each-place{
   width: 40%;
 }
+
+#display-info-each-event {
+  width: 60%;
+}
+
+.padding-quick-fix{
+  padding-bottom:5px;
+}
+
+.users-color {
+  color: rgb(240, 54, 54);  
+}
+
