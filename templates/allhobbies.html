@@ -1,68 +1,111 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain">Hobbies that somebody on this page loves ... :)</h1>
+<br>
+<div class="display-info-general" id="display-info-each-place">
+    <div class="display-info-title-general main-place">
+        <h4 style="color:rgb(240, 54, 54)">Registered Hobbies from all users</h4>                 
+    </div> 
     {% if hobbieshtml|length == 0 %}
-    <p>No hobbies yet</p>
-    <p>If you want to add a new hobby click <a href="/newhobbie"> here </a>.</p>
-    {% else %}
-        {% if myhobbies|length == 0 %}
-        
-        {% else %}   
-        <h2>My Hobbies</h2>       
-        {% for myhobby in myhobbies %}             
-        <li class="list2">
-            <a href="/hobbies?id={{myhobby.id}}" class="poster">{{myhobby.name}} </a>
-                
-                {% if dict_helper[myhobby.name][0] == 1 %}                           
-                (<span class="red"> {{dict_helper[myhobby.name][0]}} person </span>, 
-                {% else %}            
-                (<span class="red"> {{dict_helper[myhobby.name][0]}} people </span>, 
-                {% endif %}
-                {% if dict_helper[myhobby.name][1] == 0 %}
-                <span class="orange"> this hobby isn't practiced in any public place yet :/ </span>). 
-                {% elif dict_helper[myhobby.name][1] == 1 %}            
-                <span class="orange">{{dict_helper[myhobby.name][1]}} place </span>).
-                {% else %}            
-                <span class="orange">{{dict_helper[myhobby.name][1]}} places </span>).
-                {% endif %}                      
-                
-        </li>        
-        {% endfor %}
-        {% endif %}
+        <table style="width:100%">           
+            <tr>
+                <td style="padding-bottom:5px;">                    
+                    <b><span>
+                        <p>No hobbies yet</p>
+                        <p>If you want to add a new hobby click <a href="/newhobbie"> here </a>.</p>                             
+                    </span></b>                
+                </td>  
+            </tr>            
+        </table>  
+    {% else %}    
+        {% if myhobbies|length == 0 %}            
+        {% else %}  
+            <div class="display-info-title-general main-place">
+                <h5><span style="color:rgba(27, 115, 216, 0.952)">My Hobbies</span></h5> 
+            </div> 
+            <table style="width:100%">           
+                <tr>
+                    <td class="padding-quick-fix">
+                        <b><span>
+                            {% for myhobby in myhobbies %}             
+                            <li>
+                                <a href="/hobbies?id={{myhobby.id}}">{{myhobby.name}} </a>
+                                    
+                                    {% if dict_helper[myhobby.name][0] == 1 %}                           
+                                        (<span> {{dict_helper[myhobby.name][0]}} person </span>, 
+                                    {% else %}            
+                                        (<span> {{dict_helper[myhobby.name][0]}} people </span>, 
+                                    {% endif %}
 
+                                    {% if dict_helper[myhobby.name][1] == 0 %}
+                                        <span> this hobby isn't practiced in any public place yet :/ </span>). 
+                                    {% elif dict_helper[myhobby.name][1] == 1 %}            
+                                        <span>{{dict_helper[myhobby.name][1]}} place </span>).
+                                    {% else %}            
+                                        <span>{{dict_helper[myhobby.name][1]}} places </span>).
+                                    {% endif %}                   
+                            </li>        
+                            {% endfor %}                                                
+                            </span>
+                        </b>
+                    </td>  
+                </tr>                
+            </table>    
+        {% endif %}    
         {% if notmyhobbies|length == 0 %}
-        <p>You practice already all the hobbies registered on this website.</p>
-        <p>Add a new one <a href="/newhobbie">here</a></p>
+        <hr>
+        <p>You practice already all the hobbies registered on this website. Add a new one <a href="/newhobbie">here</a></p>
         {% else %}
-
-        <h2>Other Hobbies practiced by other people on this website</h2>  
-        {% for hobby in notmyhobbies %}            
-            <li class="list2">
-            <a href="/hobbies?id={{hobby.id}}" class="poster">{{hobby.name}} </a> 
-        
-            {% if dict_helper[hobby.name][0] == 1 %}                           
-            (<span class="red"> {{dict_helper[hobby.name][0]}} person </span>, 
-            {% else %}            
-            (<span class="red"> {{dict_helper[hobby.name][0]}} people </span>, 
-            {% endif %}
-            {% if dict_helper[hobby.name][1] == 0 %}
-            <span class="orange"> this hobby isn't practiced in any public place yet :/ </span>). 
-            {% elif dict_helper[hobby.name][1] == 1 %}            
-            <span class="orange">{{dict_helper[hobby.name][1]}} place </span>).
-            {% else %}            
-            <span class="orange">{{dict_helper[hobby.name][1]}} places </span>).
-            {% endif %}       
-                        
-            <form action="/newhobbie" method="post" class="alignedform">            
-                <input type="hidden" name="hobbyname" value="{{hobby.name}}"/>
-                <input type="hidden" name="conditional_to_redirect" value="Display_all_hobbies"/>
-                <input type="hidden" name="conditional" value="to_add_existing_hobby_to_current_user"/>
-                <input type="submit" value="ADD" class="alignedformbutton"/>
-            </form> to my hobbies.            
-        </li>
-        <hr />
-        {% endfor %}
-        {% endif %}
-    {% endif %}   
+            <div class="display-info-title-general main-place">
+                <h5><span style="color:rgba(27, 115, 216, 0.952)">Other Hobbies practiced by other people</span></h5> 
+            </div> 
+            <table style="width:100%">   
+                <tr>
+                    <td colspan="2">
+                        <hr>
+                    </td>  
+                </tr>   
+                {% for hobby in notmyhobbies %}       
+                <tr>
+                    <td style="width:70%">
+                        <b><span>  
+                            <li>                                     
+                            <a href="/hobbies?id={{hobby.id}}">{{hobby.name}} </a> 
+                            
+                                {% if dict_helper[hobby.name][0] == 1 %}                           
+                                    (<span> {{dict_helper[hobby.name][0]}} person </span>, 
+                                {% else %}            
+                                    (<span> {{dict_helper[hobby.name][0]}} people </span>, 
+                                {% endif %}
+                                {% if dict_helper[hobby.name][1] == 0 %}
+                                    <span> this hobby isn't practiced in any public place yet :/ </span>). 
+                                {% elif dict_helper[hobby.name][1] == 1 %}            
+                                    <span>{{dict_helper[hobby.name][1]}} place </span>).
+                                {% else %}            
+                                    <span>{{dict_helper[hobby.name][1]}} places </span>).
+                                {% endif %}     
+                            </li>   
+                        </span></b>
+                    </td>  
+                    <td style="width:30%">
+                        <form action="/newhobbie" method="post" class="alignedform">            
+                            <input type="hidden" name="hobbyname" value="{{hobby.name}}"/>
+                            <input type="hidden" name="conditional_to_redirect" value="Display_all_hobbies"/>
+                            <input type="hidden" name="conditional" value="to_add_existing_hobby_to_current_user"/>
+                            <input type="submit" class="button-nice" value="Add hobby" class="alignedformbutton"/>
+                        </form> 
+                    </td>                            
+                </tr>   
+                <tr>
+                    <td colspan="2">
+                        <hr>
+                    </td>  
+                </tr>             
+            {% endfor %}
+            </table>            
+    {% endif %}
+{% endif %}
+</div>
+<br>
+<br>
 {% endblock %}
