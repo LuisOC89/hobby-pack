@@ -251,7 +251,7 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
 }
 
 /*signup*/
-#submission-form-signup {  
+#submission-form-signup, #submission-form-new-chat, #submission-form-new-group, #submission-form-attendance-event {  
   width: 350px;        
 }
 
@@ -277,12 +277,7 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
 }
 
 /*Add new place form*/
-#submission-form-new-place {  
-  width: 500px;  
-}
-
-/*Add new post*/
-#submission-form-new-post {  
+#submission-form-new-place, #submission-form-new-post {  
   width: 500px;  
 }
 
@@ -310,21 +305,6 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
   width: 100%;
 }
 
-/*New chat*/
-#submission-form-new-chat {  
-  width: 350px;  
-}
-
-/*New group*/
-#submission-form-new-group {  
-  width: 350px;  
-}
-
-/*Attendance*/
-#submission-form-attendance-event {  
-  width: 350px;  
-}
-
 /*Existing hobby existing place*/
 #submission-form-existing-hobby-existing-place {
   width: 660px;
@@ -348,7 +328,7 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
   border-bottom: 1px solid #333;
 }
 
-.main-post {
+.main-post, .main-hobby {
   background-color: #333;
 }
 
@@ -358,6 +338,10 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
   border-bottom: 1px solid black;
 }
 
-#display-info-each-post {
+#display-info-each-post, #display-info-all-posts {
   width: 95%;   
+}
+
+#display-info-each-hobby {
+  width: 50%;
 }
