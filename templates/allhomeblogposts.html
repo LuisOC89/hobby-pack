@@ -1,30 +1,50 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain">Let's talk Hobbies!</h1>
+<br>
+<div class="display-info-general" id="display-info-each-post">
+    <div class="display-info-title-general main-post">
+        <h4 style="color:rgb(240, 54, 54)">BLOG</h4>       
+    </div> 
     {% if postshtml|length == 0 %}
-    <p>No posts yet</p>
+        <p class="centered">No posts yet</p>
     {% else %}
         {% for post in postshtml | reverse %}
-        <a href="/blog?id={{post.id}}" class="titlepost">"{{post.title}}"</a> <span id="specialb">by</span> <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">{{post.blog.nickname}}</span></a> at {{post.time}} on {{post.date}}
-        <span class="paradf"><p>"{{post.body}}"</p></span> 
-
-            {% if posts_and_answers=="N/A" %}
-            {% else %}
-                {% for answer in posts_and_answers[post.id] %}
-                    <div class="marginleft"><a href="/blog?id={{post.id}}&answer_id={{answer.id}}" class="titlepost"><span class="centered">"{{answer.title}}"</a></span> <span id="specialb">by</span> <a href="/blog?hobbyist={{answer.blogsanswer.nickname}}"><span class="poster">{{answer.blogsanswer.nickname}}</span></a>  at {{answer.time}} on {{answer.date}}
-                    <span class="paradf"><p>"{{answer.body}}"</p></span>                     
-                    <hr>
-                    </div>                
-                {% endfor %}
+        <div class="display-info-title-general main-post">
+            <h5><a href="/blog?id={{post.id}}">"{{post.title}}"</a></h5><span style="color:rgba(27, 115, 216, 0.952)">{{post.date}} at {{post.time}}</span>      
+        </div> 
+        <table style="width:100%">           
+            <tr>
+                <td><span>"{{post.body}}"</span></td>  
+            </tr>
+            <tr>
+                <td style="text-align:right"><span>Written by: <a href="/blog?hobbyist={{post.blog.nickname}}">{{post.blog.nickname}}</a></span></td>
+            </tr>
+        </table>     
+        {% if posts_and_answers=="N/A" %}
+        {% else %}       
+            {% for answer in posts_and_answers[post.id] %}        
+                <div class="display-info-title-general main-post-answer">
+                    <h5><a href="/blog?id={{post.id}}&answer_id={{answer.id}}">"{{answer.title}}"</a></h5><span style="color:rgba(27, 115, 216, 0.952)">{{answer.date}} at {{answer.time}}</span>    
+                </div> 
+                <table style="width:100%">           
+                    <tr>
+                        <td><span>"{{answer.body}}"</span></td>  
+                    </tr>
+                    <tr>
+                        <td style="text-align:right"><span>Written by: <a href="/blog?hobbyist={{answer.blogsanswer.nickname}}">{{answer.blogsanswer.nickname}}</a></span></td>
+                    </tr>
+                </table>     
+            {% endfor %}<hr>
+            <form action="/newpost" method="post" class="alignedform">            
+                <input type="hidden" name="post_id" value={{post.id}}/>                                             
+                <input type="hidden" name="condition" value="from_answer_to_post" id="just to delimitate value of value" />
+                <input class="button-nice" type="submit" value="COMMENT" class="alignedformbutton"/>
+            </form><hr>
             {% endif %}
-        <form action="/newpost" method="post" class="alignedform">            
-            <input type="hidden" name="post_id" value={{post.id}}/>                                             
-            <input type="hidden" name="condition" value="from_answer_to_post" id="just to delimitate value of value" />
-            <input type="submit" value="COMMENT" class="alignedformbutton"/>
-        </form> this post. <br><br>
-        <hr />
         {% endfor %}
-    {% endif %}
-    
+    {% endif %}   
+</div>   
+<br>
+<br> 
 {% endblock %}
