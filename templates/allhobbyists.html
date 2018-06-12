@@ -21,6 +21,7 @@
                 <tr>
                     <td class="padding-quick-fix">
                         <b><span>
+                                <hr>
                                 {% for hobbyist in hobbyists %}             
                                 {% if hobbyist.nickname == session['hobbyist'] %}
                                 <a href="/myinfo?condition=show_all_info_user">{{hobbyist.nickname}} </a> 
@@ -29,7 +30,7 @@
                                 {% endif %}
                     
                                 <span>{{hobbyist.city}} {{hobbyist.state}} {{hobbyist.zipcode}} </span> 
-                                <br>
+                                
                                 {% if hobbyists_properties[hobbyist.nickname][0] == 0 %}
                                 (<span> This person doesn't have any hobby yet :/ </span>,
                                 {% elif hobbyists_properties[hobbyist.nickname][0] == 1 %}            

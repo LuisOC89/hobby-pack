@@ -1,27 +1,52 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="titlemain">Let's message Hobbies!</h1>
+<br>
+<div class="display-info-general" id="display-info-all-chats">
+    <div class="display-info-title-general main-chats">
+        <h3 style="color:rgb(240, 54, 54)">Messages</h3>                 
+    </div> 
     {% if chats|length == 0 %}
-    <p>No chats yet</p>    
-    {% else %}
-        {% for chat in chats %}
-            {% if chat.is_a_group == False %}
-                <a href="/chat?chat_id={{chat.id}}&condition=see_this_chat" class="titlepost">{{chat_comments[chat.id][0][0]}}</a> <span class="toright">{{chat_comments[chat.id][0][2]}}</span>            
-                <p><span class="paradf">{{chat_comments[chat.id][0][1].comment}}</span> BY {{chat_comments[chat.id][0][1].chat_comment.nickname}}</p> 
-                <hr />
-            {% elif chat.is_a_group == True %}
-                <a href="/chat?chat_id={{chat.id}}&condition=see_this_chat" class="titlepost">{{chat_comments[chat.id][0][0]}} (<span class="orange">{{chat_comments[chat.id][0][3]}}</span>)</a> <span class="toright">{{chat_comments[chat.id][0][2]}}</span>
-                <p><span class="paradf">{{chat_comments[chat.id][0][1].comment}}</span> BY {{chat_comments[chat.id][0][1].chat_comment.nickname}}</p> 
-                <hr />
-            {% endif %}
-
-        {% endfor %}
-    {% endif %}
-    
-    <form action="/newchat" method="post" class="alignedform">                        
-        <input type="hidden" name="condition" value="from_allchats_view" id="just to delimitate value of value" />
-        <input type="submit" value="CREATE" class="alignedformbutton"/>
-    </form> new chat. <br><br>
-    
+        <table style="width:100%">           
+            <tr>
+                <td style="padding-bottom:5px;">                    
+                    <b><span>                                
+                        <p>No chats yet</p>                                                             
+                    </span></b>                
+                </td>  
+            </tr>            
+        </table>  
+    {% else %}  
+        <table style="width:100%">
+            {% for chat in chats %}           
+            <tr>
+                <td>
+                    <b><span>
+                            <hr>                            
+                            {% if chat.is_a_group == False %}
+                                <a href="/chat?chat_id={{chat.id}}&condition=see_this_chat" class="titlepost"><h4>{{chat_comments[chat.id][0][0]}}</h4></a>          
+                                <span class="users-color">{{chat_comments[chat.id][0][1].chat_comment.nickname}}</span> said: <span>"{{chat_comments[chat.id][0][1].comment}}"</span><br><span>{{chat_comments[chat.id][0][2]}}</span>   
+                            {% elif chat.is_a_group == True %}
+                                <a href="/chat?chat_id={{chat.id}}&condition=see_this_chat" class="titlepost"><h4>{{chat_comments[chat.id][0][0]}} (<span class="users-color">{{chat_comments[chat.id][0][3]}}</span>)</h4></a>
+                                <span class="users-color">{{chat_comments[chat.id][0][1].chat_comment.nickname}}</span> said: <span>"{{chat_comments[chat.id][0][1].comment}}"</span><br><span>{{chat_comments[chat.id][0][2]}}</span>
+                            {% endif %}                                                                          
+                        </span>
+                    </b>
+                </td>  
+            </tr>  
+            {% endfor %}  
+            <tr>
+                <td>
+                    <hr>  
+                    <form action="/newchat" method="post" class="alignedform">                        
+                        <input type="hidden" name="condition" value="from_allchats_view" id="just to delimitate value of value" />
+                        <input type="submit" value="New Message" class="button-nice"/>
+                    </form>
+                </td>
+            </tr>             
+        </table>    
+    {% endif %}   
+</div>
+<br>
+<br>    
 {% endblock %}
