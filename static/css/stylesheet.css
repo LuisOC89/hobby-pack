@@ -80,7 +80,7 @@ p{
   background-color: lightblue;
 }
 .otherscomment{
-  text-align:right;
+  text-align:left;
   margin-right:0;
   background-color: lightgreen;
 }
@@ -342,7 +342,7 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
   width: 95%;   
 }
 
-#display-info-each-hobby {
+#display-info-each-hobby, #display-info-each-chat {
   width: 28%;
 }
 
