@@ -9,312 +9,342 @@
     {% else %}        
     {% endif %}
 
-    <br>
-    <div class="display-info-general" id="display-info-all-users">
-        <div class="display-info-title-general main-users">
-            <h4 style="color:rgb(240, 54, 54)">Registered Users!</h4>                 
-        </div> 
-        {% if hobbyists|length == 0 %}
-            <table style="width:100%">           
-                <tr>
-                    <td style="padding-bottom:5px;">                    
-                        <b><span>                                
-                                <p>No hobbyists yet</p>                                                           
-                        </span></b>                
-                    </td>  
-                </tr>            
-            </table>  
-        {% else %}                        
-            <table style="width:100%">           
-                <tr>
-                    <td class="padding-quick-fix">
-                        <b><span>                                
-                                {% for hobbyist in hobbyists %}             
-                                <li>
-                                    <a href="/myinfo?hobbyist={{hobbyist.nickname}}&condition=show_other_info_user">{{hobbyist.nickname}}</a> <span>{{hobbyist.city}} {{hobbyist.state}} {{hobbyist.zipcode}}</span> 
-                                </li>
-                                {% endfor %}                                                
-                            </span>
-                        </b>
-                    </td>  
-                </tr>                
-            </table>    
-        {% endif %}   
-    </div>
-    <br>
-    <br>
-    <div class="display-info-general" id="display-info-each-place">
-        <div class="display-info-title-general main-place">
-            <h4 style="color:rgb(240, 54, 54)">Registered Hobbies from all users</h4>                 
-        </div> 
-        {% if hobbies|length == 0 %}
-            <table style="width:100%">           
-                <tr>
-                    <td style="padding-bottom:5px;">                    
-                        <b><span>
-                            <p>No hobbies yet</p>                                                     
-                        </span></b>                
-                    </td>  
-                </tr>            
-            </table>  
-        {% else %}            
-            <table style="width:100%">           
-                <tr>
-                    <td class="padding-quick-fix">
-                        <b><span>
-                            {% for hobby in hobbies %}             
-                            <li>
-                                <b><a href="/hobbies?id={{hobby.id}}">{{hobby.name}} </a>                  
-                                ({{users_per_hobby[hobby.name]}} 
-                                {% if users_per_hobby[hobby.name] == 1 %}
-                                person)
-                                {% else %}
-                                people) 
-                                {% endif %}</b>            
-                            </li>        
-                            {% endfor %}                                                
-                            </span>
-                        </b>
-                    </td>  
-                </tr>                
-            </table>            
-        {% endif %}
-    </div>
-    <br>
-    <br>
-    <div class="display-info-general" id="display-info-all-places">
-        <div class="display-info-title-general main-places">
-            <h4 style="color:rgb(240, 54, 54)">Registered Public Places</h4>                 
-        </div> 
-        {% if places|length == 0 %}
-            <table style="width:100%">           
-                <tr>
-                    <td style="padding-bottom:5px;">                    
-                        <b><span>
-                            <p>No public places yet</p>                                                   
-                        </span></b>                
-                    </td>  
-                </tr>            
-            </table>  
-        {% else %}        
-            <table style="width:100%">           
-                <tr>
-                    <td class="padding-quick-fix">
-                        <b><span>
-                            {% for publicplace in places %}                
-                            <li>
-                                <a href="/places?id={{publicplace.id}}">{{publicplace.name}} </a> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} 
-                            </li>        
-                            {% endfor %}                                                
-                            </span>
-                        </b>
-                    </td>  
-                </tr>                
-            </table>                            
-        {% endif %}
-    </div>
-    <br>  
-    <br>
-    <div class="display-info-general" id="display-info-all-posts">
-        <div class="display-info-title-general main-post">
-            <h4 style="color:rgb(240, 54, 54)">BLOG</h4>       
-        </div> 
-        {% if postshtml|length == 0 %}
-            <p class="centered">No posts yet</p>
-        {% else %}
-            {% for post in postshtml | reverse %}
-            <div class="display-info-title-general main-post">
-                <h5><a href="/blog?id={{post.id}}">"{{post.title}}"</a></h5><span style="color:rgba(27, 115, 216, 0.952)">{{post.date}} at {{post.time}}</span>      
-            </div> 
-            <table style="width:100%">           
-                <tr>
-                    <td ><span>"{{post.body}}"</span></td>  
-                </tr>
-                <tr>
-                    <td style="text-align:right" class="padding-quick-fix"><span>Written by: 
-                        {% if post.blog.nickname == session['hobbyist'] %}
-                            <a href="/myinfo?condition=show_all_info_user" class="users-color">{{post.blog.nickname}} </a> 
-                        {% else %}
-                            <a href="/myinfo?condition=show_other_info_user&hobbyist={{post.blog.nickname}}" class="users-color">{{post.blog.nickname}} </a> 
-                        {% endif %}
-                        <br><a href="/blog?hobbyist={{post.blog.nickname}}"><span class="users-color">Posts of {{post.blog.nickname}}</span></a>                           
-                    </td>
-                </tr>
-            </table>     
-                {% if posts_and_answers=="N/A" %}
-                {% else %}       
-                    {% for answer in posts_and_answers[post.id] %}        
-                        <div class="display-info-title-general main-post-answer">
-                            <h5><a href="/blog?id={{post.id}}&answer_id={{answer.id}}">"{{answer.title}}"</a></h5><span style="color:rgba(27, 115, 216, 0.952)">{{answer.date}} at {{answer.time}}</span>    
+    <table style="width:100%">
+        <tr>
+            <td style="width:50%">
+                <br>
+                <div class="display-info-general" id="display-info-all-users">
+                    <div class="display-info-title-general main-users">
+                        <h4 style="color:rgb(240, 54, 54)">Registered Users!</h4>                 
+                    </div> 
+                    {% if hobbyists|length == 0 %}
+                        <table style="width:100%">           
+                            <tr>
+                                <td style="padding-bottom:5px;">                    
+                                    <b><span>                                
+                                            <p>No hobbyists yet</p>                                                           
+                                    </span></b>                
+                                </td>  
+                            </tr>            
+                        </table>  
+                    {% else %}                        
+                        <table style="width:100%">           
+                            <tr>
+                                <td class="padding-quick-fix">
+                                    <b><span>                                
+                                            {% for hobbyist in hobbyists %}             
+                                            <li>
+                                                <a href="/myinfo?hobbyist={{hobbyist.nickname}}&condition=show_other_info_user">{{hobbyist.nickname}}</a> <span>{{hobbyist.city}} {{hobbyist.state}} {{hobbyist.zipcode}}</span> 
+                                            </li>
+                                            {% endfor %}                                                
+                                        </span>
+                                    </b>
+                                </td>  
+                            </tr>                
+                        </table>    
+                    {% endif %}   
+                </div>
+                <br>
+            </td>
+            <td style="width:50%">               
+                <br>
+                <div class="display-info-general" id="display-info-each-place">
+                    <div class="display-info-title-general main-place">
+                        <h4 style="color:rgb(240, 54, 54)">Registered Hobbies from all users</h4>                 
+                    </div> 
+                    {% if hobbies|length == 0 %}
+                        <table style="width:100%">           
+                            <tr>
+                                <td style="padding-bottom:5px;">                    
+                                    <b><span>
+                                        <p>No hobbies yet</p>                                                     
+                                    </span></b>                
+                                </td>  
+                            </tr>            
+                        </table>  
+                    {% else %}            
+                        <table style="width:100%">           
+                            <tr>
+                                <td class="padding-quick-fix">
+                                    <b><span>
+                                        {% for hobby in hobbies %}             
+                                        <li>
+                                            <b><a href="/hobbies?id={{hobby.id}}">{{hobby.name}} </a>                  
+                                            ({{users_per_hobby[hobby.name]}} 
+                                            {% if users_per_hobby[hobby.name] == 1 %}
+                                                person)
+                                            {% else %}
+                                                people) 
+                                            {% endif %}</b>            
+                                        </li>        
+                                        {% endfor %}                                                
+                                        </span>
+                                    </b>
+                                </td>  
+                            </tr>                
+                        </table>            
+                    {% endif %}
+                </div>
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <br>
+                <div class="display-info-general" id="display-info-all-places">
+                    <div class="display-info-title-general main-places">
+                        <h4 style="color:rgb(240, 54, 54)">Registered Public Places</h4>                 
+                    </div> 
+                    {% if places|length == 0 %}
+                        <table style="width:100%">           
+                            <tr>
+                                <td style="padding-bottom:5px;">                    
+                                    <b><span>
+                                        <p>No public places yet</p>                                                   
+                                    </span></b>                
+                                </td>  
+                            </tr>            
+                        </table>  
+                    {% else %}        
+                        <table style="width:100%">           
+                            <tr>
+                                <td class="padding-quick-fix">
+                                    <b><span>
+                                        {% for publicplace in places %}                
+                                        <li>
+                                            <a href="/places?id={{publicplace.id}}">{{publicplace.name}} </a> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} 
+                                        </li>        
+                                        {% endfor %}                                                
+                                        </span>
+                                    </b>
+                                </td>  
+                            </tr>                
+                        </table>                            
+                    {% endif %}
+                </div>
+                <br>  
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <br>
+                <div class="display-info-general" id="display-info-all-posts">
+                    <div class="display-info-title-general main-post">
+                        <h4 style="color:rgb(240, 54, 54)">BLOG</h4>       
+                    </div> 
+                    {% if postshtml|length == 0 %}
+                        <p class="centered">No posts yet</p>
+                    {% else %}
+                        {% for post in postshtml | reverse %}
+                        <div class="display-info-title-general main-post">
+                            <h5><a href="/blog?id={{post.id}}">"{{post.title}}"</a></h5><span style="color:rgba(27, 115, 216, 0.952)">{{post.date}} at {{post.time}}</span>      
                         </div> 
                         <table style="width:100%">           
                             <tr>
-                                <td><span>"{{answer.body}}"</span></td>  
+                                <td ><span>"{{post.body}}"</span></td>  
                             </tr>
                             <tr>
-                                <td style="text-align:right" class="padding-quick-fix"><span>Written by: <a href="/blog?hobbyist={{answer.blogsanswer.nickname}}" class="users-color">{{answer.blogsanswer.nickname}}</a></span>
+                                <td style="text-align:right" class="padding-quick-fix"><span>Written by: 
+                                    {% if post.blog.nickname == session['hobbyist'] %}
+                                        <a href="/myinfo?condition=show_all_info_user" class="users-color">{{post.blog.nickname}} </a> 
+                                    {% else %}
+                                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{post.blog.nickname}}" class="users-color">{{post.blog.nickname}} </a> 
+                                    {% endif %}
+                                    <br><a href="/blog?hobbyist={{post.blog.nickname}}"><span class="users-color">Posts of {{post.blog.nickname}}</span></a>                           
                                 </td>
                             </tr>
                         </table>     
-                    {% endfor %}
-                {% endif %}
-            {% endfor %}
-        {% endif %}   
-    </div>   
-    <br>
-    <br>     
+                            {% if posts_and_answers=="N/A" %}
+                            {% else %}       
+                                {% for answer in posts_and_answers[post.id] %}        
+                                    <div class="display-info-title-general main-post-answer">
+                                        <h5><a href="/blog?id={{post.id}}&answer_id={{answer.id}}">"{{answer.title}}"</a></h5><span style="color:rgba(27, 115, 216, 0.952)">{{answer.date}} at {{answer.time}}</span>    
+                                    </div> 
+                                    <table style="width:100%">           
+                                        <tr>
+                                            <td><span>"{{answer.body}}"</span></td>  
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align:right" class="padding-quick-fix"><span>Written by: <a href="/blog?hobbyist={{answer.blogsanswer.nickname}}" class="users-color">{{answer.blogsanswer.nickname}}</a></span>
+                                            </td>
+                                        </tr>
+                                    </table>     
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}   
+                </div>   
+                <br>
+                <br>  
+            </td>
+        </tr>
+    </table> 
+
 {% else %}
-    <br>
-    <div class="display-info-general" id="display-info-all-users">
-        <div class="display-info-title-general main-users">
-            <h4 style="color:rgb(240, 54, 54)">Registered Users!</h4>                 
-        </div> 
-        {% if hobbyists|length == 0 %}
-            <table style="width:100%">           
-                <tr>
-                    <td style="padding-bottom:5px;">                    
-                        <b><span>                                
-                                <p>No hobbyists yet</p>                                                           
-                        </span></b>                
-                    </td>  
-                </tr>            
-            </table>  
-        {% else %}                        
-            <table style="width:100%">           
-                <tr>
-                    <td class="padding-quick-fix">
-                        <b><span>                                
-                                {% for hobbyist in hobbyists %}             
-                                <li>
-                                    <span> {{hobbyist.nickname}} </span> <span class="plaintext"> in {{hobbyist.state}} </span> 
-                                </li>
-                                {% endfor %}                                                
-                            </span>
-                        </b>
-                    </td>  
-                </tr>                
-            </table>    
-        {% endif %}   
-    </div>
-    <br>
-    
-    <br>
-    <div class="display-info-general" id="display-info-each-place">
-        <div class="display-info-title-general main-place">
-            <h4 style="color:rgb(240, 54, 54)">Registered Hobbies from all users</h4>                 
-        </div> 
-        {% if hobbies|length == 0 %}
-            <table style="width:100%">           
-                <tr>
-                    <td style="padding-bottom:5px;">                    
-                        <b><span>
-                            <p>No hobbies yet</p>                                                     
-                        </span></b>                
-                    </td>  
-                </tr>            
-            </table>  
-        {% else %}            
-            <table style="width:100%">           
-                <tr>
-                    <td class="padding-quick-fix">
-                        <b><span>
-                            {% for hobby in hobbies %}             
-                            <li>
-                                <span>{{hobby.name}}</span>            
-                            </li>        
-                            {% endfor %}                                                
-                            </span>
-                        </b>
-                    </td>  
-                </tr>                
-            </table>            
-        {% endif %}
-    </div>
-    <br>
-    <br>
-    <div class="display-info-general" id="display-info-all-places">
-        <div class="display-info-title-general main-places">
-            <h4 style="color:rgb(240, 54, 54)">Registered Public Places</h4>                 
-        </div> 
-        {% if places|length == 0 %}
-            <table style="width:100%">           
-                <tr>
-                    <td style="padding-bottom:5px;">                    
-                        <b><span>
-                            <p>No public places yet</p>                                                   
-                        </span></b>                
-                    </td>  
-                </tr>            
-            </table>  
-        {% else %}        
-            <table style="width:100%">           
-                <tr>
-                    <td class="padding-quick-fix">
-                        <b><span>
-                            {% for publicplace in places %}                
-                            <li>
-                                <span>{{publicplace.name}} </span> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} 
-                            </li>        
-                            {% endfor %}                                                
-                            </span>
-                        </b>
-                    </td>  
-                </tr>                
-            </table>                            
-        {% endif %}
-    </div>
-    <br>
-    <br>
-    <div class="display-info-general" id="display-info-all-posts">
-        <div class="display-info-title-general main-post">
-            <h4 style="color:rgb(240, 54, 54)">BLOG</h4>       
-        </div> 
-        {% if postshtml|length == 0 %}
-            <p class="centered">No posts yet</p>
-        {% else %}
-            {% for post in postshtml | reverse %}
-            <div class="display-info-title-general main-post">
-                <h5><span>"{{post.title}}"</span></h5><span style="color:rgba(27, 115, 216, 0.952)">{{post.date}} at {{post.time}}</span>      
-            </div> 
-            <table style="width:100%">           
-                <tr>
-                    <td ><span>"{{post.body}}"</span></td>  
-                </tr>
-                <tr>
-                    <td style="text-align:right" class="padding-quick-fix"><span>Written by: 
-                        {% if post.blog.nickname == session['hobbyist'] %}
-                            <span>{{post.blog.nickname}} </span> 
-                        {% else %}
-                            <span class="users-color">{{post.blog.nickname}} </span> 
-                        {% endif %}                                             
-                    </td>
-                </tr>
-            </table>     
-            {% if posts_and_answers=="N/A" %}
-            {% else %}       
-                {% for answer in posts_and_answers[post.id] %}        
-                    <div class="display-info-title-general main-post-answer">
-                        <h5><span>"{{answer.title}}"</span></h5><span style="color:rgba(27, 115, 216, 0.952)">{{answer.date}} at {{answer.time}}</span>    
+                <br>
+                <div class="display-info-general" id="display-info-all-users">
+                    <div class="display-info-title-general main-users">
+                        <h4 style="color:rgb(240, 54, 54)">Registered Users!</h4>                 
                     </div> 
-                    <table style="width:100%">           
-                        <tr>
-                            <td><span>"{{answer.body}}"</span></td>  
-                        </tr>
-                        <tr>
-                            <td style="text-align:right" class="padding-quick-fix"><span>Written by: <span class="users-color">{{answer.blogsanswer.nickname}}</span></span>
-                            </td>
-                        </tr>
-                    </table>     
-                {% endfor %}
+                    {% if hobbyists|length == 0 %}
+                        <table style="width:100%">           
+                            <tr>
+                                <td style="padding-bottom:5px;">                    
+                                    <b><span>                                
+                                            <p>No hobbyists yet</p>                                                           
+                                    </span></b>                
+                                </td>  
+                            </tr>            
+                        </table>  
+                    {% else %}                        
+                        <table style="width:100%">           
+                            <tr>
+                                <td class="padding-quick-fix">
+                                    <b><span>                                
+                                            {% for hobbyist in hobbyists %}             
+                                            <li>
+                                                <span> {{hobbyist.nickname}} </span> <span class="plaintext"> in {{hobbyist.state}} </span> 
+                                            </li>
+                                            {% endfor %}                                                
+                                        </span>
+                                    </b>
+                                </td>  
+                            </tr>                
+                        </table>    
+                    {% endif %}   
+                </div>
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <br>
+                <div class="display-info-general" id="display-info-each-place">
+                    <div class="display-info-title-general main-place">
+                        <h4 style="color:rgb(240, 54, 54)">Registered Hobbies from all users</h4>                 
+                    </div> 
+                    {% if hobbies|length == 0 %}
+                        <table style="width:100%">           
+                            <tr>
+                                <td style="padding-bottom:5px;">                    
+                                    <b><span>
+                                        <p>No hobbies yet</p>                                                     
+                                    </span></b>                
+                                </td>  
+                            </tr>            
+                        </table>  
+                    {% else %}            
+                        <table style="width:100%">           
+                            <tr>
+                                <td class="padding-quick-fix">
+                                    <b><span>
+                                        {% for hobby in hobbies %}             
+                                        <li>
+                                            <span>{{hobby.name}}</span>            
+                                        </li>        
+                                        {% endfor %}                                                
+                                        </span>
+                                    </b>
+                                </td>  
+                            </tr>                
+                        </table>            
+                    {% endif %}
+                </div>
+                <br>
+                <br>
+                <div class="display-info-general" id="display-info-all-places">
+                    <div class="display-info-title-general main-places">
+                        <h4 style="color:rgb(240, 54, 54)">Registered Public Places</h4>                 
+                    </div> 
+                    {% if places|length == 0 %}
+                        <table style="width:100%">           
+                            <tr>
+                                <td style="padding-bottom:5px;">                    
+                                    <b><span>
+                                        <p>No public places yet</p>                                                   
+                                    </span></b>                
+                                </td>  
+                            </tr>            
+                        </table>  
+                    {% else %}        
+                        <table style="width:100%">           
+                            <tr>
+                                <td class="padding-quick-fix">
+                                    <b><span>
+                                        {% for publicplace in places %}                
+                                        <li>
+                                            <span>{{publicplace.name}} </span> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} 
+                                        </li>        
+                                        {% endfor %}                                                
+                                        </span>
+                                    </b>
+                                </td>  
+                            </tr>                
+                        </table>                            
+                    {% endif %}
+                </div>
+                <br>
+                <br>
+                <div class="display-info-general" id="display-info-all-posts">
+                    <div class="display-info-title-general main-post">
+                        <h4 style="color:rgb(240, 54, 54)">BLOG</h4>       
+                    </div> 
+                    {% if postshtml|length == 0 %}
+                        <p class="centered">No posts yet</p>
+                    {% else %}
+                        {% for post in postshtml | reverse %}
+                        <div class="display-info-title-general main-post">
+                            <h5><span>"{{post.title}}"</span></h5><span style="color:rgba(27, 115, 216, 0.952)">{{post.date}} at {{post.time}}</span>      
+                        </div> 
+                        <table style="width:100%">           
+                            <tr>
+                                <td ><span>"{{post.body}}"</span></td>  
+                            </tr>
+                            <tr>
+                                <td style="text-align:right" class="padding-quick-fix"><span>Written by: 
+                                    {% if post.blog.nickname == session['hobbyist'] %}
+                                        <span>{{post.blog.nickname}} </span> 
+                                    {% else %}
+                                        <span class="users-color">{{post.blog.nickname}} </span> 
+                                    {% endif %}                                             
+                                </td>
+                            </tr>
+                        </table>     
+                        {% if posts_and_answers=="N/A" %}
+                        {% else %}       
+                            {% for answer in posts_and_answers[post.id] %}        
+                                <div class="display-info-title-general main-post-answer">
+                                    <h5><span>"{{answer.title}}"</span></h5><span style="color:rgba(27, 115, 216, 0.952)">{{answer.date}} at {{answer.time}}</span>    
+                                </div> 
+                                <table style="width:100%">           
+                                    <tr>
+                                        <td><span>"{{answer.body}}"</span></td>  
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:right" class="padding-quick-fix"><span>Written by: <span class="users-color">{{answer.blogsanswer.nickname}}</span></span>
+                                        </td>
+                                    </tr>
+                                </table>     
+                            {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                    {% endif %}   
+                </div>   
+                <br>
+                <br> 
             {% endif %}
-            {% endfor %}
-        {% endif %}   
-    </div>   
-    <br>
-    <br> 
-{% endif %}
+            </td>
+        </tr>
 
 
+
+
+
+
+
+    
+
+</table>
 
 
 
