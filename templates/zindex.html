@@ -11,7 +11,7 @@
 
     <table style="width:100%">
         <tr>
-            <td style="width:50%">
+            <td style="width:50%;">
                 <br>
                 <div class="display-info-general" id="display-info-all-users">
                     <div class="display-info-title-general main-users">
@@ -27,10 +27,10 @@
                                 </td>  
                             </tr>            
                         </table>  
-                    {% else %}                        
+                    {% else %}                      
                         <table style="width:100%">           
                             <tr>
-                                <td class="padding-quick-fix">
+                                <td class="padding-quick-fix">                                    
                                     <b><span>                                
                                             {% for hobbyist in hobbyists %}             
                                             <li>
@@ -38,10 +38,10 @@
                                             </li>
                                             {% endfor %}                                                
                                         </span>
-                                    </b>
+                                    </b>                                    
                                 </td>  
                             </tr>                
-                        </table>    
+                        </table>  
                     {% endif %}   
                 </div>
                 <br>
@@ -181,6 +181,9 @@
     </table> 
 
 {% else %}
+    <table style="width:100%">
+        <tr>
+            <td style="width:50%;">
                 <br>
                 <div class="display-info-general" id="display-info-all-users">
                     <div class="display-info-title-general main-users">
@@ -215,9 +218,7 @@
                 </div>
                 <br>
             </td>
-        </tr>
-        <tr>
-            <td>
+            <td style="width:50%">
                 <br>
                 <div class="display-info-general" id="display-info-each-place">
                     <div class="display-info-title-general main-place">
@@ -252,6 +253,11 @@
                 </div>
                 <br>
                 <br>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <br>
                 <div class="display-info-general" id="display-info-all-places">
                     <div class="display-info-title-general main-places">
                         <h4 style="color:rgb(240, 54, 54)">Registered Public Places</h4>                 
@@ -284,6 +290,11 @@
                     {% endif %}
                 </div>
                 <br>
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
                 <br>
                 <div class="display-info-general" id="display-info-all-posts">
                     <div class="display-info-title-general main-post">
@@ -335,27 +346,5 @@
             {% endif %}
             </td>
         </tr>
-
-
-
-
-
-
-
-    
-
 </table>
-
-
-
-
-
-
-
-
-
-
-
-
-
 {% endblock %}
