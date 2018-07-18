@@ -33,56 +33,56 @@
                     <b><span>
                         {% if ((events_when_who["future_events"]["events_i_participate"]|length == 0) and (events_when_who["future_events"]["other_events"]|length == 0)) %}
                             <p>No new events coming up.</p>   
-                        {% else %}
+                        {% else %}                            
                             <p>Events I'm participating:</p> 
                             {% if (events_when_who["future_events"]["events_i_participate"]|length != 0) %}                
                                 {% for my_event in events_when_who["future_events"]["events_i_participate"] %}             
-                                    <li class="list2">
-                                        <a href="/events?condition=see_specific_event&id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
+                                    <li>
+                                        <a href="/events?condition=see_specific_event&id={{my_event.id}}">{{my_event.name}} </a> by                                                
                                         {% if my_event.created_encounter.nickname == session['hobbyist'] %}
-                                        <a href="/myinfo?condition=show_all_info_user" class="poster">{{my_event.created_encounter.nickname}} </a> 
+                                        <a href="/myinfo?condition=show_all_info_user">{{my_event.created_encounter.nickname}} </a> 
                                         {% else %}
-                                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{my_event.created_encounter.nickname}}" class="poster">{{my_event.created_encounter.nickname}} </a> 
+                                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{my_event.created_encounter.nickname}}">{{my_event.created_encounter.nickname}} </a> 
                                         {% endif %}                       
-                                        | <span class="orange"> What hobby: <a href="/hobbies?id={{my_event.encounter.id}}">{{my_event.encounter.name}} </a></span> 
-                                        | <span class="paradf"> When: {{my_event.date}} </span> 
-                                        | <span class="plaintext"> What time: {{my_event.start_time}} </span> 
-                                        | <span class="titlepost"> Where: <a href="/places?id={{my_event.event.id}}"> {{my_event.event.name}} | {{my_event.event.streetaddress}} | {{my_event.event.city}} {{my_event.event.state}} {{my_event.event.zipcode}}</a> </span>            
-                                    </li>        
+                                        | <span> What hobby: <a href="/hobbies?id={{my_event.encounter.id}}">{{my_event.encounter.name}} </a></span> 
+                                        | <span> When: {{my_event.date}} </span> 
+                                        | <span> What time: {{my_event.start_time}} </span> 
+                                        | <span> Where: <a href="/places?id={{my_event.event.id}}"> {{my_event.event.name}} | {{my_event.event.streetaddress}} | {{my_event.event.city}} {{my_event.event.state}} {{my_event.event.zipcode}}</a> </span>            
+                                    </li>                                           
                                 {% endfor %}
                             {% else %}
                                 You are not participating in any of the events coming up at the moment.<br>        
                             {% endif %}
+                            <hr> 
                             <p>Other events:</p>                
                             {% if (events_when_who["future_events"]["other_events"]|length != 0) %}                          
                                 {% for other_event in events_when_who["future_events"]["other_events"] %}             
-                                    <li class="list2">
-                                        <a href="/events?condition=see_specific_event&id={{other_event.id}}" class="poster">{{other_event.name}} </a> by                        
-                                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{other_event.created_encounter.nickname}}" class="poster">{{other_event.created_encounter.nickname}} </a> 
-                                        <br>
-                                        <span class="orange"> What hobby: <a href="/hobbies?id={{other_event.encounter.id}}">{{other_event.encounter.name}} </a></span> 
-                                        | <span class="paradf"> When: {{other_event.date}} </span> 
-                                        | <span class="plaintext"> What time: {{other_event.start_time}} </span> 
-                                        | <span class="titlepost"> Where: <a href="/places?id={{other_event.event.id}}"> {{other_event.event.name}} | {{other_event.event.streetaddress}} | {{other_event.event.city}} {{other_event.event.state}} {{other_event.event.zipcode}}</a></span><br>   
-                                        
-                                        Invitation: <span class="red"> "{{events_comments[other_event.id]["invitation"].content}}" </span>
-                                        
+                                    <li>
+                                        <a href="/events?condition=see_specific_event&id={{other_event.id}}">{{other_event.name}} </a> by                        
+                                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{other_event.created_encounter.nickname}}">{{other_event.created_encounter.nickname}} </a> 
+                                        | <span> What hobby: <a href="/hobbies?id={{other_event.encounter.id}}">{{other_event.encounter.name}} </a></span> 
+                                        | <span> When: {{other_event.date}} </span> 
+                                        | <span> What time: {{other_event.start_time}} </span> 
+                                        | <span> Where: <a href="/places?id={{other_event.event.id}}"> {{other_event.event.name}} | {{other_event.event.streetaddress}} | {{other_event.event.city}} {{other_event.event.state}} {{other_event.event.zipcode}}</a></span>
                                         | People invited or added to this event: 
                                         {% for hobbyist in other_event.hobbyists %}                            
-                                            <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a>                             
+                                            <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}">{{hobbyist.nickname}} </a>                             
                                             {{ "," if not loop.last }}                              
                                         {% endfor %}<br>             
+                                        
+                                        Invitation: <span class="red"> "{{events_comments[other_event.id]["invitation"].content}}" </span>
                                         
                                         <form action="/events" method="post" class="alignedform">                        
                                             <input type="hidden" name="condition" value="add_user_to_event" />
                                             <input type="hidden" name="event_idn" value="{{other_event.id}}" />
-                                            <input type="submit" value="GO" class="alignedformbutton"/>
+                                            <input type="submit" class="button-nice" style="width:50px" value="GO" class="alignedformbutton"/>
                                         </form> to this event.                        
                                     </li>        
                                 {% endfor %}
                             {% else %}
                                 There are not other events at the moment. You are participating in all the coming up events.<br>                
                             {% endif %}
+                            <br>                            
                         {% endif %} 
                         </span>
                     </b>
@@ -92,16 +92,14 @@
         <div class="display-info-title-general main-place">
             <h5><span style="color:rgba(27, 115, 216, 0.952)">Going on events at this exact time:</span></h5> 
         </div>  
-        
-
-        <h2>Going on events at this exact time:</h2>
+        <b>               
         {% if ((events_when_who["present_events"]["events_i_participate"]|length == 0) and (events_when_who["present_events"]["other_events"]|length == 0)) %}
             <p>No events going on at this exact moment.</p> 
         {% else %}
             <p>Events I'm participating:</p> 
             {% if (events_when_who["present_events"]["events_i_participate"]|length != 0) %}                
                 {% for my_event in events_when_who["present_events"]["events_i_participate"] %}             
-                    <li class="list2">
+                    <li>
                         <a href="/events?condition=see_specific_event&id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
                         {% if my_event.created_encounter.nickname == session['hobbyist'] %}
                         <a href="/myinfo?condition=show_all_info_user" class="poster">{{my_event.created_encounter.nickname}} </a> 
@@ -117,82 +115,79 @@
             {% else %}
                 You are not participating in any of the events going on at the moment.<br>        
             {% endif %}
+            <hr>
             <p>Other events:</p>                
             {% if (events_when_who["present_events"]["other_events"]|length != 0) %}                          
                 {% for other_event in events_when_who["present_events"]["other_events"] %}             
-                    <li class="list2">
-                        <a href="/events?condition=see_specific_event&id={{other_event.id}}" class="poster">{{other_event.name}} </a> by            
-                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{other_event.created_encounter.nickname}}" class="poster">{{other_event.created_encounter.nickname}} </a> 
-                        <br>
-                        <span class="orange"> What hobby: <a href="/hobbies?id={{other_event.encounter.id}}">{{other_event.encounter.name}} </a></span> 
-                        | <span class="paradf"> When: {{other_event.date}} </span> 
-                        | <span class="plaintext"> What time: {{other_event.start_time}} </span> 
-                        | <span class="plaintext"> How long: {{other_event.duration}} </span> 
-                        | <span class="titlepost"> Where: <a href="/places?id={{other_event.event.id}}"> {{other_event.event.name}} | {{other_event.event.streetaddress}} | {{other_event.event.city}} {{other_event.event.state}} {{other_event.event.zipcode}}</a></span><br>   
-                        
-                        Invitation: <span class="red"> "{{events_comments[other_event.id]["invitation"].content}}" </span>
-                        
+                    <li>
+                        <a href="/events?condition=see_specific_event&id={{other_event.id}}">{{other_event.name}} </a> by            
+                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{other_event.created_encounter.nickname}}">{{other_event.created_encounter.nickname}} </a> 
+                        | <span> What hobby: <a href="/hobbies?id={{other_event.encounter.id}}">{{other_event.encounter.name}} </a></span> 
+                        | <span> When: {{other_event.date}} </span> 
+                        | <span> What time: {{other_event.start_time}} </span> 
+                        | <span> How long: {{other_event.duration}} </span> 
+                        | <span> Where: <a href="/places?id={{other_event.event.id}}"> {{other_event.event.name}} | {{other_event.event.streetaddress}} | {{other_event.event.city}} {{other_event.event.state}} {{other_event.event.zipcode}}</a></span>   
                         | People invited or added to this event: 
                         {% for hobbyist in other_event.hobbyists %}                            
-                            <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a>                               
+                            <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}">{{hobbyist.nickname}} </a>                               
                             {{ "," if not loop.last }}                              
-                        {% endfor %}<br>             
-                        
+                        {% endfor %}<br>   
+                        Invitation: <span class="red"> "{{events_comments[other_event.id]["invitation"].content}}" </span>                  
                         <form action="/events" method="post" class="alignedform">                        
                             <input type="hidden" name="condition" value="add_user_to_event" />
                             <input type="hidden" name="event_idn" value="{{other_event.id}}" />
-                            <input type="submit" value="GO" class="alignedformbutton"/>
+                            <input type="submit" class="button-nice" style="width:50px" value="GO" class="alignedformbutton"/>
                         </form> to this event.                        
                     </li>        
                 {% endfor %}
             {% else %}
                 There are not other events at the moment. You are participating in all the present events already.<br>                
             {% endif %}
+            <br>
         {% endif %}
-
+        </b>
 
         <div class="display-info-title-general main-place">
             <h5><span style="color:rgba(27, 115, 216, 0.952)">Past events:</span></h5> 
-        </div>  
-        <h2>Past events:</h2>
+        </div>          
         {% if ((events_when_who["past_events"]["events_i_participate"]|length == 0) and (events_when_who["past_events"]["other_events"]|length == 0)) %}
             <p>No events have taken place yet.</p> 
         {% else %}
-            <p>Events I was invited or I wanted to go:</p> 
+            <b><p>Events I was invited or I wanted to go:</p> 
             {% if (events_when_who["past_events"]["events_i_participate"]|length != 0) %}                
                 {% for my_event in events_when_who["past_events"]["events_i_participate"] %}             
-                    <li class="list2">
-                        <a href="/events?condition=see_specific_event&id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
+                    <li>
+                        <a href="/events?condition=see_specific_event&id={{my_event.id}}">{{my_event.name}} </a> by                                                
                         {% if my_event.created_encounter.nickname == session['hobbyist'] %}
-                        <a href="/myinfo?condition=show_all_info_user" class="poster">{{my_event.created_encounter.nickname}} </a> 
+                        <a href="/myinfo?condition=show_all_info_user">{{my_event.created_encounter.nickname}} </a> 
                         {% else %}
-                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{my_event.created_encounter.nickname}}" class="poster">{{my_event.created_encounter.nickname}} </a> 
+                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{my_event.created_encounter.nickname}}">{{my_event.created_encounter.nickname}} </a> 
                         {% endif %}                            
-                        | <span class="orange"> What hobby: <a href="/hobbies?id={{my_event.encounter.id}}">{{my_event.encounter.name}} </a></span> 
-                        | <span class="paradf"> When: {{my_event.date}} </span> 
-                        | <span class="plaintext"> What time: {{my_event.start_time}} </span> 
-                        | <span class="titlepost"> Where: <a href="/places?id={{my_event.event.id}}"> {{my_event.event.name}} | {{my_event.event.streetaddress}} | {{my_event.event.city}} {{my_event.event.state}} {{my_event.event.zipcode}}</a> </span><br>            
-                        <div class="orange" style="display:inline-block" >Attendance Status: 
+                        | <span> What hobby: <a href="/hobbies?id={{my_event.encounter.id}}">{{my_event.encounter.name}} </a></span> 
+                        | <span> When: {{my_event.date}} </span> 
+                        | <span> What time: {{my_event.start_time}} </span> 
+                        | <span> Where: <a href="/places?id={{my_event.event.id}}"> {{my_event.event.name}} | {{my_event.event.streetaddress}} | {{my_event.event.city}} {{my_event.event.state}} {{my_event.event.zipcode}}</a> </span>          
+                        | <span>Attendance Status: 
                         {% if my_event.attendance_taken_status == False %}   
                             {{my_event.created_encounter.nickname}} hasn't taken attendance yet. 
                             {% if my_event.creator_hobbyist_id == user.id %} 
                             <form action="/events" method="post" class="alignedform">                        
                                 <input type="hidden" name="condition" value="take_attendance" />
                                 <input type="hidden" name="event_idn" value="{{my_event.id}}" />
-                                <input type="submit" value="TAKE ATTENDANCE" class="alignedformbutton"/>
+                                <input class="button-nice" style="width:180px" type="submit" value="TAKE ATTENDANCE" class="alignedformbutton"/>
                             </form>     
                             {% endif %}
                         {% elif my_event.attendance_taken_status == True %}  
-                            {{my_event.created_encounter.nickname}} took attendance already. | 
-                            <span style="color:red">Recap: "{{events_comments[my_event.id]["recap"].content}}" </span>
+                            {{my_event.created_encounter.nickname}} took attendance already. <br>
+                            <span>Recap: <span style="color:red">"{{events_comments[my_event.id]["recap"].content}}" </span></span>
                         {% endif %}            
-                        </div>                        
+                        </span>                   
                     </li>        
                 {% endfor %}
             {% else %}
                 You were not invited nor didnt want to participate in any of the past events. Very, very sad :/ <br>        
             {% endif %}
-
+            <hr>
             <p>Events I attended:</p> 
             {% if (events_when_who["past_events"]["events_i_attended"]|length != 0) %}                
                 {% for my_event in events_when_who["past_events"]["events_i_attended"] %}             
@@ -212,315 +207,46 @@
             {% else %}
                 You didn't attend any event yet. Very, very sad :/ <br>        
             {% endif %}
-
+            <hr>
             <p>Other events:</p>                
             {% if (events_when_who["past_events"]["other_events"]|length != 0) %}                          
                 {% for other_event in events_when_who["past_events"]["other_events"] %}             
-                    <li class="list2">
-                        <a href="/events?condition=see_specific_event&id={{other_event.id}}" class="poster">{{other_event.name}} </a> by                        
-                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{other_event.created_encounter.nickname}}" class="poster">{{other_event.created_encounter.nickname}} </a>                         
-                        <span class="orange"> What hobby: <a href="/hobbies?id={{other_event.encounter.id}}">{{other_event.encounter.name}} </a></span> 
-                        | <span class="paradf"> When: {{other_event.date}} </span> 
-                        | <span class="plaintext"> What time: {{other_event.start_time}} </span> 
-                        | <span class="titlepost"> Where: <a href="/places?id={{other_event.event.id}}"> {{other_event.event.name}} | {{other_event.event.streetaddress}} | {{other_event.event.city}} {{other_event.event.state}} {{other_event.event.zipcode}}</a></span><br>   
-                        People invited or added to this event: 
+                    <li>
+                        <a href="/events?condition=see_specific_event&id={{other_event.id}}">{{other_event.name}} </a> by                        
+                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{other_event.created_encounter.nickname}}">{{other_event.created_encounter.nickname}} </a>                         
+                        <span> What hobby: <a href="/hobbies?id={{other_event.encounter.id}}">{{other_event.encounter.name}} </a></span> 
+                        | <span> When: {{other_event.date}} </span> 
+                        | <span> What time: {{other_event.start_time}} </span> 
+                        | <span> Where: <a href="/places?id={{other_event.event.id}}"> {{other_event.event.name}} | {{other_event.event.streetaddress}} | {{other_event.event.city}} {{other_event.event.state}} {{other_event.event.zipcode}}</a></span>  
+                        | People invited or added to this event: 
                         {% for hobbyist in other_event.hobbyists %}                            
-                            <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a>                               
+                            <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}">{{hobbyist.nickname}} </a>                               
                             {{ "," if not loop.last }}                              
                         {% endfor %}
-                        | <span class="orange">Attendance Status: 
+                        | <span>Attendance Status: 
                         {% if other_event.attendance_taken_status == False %}   
                             {{other_event.created_encounter.nickname}} hasn't taken attendance yet.                             
                         {% elif other_event.attendance_taken_status == True %}  
                             {{other_event.created_encounter.nickname}} took attendance already. | 
-                            <span class="black">Recap: "{{events_comments[other_event.id]["recap"].content}}" </span>
+                            <span>Recap: <span class="red">"{{events_comments[other_event.id]["recap"].content}}"</span></span>
                         {% endif %}                                                   
                     </li>        
                 {% endfor %}
             {% else %}
                 You were invited to all the past events or wanted to go to those events.<br>                
             {% endif %}
-        {% endif %}
-        
-        
-        Create a new event <a href="/events?condition=create_new_event" class="poster">here</a> or 
+        {% endif %}        
+        <br>
+        <div class="display-info-title-general main-place">
+            <h5><span style="color:rgba(27, 115, 216, 0.952)">NEW EVENT</span></h5> 
+        </div><br>
+        <span id="unique_span">Create a new event <a href="/events?condition=create_new_event">here</a> or 
         <form action="/events" method="post" class="alignedform">                        
             <input type="hidden" name="condition" value="create_new_event" />
-            <input type="submit" value="here" class="aligned_in_p"/>
-        </form><br><br><br>
-{% endif %}                                  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h1 class="titlemain">Let's have events!</h1>
-    {% if events|length == 0 %}
-    <div>No events yet. Create a new event <a href="/events?condition=create_new_event" class="poster">here</a> or 
-    <form action="/events" method="post" class="alignedform">                        
-        <input type="hidden" name="condition" value="create_new_event" />
-        <input type="submit" value="here" class="aligned_in_p"/>
-    </form>
-    </div>     
-    {% else %}           
-        <!--events_when_who = {"future_events": {"events_i_participate": [], "other_events": []}, "present_events": {"events_i_participate": [], "other_events": []}, "past_events": {"events_i_participate": [], "events_i_attended": [], "other_events": []}}-->
-        <h2>Future events:</h2>
-        {% if ((events_when_who["future_events"]["events_i_participate"]|length == 0) and (events_when_who["future_events"]["other_events"]|length == 0)) %}
-            <p>No new events coming up.</p>   
-        {% else %}
-            <p>Events I'm participating:</p> 
-            {% if (events_when_who["future_events"]["events_i_participate"]|length != 0) %}                
-                {% for my_event in events_when_who["future_events"]["events_i_participate"] %}             
-                    <li class="list2">
-                        <a href="/events?condition=see_specific_event&id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
-                        {% if my_event.created_encounter.nickname == session['hobbyist'] %}
-                        <a href="/myinfo?condition=show_all_info_user" class="poster">{{my_event.created_encounter.nickname}} </a> 
-                        {% else %}
-                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{my_event.created_encounter.nickname}}" class="poster">{{my_event.created_encounter.nickname}} </a> 
-                        {% endif %}                       
-                        | <span class="orange"> What hobby: <a href="/hobbies?id={{my_event.encounter.id}}">{{my_event.encounter.name}} </a></span> 
-                        | <span class="paradf"> When: {{my_event.date}} </span> 
-                        | <span class="plaintext"> What time: {{my_event.start_time}} </span> 
-                        | <span class="titlepost"> Where: <a href="/places?id={{my_event.event.id}}"> {{my_event.event.name}} | {{my_event.event.streetaddress}} | {{my_event.event.city}} {{my_event.event.state}} {{my_event.event.zipcode}}</a> </span>            
-                    </li>        
-                {% endfor %}
-            {% else %}
-                You are not participating in any of the events coming up at the moment.<br>        
-            {% endif %}
-            <p>Other events:</p>                
-            {% if (events_when_who["future_events"]["other_events"]|length != 0) %}                          
-                {% for other_event in events_when_who["future_events"]["other_events"] %}             
-                    <li class="list2">
-                        <a href="/events?condition=see_specific_event&id={{other_event.id}}" class="poster">{{other_event.name}} </a> by                        
-                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{other_event.created_encounter.nickname}}" class="poster">{{other_event.created_encounter.nickname}} </a> 
-                        <br>
-                        <span class="orange"> What hobby: <a href="/hobbies?id={{other_event.encounter.id}}">{{other_event.encounter.name}} </a></span> 
-                        | <span class="paradf"> When: {{other_event.date}} </span> 
-                        | <span class="plaintext"> What time: {{other_event.start_time}} </span> 
-                        | <span class="titlepost"> Where: <a href="/places?id={{other_event.event.id}}"> {{other_event.event.name}} | {{other_event.event.streetaddress}} | {{other_event.event.city}} {{other_event.event.state}} {{other_event.event.zipcode}}</a></span><br>   
-                       
-                        Invitation: <span class="red"> "{{events_comments[other_event.id]["invitation"].content}}" </span>
-                        
-                        | People invited or added to this event: 
-                        {% for hobbyist in other_event.hobbyists %}                            
-                            <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a>                             
-                            {{ "," if not loop.last }}                              
-                        {% endfor %}<br>             
-                        
-                        <form action="/events" method="post" class="alignedform">                        
-                            <input type="hidden" name="condition" value="add_user_to_event" />
-                            <input type="hidden" name="event_idn" value="{{other_event.id}}" />
-                            <input type="submit" value="GO" class="alignedformbutton"/>
-                        </form> to this event.                        
-                    </li>        
-                {% endfor %}
-            {% else %}
-                There are not other events at the moment. You are participating in all the coming up events.<br>                
-            {% endif %}
-        {% endif %}
-
-        <h2>Going on events at this exact time:</h2>
-        {% if ((events_when_who["present_events"]["events_i_participate"]|length == 0) and (events_when_who["present_events"]["other_events"]|length == 0)) %}
-            <p>No events going on at this exact moment.</p> 
-        {% else %}
-            <p>Events I'm participating:</p> 
-            {% if (events_when_who["present_events"]["events_i_participate"]|length != 0) %}                
-                {% for my_event in events_when_who["present_events"]["events_i_participate"] %}             
-                    <li class="list2">
-                        <a href="/events?condition=see_specific_event&id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
-                        {% if my_event.created_encounter.nickname == session['hobbyist'] %}
-                        <a href="/myinfo?condition=show_all_info_user" class="poster">{{my_event.created_encounter.nickname}} </a> 
-                        {% else %}
-                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{my_event.created_encounter.nickname}}" class="poster">{{my_event.created_encounter.nickname}} </a> 
-                        {% endif %}                            
-                        | <span class="orange"> What hobby: <a href="/hobbies?id={{my_event.encounter.id}}">{{my_event.encounter.name}} </a></span> 
-                        | <span class="paradf"> When: {{my_event.date}} </span> 
-                        | <span class="plaintext"> What time: {{my_event.start_time}} </span> 
-                        | <span class="titlepost"> Where: <a href="/places?id={{my_event.event.id}}"> {{my_event.event.name}} | {{my_event.event.streetaddress}} | {{my_event.event.city}} {{my_event.event.state}} {{my_event.event.zipcode}}</a> </span>            
-                    </li>        
-                {% endfor %}
-            {% else %}
-                You are not participating in any of the events going on at the moment.<br>        
-            {% endif %}
-            <p>Other events:</p>                
-            {% if (events_when_who["present_events"]["other_events"]|length != 0) %}                          
-                {% for other_event in events_when_who["present_events"]["other_events"] %}             
-                    <li class="list2">
-                        <a href="/events?condition=see_specific_event&id={{other_event.id}}" class="poster">{{other_event.name}} </a> by            
-                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{other_event.created_encounter.nickname}}" class="poster">{{other_event.created_encounter.nickname}} </a> 
-                        <br>
-                        <span class="orange"> What hobby: <a href="/hobbies?id={{other_event.encounter.id}}">{{other_event.encounter.name}} </a></span> 
-                        | <span class="paradf"> When: {{other_event.date}} </span> 
-                        | <span class="plaintext"> What time: {{other_event.start_time}} </span> 
-                        | <span class="plaintext"> How long: {{other_event.duration}} </span> 
-                        | <span class="titlepost"> Where: <a href="/places?id={{other_event.event.id}}"> {{other_event.event.name}} | {{other_event.event.streetaddress}} | {{other_event.event.city}} {{other_event.event.state}} {{other_event.event.zipcode}}</a></span><br>   
-                       
-                        Invitation: <span class="red"> "{{events_comments[other_event.id]["invitation"].content}}" </span>
-                        
-                        | People invited or added to this event: 
-                        {% for hobbyist in other_event.hobbyists %}                            
-                            <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a>                               
-                            {{ "," if not loop.last }}                              
-                        {% endfor %}<br>             
-                        
-                        <form action="/events" method="post" class="alignedform">                        
-                            <input type="hidden" name="condition" value="add_user_to_event" />
-                            <input type="hidden" name="event_idn" value="{{other_event.id}}" />
-                            <input type="submit" value="GO" class="alignedformbutton"/>
-                        </form> to this event.                        
-                    </li>        
-                {% endfor %}
-            {% else %}
-                There are not other events at the moment. You are participating in all the present events already.<br>                
-            {% endif %}
-        {% endif %}
-
-        <h2>Past events:</h2>
-        {% if ((events_when_who["past_events"]["events_i_participate"]|length == 0) and (events_when_who["past_events"]["other_events"]|length == 0)) %}
-            <p>No events have taken place yet.</p> 
-        {% else %}
-            <p>Events I was invited or I wanted to go:</p> 
-            {% if (events_when_who["past_events"]["events_i_participate"]|length != 0) %}                
-                {% for my_event in events_when_who["past_events"]["events_i_participate"] %}             
-                    <li class="list2">
-                        <a href="/events?condition=see_specific_event&id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
-                        {% if my_event.created_encounter.nickname == session['hobbyist'] %}
-                        <a href="/myinfo?condition=show_all_info_user" class="poster">{{my_event.created_encounter.nickname}} </a> 
-                        {% else %}
-                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{my_event.created_encounter.nickname}}" class="poster">{{my_event.created_encounter.nickname}} </a> 
-                        {% endif %}                            
-                        | <span class="orange"> What hobby: <a href="/hobbies?id={{my_event.encounter.id}}">{{my_event.encounter.name}} </a></span> 
-                        | <span class="paradf"> When: {{my_event.date}} </span> 
-                        | <span class="plaintext"> What time: {{my_event.start_time}} </span> 
-                        | <span class="titlepost"> Where: <a href="/places?id={{my_event.event.id}}"> {{my_event.event.name}} | {{my_event.event.streetaddress}} | {{my_event.event.city}} {{my_event.event.state}} {{my_event.event.zipcode}}</a> </span><br>            
-                        <div class="orange" style="display:inline-block" >Attendance Status: 
-                        {% if my_event.attendance_taken_status == False %}   
-                            {{my_event.created_encounter.nickname}} hasn't taken attendance yet. 
-                            {% if my_event.creator_hobbyist_id == user.id %} 
-                            <form action="/events" method="post" class="alignedform">                        
-                                <input type="hidden" name="condition" value="take_attendance" />
-                                <input type="hidden" name="event_idn" value="{{my_event.id}}" />
-                                <input type="submit" value="TAKE ATTENDANCE" class="alignedformbutton"/>
-                            </form>     
-                            {% endif %}
-                        {% elif my_event.attendance_taken_status == True %}  
-                            {{my_event.created_encounter.nickname}} took attendance already. | 
-                            <span style="color:red">Recap: "{{events_comments[my_event.id]["recap"].content}}" </span>
-                        {% endif %}            
-                        </div>                        
-                    </li>        
-                {% endfor %}
-            {% else %}
-                You were not invited nor didnt want to participate in any of the past events. Very, very sad :/ <br>        
-            {% endif %}
-
-            <p>Events I attended:</p> 
-            {% if (events_when_who["past_events"]["events_i_attended"]|length != 0) %}                
-                {% for my_event in events_when_who["past_events"]["events_i_attended"] %}             
-                    <li class="list2">
-                        <a href="/events?condition=see_specific_event&id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
-                        {% if my_event.created_encounter.nickname == session['hobbyist'] %}
-                        <a href="/myinfo?condition=show_all_info_user" class="poster">{{my_event.created_encounter.nickname}} </a> 
-                        {% else %}
-                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{my_event.created_encounter.nickname}}" class="poster">{{my_event.created_encounter.nickname}} </a> 
-                        {% endif %}                            
-                        | <span class="orange"> What hobby: <a href="/hobbies?id={{my_event.encounter.id}}">{{my_event.encounter.name}} </a></span> 
-                        | <span class="paradf"> When: {{my_event.date}} </span> 
-                        | <span class="plaintext"> What time: {{my_event.start_time}} </span> 
-                        | <span class="titlepost"> Where: <a href="/places?id={{my_event.event.id}}"> {{my_event.event.name}} | {{my_event.event.streetaddress}} | {{my_event.event.city}} {{my_event.event.state}} {{my_event.event.zipcode}}</a> </span>                     
-                    </li>        
-                {% endfor %}
-            {% else %}
-                You didn't attend any event yet. Very, very sad :/ <br>        
-            {% endif %}
-
-            <p>Other events:</p>                
-            {% if (events_when_who["past_events"]["other_events"]|length != 0) %}                          
-                {% for other_event in events_when_who["past_events"]["other_events"] %}             
-                    <li class="list2">
-                        <a href="/events?condition=see_specific_event&id={{other_event.id}}" class="poster">{{other_event.name}} </a> by                        
-                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{other_event.created_encounter.nickname}}" class="poster">{{other_event.created_encounter.nickname}} </a>                         
-                        <span class="orange"> What hobby: <a href="/hobbies?id={{other_event.encounter.id}}">{{other_event.encounter.name}} </a></span> 
-                        | <span class="paradf"> When: {{other_event.date}} </span> 
-                        | <span class="plaintext"> What time: {{other_event.start_time}} </span> 
-                        | <span class="titlepost"> Where: <a href="/places?id={{other_event.event.id}}"> {{other_event.event.name}} | {{other_event.event.streetaddress}} | {{other_event.event.city}} {{other_event.event.state}} {{other_event.event.zipcode}}</a></span><br>   
-                        People invited or added to this event: 
-                        {% for hobbyist in other_event.hobbyists %}                            
-                            <a href="/myinfo?condition=show_other_info_user&hobbyist={{hobbyist.nickname}}" class="poster">{{hobbyist.nickname}} </a>                               
-                            {{ "," if not loop.last }}                              
-                        {% endfor %}
-                        | <span class="orange">Attendance Status: 
-                        {% if other_event.attendance_taken_status == False %}   
-                            {{other_event.created_encounter.nickname}} hasn't taken attendance yet.                             
-                        {% elif other_event.attendance_taken_status == True %}  
-                            {{other_event.created_encounter.nickname}} took attendance already. | 
-                            <span class="black">Recap: "{{events_comments[other_event.id]["recap"].content}}" </span>
-                        {% endif %}                                                   
-                    </li>        
-                {% endfor %}
-            {% else %}
-                You were invited to all the past events or wanted to go to those events.<br>                
-            {% endif %}
-        {% endif %}
-        
-        
-        Create a new event <a href="/events?condition=create_new_event" class="poster">here</a> or 
-        <form action="/events" method="post" class="alignedform">                        
-            <input type="hidden" name="condition" value="create_new_event" />
-            <input type="submit" value="here" class="aligned_in_p"/>
-        </form><br><br><br>
-    {% endif %}      
-
+            <input class="button-nice" style="width:50px" type="submit" value="here" class="aligned_in_p"/>
+        </form><br><br>
+        </span></b>
+{% endif %}      
 </div>
 <br>
 <br>
