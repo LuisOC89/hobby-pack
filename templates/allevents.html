@@ -100,16 +100,16 @@
             {% if (events_when_who["present_events"]["events_i_participate"]|length != 0) %}                
                 {% for my_event in events_when_who["present_events"]["events_i_participate"] %}             
                     <li>
-                        <a href="/events?condition=see_specific_event&id={{my_event.id}}" class="poster">{{my_event.name}} </a> by                                                
+                        <a href="/events?condition=see_specific_event&id={{my_event.id}}">{{my_event.name}} </a> by                                                
                         {% if my_event.created_encounter.nickname == session['hobbyist'] %}
-                        <a href="/myinfo?condition=show_all_info_user" class="poster">{{my_event.created_encounter.nickname}} </a> 
+                        <a href="/myinfo?condition=show_all_info_user">{{my_event.created_encounter.nickname}} </a> 
                         {% else %}
-                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{my_event.created_encounter.nickname}}" class="poster">{{my_event.created_encounter.nickname}} </a> 
+                        <a href="/myinfo?condition=show_other_info_user&hobbyist={{my_event.created_encounter.nickname}}">{{my_event.created_encounter.nickname}} </a> 
                         {% endif %}                            
-                        | <span class="orange"> What hobby: <a href="/hobbies?id={{my_event.encounter.id}}">{{my_event.encounter.name}} </a></span> 
-                        | <span class="paradf"> When: {{my_event.date}} </span> 
-                        | <span class="plaintext"> What time: {{my_event.start_time}} </span> 
-                        | <span class="titlepost"> Where: <a href="/places?id={{my_event.event.id}}"> {{my_event.event.name}} | {{my_event.event.streetaddress}} | {{my_event.event.city}} {{my_event.event.state}} {{my_event.event.zipcode}}</a> </span>            
+                        | <span> What hobby: <a href="/hobbies?id={{my_event.encounter.id}}">{{my_event.encounter.name}} </a></span> 
+                        | <span> When: {{my_event.date}} </span> 
+                        | <span> What time: {{my_event.start_time}} </span> 
+                        | <span> Where: <a href="/places?id={{my_event.event.id}}"> {{my_event.event.name}} | {{my_event.event.streetaddress}} | {{my_event.event.city}} {{my_event.event.state}} {{my_event.event.zipcode}}</a> </span>            
                     </li>        
                 {% endfor %}
             {% else %}

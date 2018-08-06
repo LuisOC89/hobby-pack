@@ -338,7 +338,7 @@ input[type=text]:focus, input[type=password]:focus, .textarea-nice:focus {
   border-bottom: 1px solid black;
 }
 
-#display-info-each-post, #display-info-all-posts, #display-info-all-events {
+#display-info-each-post, #display-info-all-posts, #display-info-all-events, #display-info-each-hobbyist {
   width: 95%;   
 }
 
