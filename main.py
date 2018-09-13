@@ -5,6 +5,7 @@ from models import Hobbyist, Hobby, Place, Blog, Bloganswer, Encounter, Chat, Ch
 from hashingtools import checking_password_hash
 from utils import filling, now1, checking_existing_address_in_db, checking_existing_event_in_db, dto, dte
 import cgi
+import os
 
 app.secret_key = str((os.environ.get("SECRET_KEY")))
 

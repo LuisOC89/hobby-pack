@@ -10,12 +10,13 @@ services:
     build: .
     ports: 
       - "3001:5000"
+      - "5433:5432"
     env_file:
       - ./app.env
     environment:
       - SECRET_KEY=${SECRET_KEY}
-    volumes:
-      # This tells the code to follow whatever change I make to the current local 
-      # code located in the app directory
-      - .: .
+    # volumes:
+    #   # This tells the code to follow whatever change I make to the current local 
+    #   # code located in the app directory
+    #   - .:./app
     command: python main.py
