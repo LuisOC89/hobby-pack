@@ -1,17 +1,24 @@
 {% extends "zbase.html" %}
 
 {% block content %}
-<h1 class="centered">{{hobbyist.nickname}}</h1> 
-<h2 class = "centered">{{hobbyist.city}} | {{hobbyist.state}} | {{hobbyist.zipcode}}</h2>
-    
+<br>
+<div class="display-info-general" id="display-info-all-events">
+    <div class="display-info-title-general main-places">
+        <h3 style="color:rgb(240, 54, 54);text-align:center;">{{hobbyist.nickname}}</h4> 
+        <h5 style="color:rgb(240, 54, 54);text-align:center;">{{hobbyist.city}} | {{hobbyist.state}} | {{hobbyist.zipcode}}</h4>                 
+    </div> 
+
 {% if conditional == "my_profile" %}
-    <h1 class="titlemain" style="text-align:left">My hobbies in my places :) !</h1>
+    <div class="display-info-title-general main-place">
+        <h5><span style="color:rgba(27, 115, 216, 0.952)">My hobbies in my places :) !</span></h5> 
+    </div>      
+    <b>
     {% if my_hobbies|length == 0 %}
     <p>No hobbies yet</p>
     {% else %}
             {% for hobby in my_hobbies %}
-            <li class="list2">
-            <a href="/hobbies?id={{hobby.id}}" class="poster">{{hobby.name}}</a>   
+            <li>
+            <a href="/hobbies?id={{hobby.id}}">{{hobby.name}}</a>   
                 {% if dict_hobby_places[hobby.name]|length == 0 %}
                 <ul>
                     You don't practice this hobby in a public place yet.
@@ -24,7 +31,7 @@
                 {% else %}
                 {% for place in dict_hobby_places[hobby.name] %}
                 <ul>
-                    + <a href="/places?id={{place.id}}" class="poster">{{place.name}}</a> | {{place.streetaddress}} | {{place.city}} | {{place.state}} | {{place.zipcode}}
+                    + <a href="/places?id={{place.id}}"></a>{{place.name}}</a> | {{place.streetaddress}} | {{place.city}} | {{place.state}} | {{place.zipcode}}
                 </ul>             
                 {% endfor %}
                 <ul>
@@ -38,46 +45,55 @@
             </li>
             {% endfor %} 
     {% endif %}    
-
-    <h1 class="titlemain">My places :) ! </h1>
+    
+    <div class="display-info-title-general main-place">
+        <h5><span style="color:rgba(27, 115, 216, 0.952)">My places :) !</span></h5> 
+    </div>  
     {% if my_places|length == 0 %}
     <p>No public places yet</p>
     {% else %}
     {% for publicplace in my_places %}
-    <li class="list2">
-    <a href="/places?id={{publicplace.id}}" class="poster">{{publicplace.name}} </a> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} 
+    <li>
+    <a href="/places?id={{publicplace.id}}">{{publicplace.name}} </a> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} 
     </li>
     {% endfor %} 
 
     {% endif %}    
-
-    <h1 class="titlemain">My posts to the blog!</h1>
+    <br>
+    <div class="display-info-title-general main-place">
+        <h5><span style="color:rgba(27, 115, 216, 0.952)">My posts to the blog!</span></h5> 
+    </div>  
     {% if my_posts|length == 0 %}
     <p>No posts yet</p>
     {% else %}
     {% for post in my_posts | reverse %}
-        <a href="/blog?id={{post.id}}" class="titlepost">{{post.title}}</a> <span id="specialb">by</span> 
+        <a href="/blog?id={{post.id}}">{{post.title}}</a> <span>by</span> 
     
         {% if post.blog.nickname == session['hobbyist'] %}
-            <a href="/myinfo?condition=show_all_info_user" class="poster">{{post.blog.nickname}} </a> 
+            <a href="/myinfo?condition=show_all_info_user">{{post.blog.nickname}} </a> 
         {% else %}
-            <a href="/myinfo?condition=show_other_info_user&hobbyist={{post.blog.nickname}}" class="poster">{{post.blog.nickname}} </a> 
+            <a href="/myinfo?condition=show_other_info_user&hobbyist={{post.blog.nickname}}">{{post.blog.nickname}} </a> 
         {% endif %}
         in 
-        <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">posts of {{post.blog.nickname}}</span></a> at {{post.time}} on {{post.date}}
-        <span class="paradf"><p>{{post.body}}</p></span> 
+        <a href="/blog?hobbyist={{post.blog.nickname}}"><span>posts of {{post.blog.nickname}}</span></a> at {{post.time}} on {{post.date}}
+        <span><p>{{post.body}}</p></span> 
         <hr />
     {% endfor %}    
     {% endif %}
-{% elif conditional == "other_user_profile" %}    
-    <h1 class="titlemain" style="text-align:left">Hobbies that {{hobbyist.nickname}} loves :) !</h1>
-       
+    </b>
+
+{% elif conditional == "other_user_profile" %}   
+    <b> 
+    <div class="display-info-title-general main-place">
+        <h5><span style="color:rgba(27, 115, 216, 0.952)">Hobbies that {{hobbyist.nickname}} loves :) !</span></h5> 
+    </div>      
+        
     {% if my_hobbies|length == 0 %}
     <p>No hobbies yet</p>
     {% else %}
             {% for hobby in my_hobbies %}
-            <li class="list2">
-            <a href="/hobbies?id={{hobby.id}}" class="poster">{{hobby.name}}</a>   
+            <li>
+            <a href="/hobbies?id={{hobby.id}}">{{hobby.name}}</a>   
                 {% if dict_hobby_places[hobby.name]|length == 0 %}
                 <ul>
                     {{hobbyist.nickname}} doesn't practice this hobby in a public place yet.  
@@ -85,7 +101,7 @@
                 {% else %}
                 {% for place in dict_hobby_places[hobby.name] %}
                 <ul>
-                    + <a href="/places?id={{place.id}}" class="poster">{{place.name}}</a> | {{place.streetaddress}} | {{place.city}} | {{place.state}} | {{place.zipcode}}
+                    + <a href="/places?id={{place.id}}">{{place.name}}</a> | {{place.streetaddress}} | {{place.city}} | {{place.state}} | {{place.zipcode}}
                 </ul>             
                 {% endfor %}
                 {% endif %}   
@@ -93,38 +109,47 @@
             {% endfor %} 
     {% endif %}    
 
-    <h1 class="titlemain">Places where {{hobbyist.nickname}} goes :) ! </h1>
+    <div class="display-info-title-general main-place">
+        <h5><span style="color:rgba(27, 115, 216, 0.952)">Places where {{hobbyist.nickname}} goes :) !</span></h5> 
+    </div>  
     {% if my_places|length == 0 %}
     <p>No public places yet</p>
     {% else %}
     {% for publicplace in my_places %}
     <li class="list2">
-    <a href="/places?id={{publicplace.id}}" class="poster">{{publicplace.name}} </a> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} 
+    <a href="/places?id={{publicplace.id}}">{{publicplace.name}} </a> | {{publicplace.streetaddress}} | {{publicplace.city}} {{publicplace.state}} {{publicplace.zipcode}} 
     </li>
     {% endfor %} 
 
     {% endif %}    
-
-    <h1 class="titlemain">Posts of {{hobbyist.nickname}} to the blog!</h1>
+    <br>
+    <div class="display-info-title-general main-place">
+        <h5><span style="color:rgba(27, 115, 216, 0.952)">Posts of {{hobbyist.nickname}} to the blog!</span></h5> 
+    </div>  
     {% if my_posts|length == 0 %}
     <p>No posts yet</p>
     {% else %}
         
         {% for post in my_posts | reverse %}
-        <a href="/blog?id={{post.id}}" class="titlepost">{{post.title}}</a> <span id="specialb">by</span> 
+        <a href="/blog?id={{post.id}}">{{post.title}}</a> <span>by</span> 
     
         {% if post.blog.nickname == session['hobbyist'] %}
-            <a href="/myinfo?condition=show_all_info_user" class="poster">{{post.blog.nickname}} </a> 
+            <a href="/myinfo?condition=show_all_info_user">{{post.blog.nickname}} </a> 
         {% else %}
-            <a href="/myinfo?condition=show_other_info_user&hobbyist={{post.blog.nickname}}" class="poster">{{post.blog.nickname}} </a> 
+            <a href="/myinfo?condition=show_other_info_user&hobbyist={{post.blog.nickname}}">{{post.blog.nickname}} </a> 
         {% endif %}
         in 
-        <a href="/blog?hobbyist={{post.blog.nickname}}"><span class="poster">posts of {{post.blog.nickname}}</span></a> at {{post.time}} on {{post.date}}
-        <span class="paradf"><p>{{post.body}}</p></span> 
+        <a href="/blog?hobbyist={{post.blog.nickname}}"><span>posts of {{post.blog.nickname}}</span></a> at {{post.time}} on {{post.date}}
+        <span><p>{{post.body}}</p></span> 
         <hr />
         {% endfor %}    
 
     {% endif %}
 
 {% endif %}
+</div>
+<b> 
+<br>
+<br>
 {% endblock %}
+

@@ -12,7 +12,7 @@ def logged_in_hobbyist():
     current_hobbyist = Hobbyist.query.filter_by(nickname=session['hobbyist']).first()
     return current_hobbyist
 
-endpoints_without_login = ['login', 'signup', 'index']
+endpoints_without_login = ['login', 'signup', 'index', 'static']
 
 @app.before_request
 def require_login():
