@@ -1,0 +1,12 @@
+# required line: version of Docker Compose
+version: '3'
+# this is what I want you to do (services)
+# "service" sometimes, for just one container
+# services is for more than two containers.
+services:
+  hobby-pack-app:
+    # If container crashes for any reason
+    restart: always
+    build: .
+    ports: 
+      - "3001:5000"
