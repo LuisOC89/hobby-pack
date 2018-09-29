@@ -2,8 +2,6 @@ FROM python:alpine
 
 # EXPOSE 5433
 
-EXPOSE 3001
-
 # MAINTAINER Luis Orozco <humbledore@gmail.com>
 
 # RUN apt-get update -y && \
@@ -22,5 +20,7 @@ RUN pip install python-dotenv
 # RUN pip install flask
 # RUN pip install sqlalchemy
 # RUN pip install flask-sqlalchemy
+
+EXPOSE 3001
 
 CMD python main.py

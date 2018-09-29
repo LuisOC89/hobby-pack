@@ -7,16 +7,30 @@ services:
   hobby-pack-app:
     # If container crashes for any reason
     restart: always
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
     ports: 
-      - "3001:5000"
-      - "5433:5432"
+      - "4001:5000"
     env_file:
       - ./app.env
     environment:
       - SECRET_KEY=${SECRET_KEY}
-    # volumes:
-    #   # This tells the code to follow whatever change I make to the current local 
-    #   # code located in the app directory
-    #   - .:./app
+    volumes:
+      # This tells the code to follow whatever change I make to the current local 
+      # code located in the app directory
+      - .:/app
+    # depends_on:
+    # - postgres
     command: python main.py
+#   postgres:
+#     restart: always
+#     image: postgres
+#     env_file:
+#       - ./app.env
+#     # volumes:
+#     #   - ./postgres-data/postgres:/var/lib/postgresql/data
+#     ports:
+#       - "5432:5432"
+# # SYNTAX IS ALWAYS: 
+# # [HOST]:[CONTAINER]

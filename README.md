@@ -26,6 +26,38 @@ This project was motivated by the need of a person that moves to a new city and 
 * DOCKER
 * POSTGRESQL
 
+## To run the app
+
+# To run directly:
+Go to Project directory main folder
+In the file app.py, uncomment app.config related to running directly
+Then, do: python main.py
+Go to localhost:5000
+
+# To run with DOCKER:
+
+# Two ways to run with local database in POSTGRES:
+
+# 1. WITH DOCKER BUILD and DOCKER RUN:
+1.1 CHANGE "HOST" in connection configuration in file app.py from "localhost" to "host.docker.internal" 
+1.1 Do: docker build -t humbledore/hobby_pack . 
+If you want to use Dockerfile.dev as your Dockerfile, then do:
+docker build -f Dockerfile.dev -t humbledore/hobby_pack . 
+--no-cache included in previous command if you want it to rebuild image from zero
+1.2 Do: docker run -p 3001:5000 -v "$(pwd):/app" humbledore/hobby_pack
+Go to localhost:3001
+
+# 2. WITH DOCKER-COMPOSE BUILD AND UP:
+2.0 FIX VOLUMES IN docker-compose.yml file (in case of running in other container with db)
+2.1 Do: docker-compose build
+--no-cache included in previous command if you want it to rebuild image from zero
+2.2 Do: docker-compose up
+Go to localhost:4001
+
+# 3.0 Or just do: docker-compose up --build
+
+# --reload declared here so it reloads everytime a change is made (it matters in docker too)
+
 ## What I had to Learn
 I had to learn many-to-many relationship in flask-SQLAlchemy. To improve the UI and UX I needed to learn more about CSS and Bootstrap, besides I wanted to include some APIs in my project (youtube, google, wikipedia). Related to APIs I was at 0, so I had to learn Javascript and APIs :) (still work in progress).  
 
