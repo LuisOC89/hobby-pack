@@ -1688,4 +1688,4 @@ def acting_on_events():
                 return redirect("/events?condition=see_specific_event&id="+str(encounter_id))
             
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', port=7001, debug=True)

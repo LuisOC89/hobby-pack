@@ -21,6 +21,6 @@ RUN pip install python-dotenv
 # RUN pip install sqlalchemy
 # RUN pip install flask-sqlalchemy
 
-EXPOSE 3001
+EXPOSE 7001
 
 CMD python main.py

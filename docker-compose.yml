@@ -11,7 +11,7 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     ports: 
-      - "4001:5000"
+      - "7001:7001"
     env_file:
       - ./app.env
     environment:
