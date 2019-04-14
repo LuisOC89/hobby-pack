@@ -18,7 +18,7 @@ services:
   #   volumes:
   #     - .:/app
   # To test dev
-  hobby-pack-app:
+  hobby-pack-dev:
     restart: always
     build: .
     ports: 
@@ -29,6 +29,11 @@ services:
       - SECRET_KEY=${SECRET_KEY}
     volumes:
       - .:/app
+    container_name: hobby_pack_dev_container
+    image: hobby_pack_dev_image
+    #For debugging (remove for PROD)
+    stdin_open: true
+    tty: true
 
     # depends_on:
     # - postgres
