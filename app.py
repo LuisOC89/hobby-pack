@@ -10,6 +10,9 @@ app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = '{}+{}://{}:{}@{}:{}/{}'.format(DB_TYPE, DB_DRIVER, DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME)
 app.config['SQLALCHEMY_ECHO'] = True
 
+# Info about this here: https://stackoverflow.com/questions/33738467/how-do-i-know-if-i-can-disable-sqlalchemy-track-modifications
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 
 # Connection String To connect to database: app.config['SQLAlchemy_DATABASE_URI'] = 'type_of_database+driver://username:password@server:port-number/name-of-database'
