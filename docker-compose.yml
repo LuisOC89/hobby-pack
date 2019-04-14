@@ -1,28 +1,38 @@
-# required line: version of Docker Compose
 version: '3'
-# this is what I want you to do (services)
-# "service" sometimes, for just one container
-# services is for more than two containers.
 services:
-  hobby-pack-app:
-    # If container crashes for any reason
-    restart: always
+  # Sole purpose to run tests
+  tests:
     build: 
       context: .
       dockerfile: Dockerfile.dev
+    command: pytest tests -v -s
+  # hobby-pack-app:
+  #   restart: always
+  #   build: .
+  #   ports: 
+  #     - "8001:8001"
+  #   env_file:
+  #     - ./app.env
+  #   environment:
+  #     - SECRET_KEY=${SECRET_KEY}
+  #   volumes:
+  #     - .:/app
+  # To test dev
+  hobby-pack-app:
+    restart: always
+    build: .
     ports: 
-      - "7001:7001"
+      - "8001:8001"
     env_file:
       - ./app.env
     environment:
       - SECRET_KEY=${SECRET_KEY}
     volumes:
-      # This tells the code to follow whatever change I make to the current local 
-      # code located in the app directory
       - .:/app
+
     # depends_on:
     # - postgres
-    command: python main.py
+
 #   postgres:
 #     restart: always
 #     image: postgres

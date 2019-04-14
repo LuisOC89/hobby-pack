@@ -1,9 +1,28 @@
-click==6.7
+# pip install flask
+Click==7.0
 Flask==1.0.2
-Flask-SQLAlchemy==2.3.2
-itsdangerous==0.24
+itsdangerous==1.1.0
 Jinja2==2.10
-MarkupSafe==1.0
-psycopg2==2.7.5
+MarkupSafe==1.1.1
+Werkzeug==0.15.1
+
+# pip install pytest
+atomicwrites==1.3.0
+attrs==19.1.0
+more-itertools==7.0.0
+pluggy==0.9.0
+py==1.8.0
+pytest==4.4.0
+six==1.12.0
+
+# pip install flask-sqlalchemy
+Flask-SQLAlchemy==2.3.2
+
+# pip install psycopg2-binary
+psycopg2-binary==2.8.2
+
+# pip install sqlalchemy
 SQLAlchemy==1.2.11
-Werkzeug==0.14.1
+
+# pip install gunicorn
+gunicorn==19.9.0

@@ -1,12 +1,5 @@
 FROM python:alpine
 
-# EXPOSE 5433
-
-# MAINTAINER Luis Orozco <humbledore@gmail.com>
-
-# RUN apt-get update -y && \
-#     apt-get install -y python-pip python-dev
-
 WORKDIR '/app'
 
 ADD . .
@@ -15,12 +8,15 @@ RUN apk add --virtual deps gcc python-dev musl-dev postgresql-dev
 
 RUN pip install -r requirements.txt
 
-RUN pip install python-dotenv
+# For testing
+RUN pip install pytest
 
-# RUN pip install flask
-# RUN pip install sqlalchemy
-# RUN pip install flask-sqlalchemy
+# For debugging locally
+RUN pip install pdbpp
+
+COPY ./tests ./tests
 
 EXPOSE 7001
 
+# To run locally
 CMD python main.py

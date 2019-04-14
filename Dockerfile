@@ -1,14 +1,5 @@
 FROM python:alpine
 
-# EXPOSE 5433
-
-EXPOSE 3001
-
-# MAINTAINER Luis Orozco <humbledore@gmail.com>
-
-# RUN apt-get update -y && \
-#     apt-get install -y python-pip python-dev
-
 WORKDIR '/app'
 
 ADD . .
@@ -17,10 +8,7 @@ RUN apk add --virtual deps gcc python-dev musl-dev postgresql-dev
 
 RUN pip install -r requirements.txt
 
-RUN pip install python-dotenv
+EXPOSE 8001
 
-# RUN pip install flask
-# RUN pip install sqlalchemy
-# RUN pip install flask-sqlalchemy
-
-CMD python main.py
+# To run in prod environment
+CMD gunicorn main:app --bind 0.0.0.0:8001 --reload
