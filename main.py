@@ -470,6 +470,10 @@ def adding_post():
             #Validation to make sure there are no other posts with the same title
             elif (post_already_exists == 1):
                 error = "titleexists"
+            elif len(post_title) > 30:
+                error = "lentitle"
+            elif len(post_body) > 120:
+                error = "lenbody"
             else:
                 error = ""
 

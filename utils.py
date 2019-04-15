@@ -12,7 +12,7 @@ def filling(number):
 
 #To get current date and time
 def now1():
-    return datetime.datetime.now()
+    return datetime.datetime.now() - datetime.timedelta(hours=4)
 
 #To create and compare a super KEY to check that a new address exists or not in a database  
 def checking_existing_address_in_db(street, city, state, zipcode, places_in_database):        
