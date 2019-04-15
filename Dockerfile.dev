@@ -20,3 +20,6 @@ EXPOSE 7001
 
 # To run locally
 CMD python main.py
+
+# To run in prod
+# CMD gunicorn main:app --bind 0.0.0.0:7001 --reload

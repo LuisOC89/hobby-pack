@@ -20,10 +20,11 @@ def require_login():
     if not ('hobbyist' in session or request.endpoint in endpoints_without_login):
         return redirect("/login")
 
-post_resource = zPosts()
+blog_resource = zPosts()
 
 # Note that we are not *calling* the methods
-app.add_url_rule('/newpost', view_func=post_resource.adding_post, methods=['POST', 'GET'])
+app.add_url_rule('/newpost', view_func=blog_resource.adding_post, methods=['POST', 'GET'])
+app.add_url_rule('/blog', view_func=blog_resource.listing_blogs, methods=['POST', 'GET'])
 
 @app.route('/', methods=['POST','GET'])
 def index():    
@@ -83,74 +84,6 @@ def login():
 def saliendo():
     del session['hobbyist']
     return redirect('/')
-
-@app.route('/blog', methods=['POST', 'GET'])
-def listing_blogs():
-    #conditional assuming the access is through a get request from homeblogposts clicking {{post.title}}
-    conditional_get_request_id = str(request.args.get("id"))
-    #conditional assuming the access is through a get request from homeblogposts clicking {{post.title}}
-    conditional_get_request_hobbyist = str(request.args.get("hobbyist"))
-    #My error here (AttributeError: 'NoneType' object has no attribute 'id') is that I was looking for this value in html in homeblogposts.html instead of index.html
-    #print(conditional_get_request_id)
-    #print(conditional_get_request_hobbyist)
-
-    #This will help to identify if this is an answer to a post created or a new post created
-    conditional_get_request_id_answer = str(request.args.get("answer_id"))
-
-    #if both are none, it means that this is a get request without passing an attribute from the view to the controller
-    if ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist =="None")):
-        
-        #This one shows all the posts of everyone in the blog order by year, by month, by day, by hour, by minute
-        posts_python = Blog.query.all()  
-
-        #This will have all the posts with their answers: {Post1: [answer1, answer2, answer3], Post2: [answer1]}
-        dict_posts_python_and_its_answers = {}
-        for post in posts_python:
-                #Initializing the list of lists
-                dict_posts_python_and_its_answers[post.id] = []                
-                                
-                this_post_answers = Bloganswer.query.filter_by(blog_id=post.id).all()                 
-                                
-                for b_answer in this_post_answers:
-                    print (b_answer)
-                    dict_posts_python_and_its_answers[post.id].append(b_answer)
-
-        return render_template('allhomeblogposts.html', title="Blogging Hobbies", postshtml=posts_python, posts_and_answers=dict_posts_python_and_its_answers)
-    #if conditional_get_request_id is not "None", then we are bringing the attribute "id" from the view to the controller
-    elif ((conditional_get_request_id != "None") and (conditional_get_request_hobbyist=="None")): 
-        if conditional_get_request_id_answer=="None":
-            database_id = int(conditional_get_request_id)
-            #print(database_id)
-            current_post = Blog.query.get(database_id)
-            title_python = current_post.title
-            #print(title_python)
-            body_python = current_post.body
-            #print(body_python)
-            hobbyist_owner_python = current_post.blog.nickname
-            #print(hobbyist_owner_python)
-            return render_template('eachblog.html', title="Reading my blog", titlehtml = title_python, bodyhtml=body_python, ownerhtml = hobbyist_owner_python) 
-        else:
-            database_id = int(conditional_get_request_id_answer)
-            #print(database_id)
-            current_post_answer = Bloganswer.query.get(database_id)
-            title_python = current_post_answer.title
-            #print(title_python)
-            body_python = current_post_answer.body
-            #print(body_python)
-            hobbyist_owner_python = current_post_answer.blogsanswer.nickname
-            #print(hobbyist_owner_python)
-            return render_template('eachblog.html', title="Reading my blog", titlehtml = title_python, bodyhtml=body_python, ownerhtml = hobbyist_owner_python) 
-
-    #if conditional_get_request_hobbyist is not "None", then we are bringing the attribute "hobbyist" from the view to the controller
-    elif ((conditional_get_request_id == "None") and (conditional_get_request_hobbyist != "None")):
-        hobbyist_name = conditional_get_request_hobbyist
-        #print(hobbyist_name)
-        current_hobbyist = Hobbyist.query.filter_by(nickname=hobbyist_name).first()
-        #print(current_hobbyist)
-        #This one shows all the blogs of just this particular hobbyist
-        current_hobbyist_id = current_hobbyist.id
-        posts_python = Blog.query.filter_by(hobbyist_id=current_hobbyist_id).all()
-        return render_template('allhomeblogposts.html', title="Just blogging",postshtml=posts_python, posts_and_answers="N/A")
 
 @app.route('/hobbies', methods=['POST', 'GET'])
 def listing_hobbies():  
