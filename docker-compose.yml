@@ -1,3 +1,5 @@
+# SYNTAX IS ALWAYS: 
+# [HOST]:[CONTAINER]
 version: '3'
 services:
   # Sole purpose to run tests
@@ -6,23 +8,15 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     command: pytest tests -v -s
-  # hobby-pack-app:
-  #   restart: always
-  #   build: .
-  #   ports: 
-  #     - "8001:8001"
-  #   env_file:
-  #     - ./app.env
-  #   environment:
-  #     - SECRET_KEY=${SECRET_KEY}
-  #   volumes:
-  #     - .:/app
-  # To test dev
-  hobby-pack-dev:
+  
+  # DEV env
+  hobby-pack:
     restart: always
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
     ports: 
-      - "8001:8001"
+      - "7001:7001"
     env_file:
       - ./app.env
     environment:
@@ -34,18 +28,16 @@ services:
     #For debugging (remove for PROD)
     stdin_open: true
     tty: true
-
-    # depends_on:
-    # - postgres
-
-#   postgres:
-#     restart: always
-#     image: postgres
-#     env_file:
-#       - ./app.env
-#     # volumes:
-#     #   - ./postgres-data/postgres:/var/lib/postgresql/data
-#     ports:
-#       - "5432:5432"
-# # SYNTAX IS ALWAYS: 
-# # [HOST]:[CONTAINER]
+  
+  # PROD env (if there was any using docker-compose) --> This doesn't apply
+  # hobby-pack-prod:
+  #   restart: always
+  #   build: .
+  #   ports: 
+  #     - "8001:8001"
+  #   env_file:
+  #     - ./app.env
+  #   environment:
+  #     - SECRET_KEY=${SECRET_KEY}
+  #   volumes:
+  #     - .:/app

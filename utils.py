@@ -1,5 +1,9 @@
 import datetime
 
+from flask import session
+
+from models import Hobbyist
+
 #To fix times like 1:3, to make it look like 01:03, or dates like 4/8/2018, to make it look like 04/08/2018
 def filling(number):
     if (number < 10):
@@ -12,7 +16,7 @@ def filling(number):
 
 #To get current date and time
 def now1():
-    return datetime.datetime.now()
+    return datetime.datetime.now() - datetime.timedelta(hours=4)
 
 #To create and compare a super KEY to check that a new address exists or not in a database  
 def checking_existing_address_in_db(street, city, state, zipcode, places_in_database):        
@@ -54,4 +58,8 @@ def dto(date_time_present):
 #To help organizing events in future, present and past. duration_time_event (dte)
 def dte(duration_event):  
     return int(str(duration_event[0:2])+str(duration_event[3:5])) 
+
+def logged_in_hobbyist():
+    current_hobbyist = Hobbyist.query.filter_by(nickname=session['hobbyist']).first()
+    return current_hobbyist
     
