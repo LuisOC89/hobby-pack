@@ -50,6 +50,8 @@
                         {% elif errorhtml == "titleexists" %}
                         <span class="error10">There is another post with the same title. Please change the name of the title. </span><br>
                         <span class="error10">If you want to repply to an original post you will have to do it <a href="/blog">here</a>.</span>
+                        {% elif errorhtml == "lentitle" %}
+                        <span class="error10">The title is too long. Please make the title 30 chars or less.</span>
                         {% else %}
                         {% endif %}  
                     </td>
@@ -64,6 +66,8 @@
                         <span class="error10">Please fill in the body</span>
                         {% elif errorhtml == "bothempty" %}
                         <span class="error10">Please fill in the body</span>
+                        {% elif errorhtml == "lenbody" %}
+                        <span class="error10">The body is too long. Please make the body 120 chars or less.</span>
                         {% else %}
                         {% endif %}
                     </td>

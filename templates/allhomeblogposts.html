@@ -37,7 +37,7 @@
                 </table>     
             {% endfor %}<hr>
             <form action="/newpost" method="post" class="alignedform">            
-                <input type="hidden" name="post_id" value={{post.id}}/>                                             
+                <input type="hidden" name="post_id" value={{post.id}} id="just to delimitate value of value2" />                                             
                 <input type="hidden" name="condition" value="from_answer_to_post" id="just to delimitate value of value" />
                 <input class="button-nice" type="submit" value="COMMENT" class="alignedformbutton"/>
             </form><hr>
