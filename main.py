@@ -7,6 +7,8 @@ from sqlalchemy import desc
 from app import db, app
 from models import Hobbyist, Hobby, Place, Blog, Bloganswer, Encounter, Chat, Chat_comment, Event_comment
 from z_modules.blog_posts import zPosts
+from z_modules.home import zHome
+from z_modules.users import zUser
 
 from hashingtools import checking_password_hash
 from utils import filling, now1, checking_existing_address_in_db, checking_existing_event_in_db, dto, dte, logged_in_hobbyist
@@ -21,70 +23,19 @@ def require_login():
         return redirect("/login")
 
 blog_resource = zPosts()
+home_resource = zHome()
+user_resource = zUser()
 
 # Note that we are not *calling* the methods
 app.add_url_rule('/newpost', view_func=blog_resource.adding_post, methods=['POST', 'GET'])
 app.add_url_rule('/blog', view_func=blog_resource.listing_blogs, methods=['POST', 'GET'])
-
-@app.route('/', methods=['POST','GET'])
-def index():    
-    hobbyists = Hobbyist.query.order_by(Hobbyist.state).order_by(Hobbyist.nickname).all()
-    hobbies = Hobby.query.order_by(Hobby.name).all()
-    places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
-    encounters = Encounter.query.all()
-    posts = Blog.query.all()
-
-    #For the process of signing up. To pass "None" to the view as text
-    welcome_message = str(request.args.get("welcome_message"))
-    if (welcome_message == "None") :
-        welcome_message = "None"
-
-    #Create dictionary to post amount of hobbyists per hobby. Structure: dictionary = {"hobby1": "4" hobbyists, "hobby2": "3" hobbyists}
-    dict_hobby_hobbyists = {}
-    total_hobbies = Hobby.query.all()
-    for hobby in total_hobbies:
-        dict_hobby_hobbyists[hobby.name]=Hobbyist.query.filter(Hobbyist.hobbies.any(id=hobby.id)).count()
-
-    #This will have all the posts with their answers: {Post1: [answer1, answer2, answer3], Post2: [answer1]}
-    dict_posts_and_its_answers = {}
-    for post in posts:
-        #Initializing the list of lists
-        dict_posts_and_its_answers[post.id] = []                
-                        
-        this_post_answers = Bloganswer.query.filter_by(blog_id=post.id).all()                 
-                        
-        for b_answer in this_post_answers:
-            print (b_answer)
-            dict_posts_and_its_answers[post.id].append(b_answer)
-                
-    return render_template('zindex.html',title="Hobby Pack - Sharing our hobbies", hobbyists=hobbyists, hobbies=hobbies, places=places, encounters=encounters, postshtml=posts, users_per_hobby=dict_hobby_hobbyists, welcomessage=welcome_message, posts_and_answers=dict_posts_and_its_answers)
-
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    if request.method == 'GET':
-        return render_template('zlogin.html', title="Logging in")
-    elif request.method == 'POST':
-        hobbyist_python = request.form['hobbyist_html']
-        password_python = request.form['password_html']
-        hobbyists = Hobbyist.query.filter_by(nickname=hobbyist_python)
-        if hobbyists.count() == 1:
-            hobbyist = hobbyists.first()
-            if checking_password_hash(password_python, hobbyist.password) == True:
-                session['hobbyist'] = hobbyist_python
-                flash('Welcome back, ' + str(hobbyist_python) + '.', 'allgood')
-                return redirect("/")
-            elif checking_password_hash(password_python, hobbyist.password) == False:
-                flash("Sorry " + str(hobbyist_python) + ", that was not your password. :( ", "error10")
-                #return redirect("/login")
-                return render_template('zlogin.html', hobbyistname=hobbyist_python)
-        flash('This username does not exist. :/', "error10")
-        return redirect("/login")
-
-@app.route('/logout')
-def saliendo():
-    del session['hobbyist']
-    return redirect('/')
-
+app.add_url_rule('/', view_func=home_resource.index, methods=['POST', 'GET'])
+app.add_url_rule('/login', view_func=user_resource.login, methods=['POST', 'GET'])
+app.add_url_rule('/logout', view_func=user_resource.saliendo)
+app.add_url_rule('/newhobbyist', view_func=user_resource.signup, methods=['GET', 'POST'])
+app.add_url_rule('/people', view_func=user_resource.showing_all_people, methods=['GET', 'POST'])
+app.add_url_rule('/myinfo', view_func=user_resource.my_info, methods=['GET', 'POST'])
+ 
 @app.route('/hobbies', methods=['POST', 'GET'])
 def listing_hobbies():  
     if request.method == "GET":  
@@ -138,20 +89,6 @@ def listing_hobbies():
         if (conditional == "user_title"):        
             hobbies_python = Hobby.query.filter(Hobby.hobbyists.any(nickname=logged_in_hobbyist().nickname)).all()                           
             return render_template('eachhobbyist.html', title="About this hobbyist", hobbieshtml=hobbies_python)
-
-@app.route('/people', methods=['POST','GET'])
-def showing_all_people():
-    hobbyists = Hobbyist.query.order_by(Hobbyist.state).order_by(Hobbyist.zipcode).order_by(Hobbyist.nickname).all()
-
-    #Dictionary to keep number of hobbies and places per hobbyist: {Luis: [2 hobbies, 3 places], Rafa: [3 hobbies, 1 place]}
-    hobbyist_amount_hobbies_amount_places = {}
-    for hobbyist in hobbyists:
-        hobbyist_amount_hobbies_amount_places[hobbyist.nickname] = []
-        #First value of the list for amount hobbies
-        hobbyist_amount_hobbies_amount_places[hobbyist.nickname].append(Hobby.query.filter(Hobby.hobbyists.any(nickname=hobbyist.nickname)).count())
-        #Second value of the list for amount of places
-        hobbyist_amount_hobbies_amount_places[hobbyist.nickname].append(Place.query.filter(Place.hobbyists.any(nickname=hobbyist.nickname)).count())        
-    return render_template('allhobbyists.html',title="Hobbyists", hobbyists=hobbyists, hobbyists_properties=hobbyist_amount_hobbies_amount_places)
 
 @app.route('/places', methods=['POST', 'GET'])
 def listing_public_places():  
@@ -255,131 +192,6 @@ def listing_public_places():
             
 #It would have the structure: {(id1: 1, [title, nickname, wholetime, hours, minutes, date, year, month, day] }
              '''
-
-@app.route("/myinfo", methods=['GET', 'POST'])
-def my_info():     
-    if request.method == 'GET':
-        condition=request.args.get('condition') 
-        #To show the info of the user is logged in       
-        if condition == "show_all_info_user":
-            hobbyist = logged_in_hobbyist()
-            conditional = "my_profile"
-            #To show the info of other user in the website
-        elif condition == "show_other_info_user": 
-            hobbyist = Hobbyist.query.filter_by(nickname=request.args.get('hobbyist')).first()
-            conditional = "other_user_profile"
-        my_hobbies = Hobby.query.order_by(Hobby.name).filter(Hobby.hobbyists.any(nickname=hobbyist.nickname)).all()  
-        my_places = Place.query.filter(Place.hobbyists.any(nickname=hobbyist.nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()       
-        my_posts = Blog.query.filter_by(hobbyist_id=hobbyist.id).all()
-        my_encounters = Encounter.query.all()  
-        #Dictionary to store hobbies and places in the form of {'hobby1':[place1, place2, place3], 'hobby2':[place1, place1]}. This is to see where the person practices what hobbies
-        dict_what_hobbie_where_places = {}
-        for hobby in my_hobbies:
-            dict_what_hobbie_where_places[hobby.name] = []
-            my_places_this_hobbie = Place.query.filter(Place.hobbies.any(name=hobby.name)).filter(Place.hobbyists.any(nickname=hobbyist.nickname)).order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all() 
-            for place in my_places_this_hobbie:
-                dict_what_hobbie_where_places[hobby.name].append(place)
-
-        return render_template('eachhobbyist.html', title="Hobby Pack - Sharing our hobbies", hobbyist=hobbyist, my_hobbies=my_hobbies, my_places=my_places, my_encounters=my_encounters, my_posts=my_posts, conditional=conditional, dict_hobby_places=dict_what_hobbie_where_places)
-        
-@app.route("/newhobbyist", methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
-        hobbyistname = request.form['hobbyistnamesignup']
-        password = request.form['passwordsignup']
-        verify_password = request.form['verifysignup']
-        email = request.form['emailaddresssignup']
-        city = request.form['citysignup']
-        state = request.form['statesignup']
-        zipcode = request.form['zipsignup']
-        #Validation for all fields not to be empty
-        if ((password =="") or (verify_password=="") or (hobbyistname=="") or (email=="") or (city=="") or (zipcode=="") or (state=="")):
-            error_empty = "One or more fields are invalid. Please do not leave any field empty." 
-        else:
-            error_empty = ""
-        #Validation for username (length at least 3 and maximum 20)
-        if ((len(hobbyistname) < 3) or (len(hobbyistname) > 20)):
-            error_name = 'The nickname entered is invalid. It has to be at least 3 characters long and maximum 20 characters long.'
-        elif (" " in hobbyistname):
-            error_name = 'The nickname entered is invalid. It can not have a space.'
-        else: 
-            error_name = ""
-        #Validation for Password (length at least 3 and maximum 20)
-        if ((len(password) < 3) and (len(password) > 0)):
-            error_password = 'The password entered is invalid. It has to be at least 3 characters long.'
-        elif password != verify_password:
-            error_password = 'Passwords do not match.'
-        else:
-            error_password = ""
-        #Validation for city (length at least 4 in US)
-        if ((len(city) < 4) and (len(city) > 0)):
-            error_city = 'The city entered is invalid. It has to be at least 4 characters long.'    
-        else:
-            error_city = ""     
-        #Validation for zipcode (length 5 in US)
-        if ((len(zipcode) != 5) and (len(zipcode) > 0)):
-            error_zip = 'The zip code entered is invalid. It has to be 5 characters long.'
-        #validation just numbers in zipcode    
-        elif (len(zipcode) == 5):
-            indicator_letter = 0
-            for character in zipcode:
-                if character.isalpha():
-                    indicator_letter = indicator_letter + 1   
-                else:
-                    indicator_letter = indicator_letter
-            if indicator_letter != 0:
-                error_zip = 'The zip code entered is invalid. It has to have just numbers.'
-            else:
-                error_zip = ""
-        else:
-            error_zip = ""
-        #validation for email
-        if (email != ""):
-            if ((len(email) < 3) and (len(email) > 0)):
-                error_email = 'The email address entered is invalid. It has to be at least 3 characters long.'            
-            elif ((len(email) > 40)):
-                error_email = 'The email address entered is invalid. It has to be 20 characters long maximum.'            
-            elif ((" " in email) or ("@" not in email) or ("." not in email)):
-                error_email = 'The email address entered is invalid.'
-            else:
-                error_email = ""
-        else:
-            error_email = ""
-        #Final validation - Validation pre-database (checking all the data fields are valid)
-        if ((error_empty != "") or (error_name != "") or (error_password != "") or (error_city != "") or (error_zip != "") or (error_email != "")):
-            return render_template('newhobbyist.html', title="Signing up", nickname=hobbyistname, email=email, city=city, zipcode=zipcode, errorname=error_name, errorpassword=error_password, erroremail=error_email, errorcity=error_city, errorzip=error_zip, errorempty=error_empty)
-        else:
-            hobbyists = Hobbyist.query.filter_by(nickname=hobbyistname)
-            #Check if there is an user with this name already in the database
-            if hobbyists.count() == 0:
-                #Check if there is an user with the same email address
-                emails = Hobbyist.query.filter_by(email=email)
-                if emails.count() == 0:
-                    hobbyist = Hobbyist(hobbyistname, email, city, state, zipcode, password)
-                    db.session.add(hobbyist)
-                    db.session.commit()
-                    session['hobbyist'] = hobbyist.nickname
-                    #cookie to say hi or dont to new user
-                    if 'visits' in session:
-                        session['visits'] = session.get('visits') + 1
-                    else:
-                        session['visits'] = 1  
-                    if (session['visits'] != 1):
-                        welcome_message = 'Logged in. Welcome, ' + str(hobbyist.nickname)    
-                    else:
-                        welcome_message = ''
-                    #flash('Logged in. Welcome, ' + str(hobbyist.nickname), 'allgood')
-                    #Redirect and url_for are get requests. adding_post is the function controller in main. 
-                    return redirect(url_for("index", title="Posting my ideas", welcome_message=welcome_message))
-                else:
-                    error_empty = '''The email address "''' + str(email) + '''" already exists. Are you sure you are not signed up already?'''                
-                    return render_template('newhobbyist.html', title="Signing up" , nickname=hobbyistname, email=email, city=city, zipcode=zipcode, errorempty=error_empty)
-            else:
-                    error_empty = '''The hobbyist name "''' + str(hobbyistname) + '''" already exists. Please signup with another hobbyist name.'''                
-                    return render_template('newhobbyist.html', title="Signing up", nickname=hobbyistname, email=email, city=city, zipcode=zipcode, errorempty=error_empty)        
-    else:
-        return render_template('newhobbyist.html', title="Signing up")
-
 @app.route('/newhobbie', methods=['POST', 'GET'])
 def adding_hobbie():
     if request.method == "GET":
@@ -640,18 +452,6 @@ def adding_place():
             #all_places = Place.query.order_by(Place.state).order_by(Place.city).order_by(Place.zipcode).all()
             #my_places_not_this_hobby_yet = [x for x in all_places if x not in my_places_this_hobbie] 
             #return render_template('existingplaceexistinghobby.html', title="Hobby Pack - Linking your hobbies to your places", missing_placeshtml_for_me_for_this_hobby=my_places_not_this_hobby_yet, hobby=this_hobby)
-
-
-
-
-
-
-
-
-
-
-
-
 
 @app.route('/chat', methods=['POST', 'GET'])
 def listing_chats():
